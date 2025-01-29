@@ -4,6 +4,7 @@ import Template from '../../assets/template.svg';
 
 import { Content } from 'antd/es/layout/layout';
 import { APP_NAME } from '../../strings';
+import { useAuth } from '../../components/authentication/authProvider';
 
 const { useToken } = theme;
 const { useBreakpoint } = Grid;
@@ -14,9 +15,11 @@ const LoginForm: React.FC = () => {
     const [response, _setResponse] = React.useState<any>({});
     const screens = useBreakpoint();
     const { Title, Text } = Typography;
+    const auth = useAuth();
 
     const onFinish = async (values: any) => {
-        console.log('Received values:', values);    
+        console.log('Received values:', values);
+        auth.login();
     };
 
     return (
