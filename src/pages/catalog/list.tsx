@@ -3,33 +3,24 @@ import { MainBlock, SearchTable } from "../../components";
 import { PlusSquareOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { Button } from "antd";
+import { CatalogController } from "../../controllers";
+
+const catalogCtrl = new CatalogController();
 
 export const CatalogList: React.FC = () => {
     const [dataSource, setDataSource] = React.useState<any[]>([]);
-    const myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcyNDg5NDQ0MiwianRpIjoiYTc4Y2ZiMTEtYzIwMi00YjZkLTlkYjUtMmI3NzE3YzgwNjdiIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjY2Y2JhMjM0MGIzYmI3NGQ3NzE1ZDNhMCIsIm5iZiI6MTcyNDg5NDQ0MiwiY3NyZiI6IjVjM2M4MDViLWJlYzUtNDUxNC04MGYyLTQ5ZmQ2ZGNiOWRjNiIsImV4cCI6MTcyNDg5NTM0Mn0.BCZYVdorOHmS4tO7Ody6-9_CaFMXsPSGk48Z9HGsPac");
-    const requestOptions = {
-      method: "GET",
-      headers: myHeaders,
+
+    const fetchCatalog = async () => {
+        try {
+            const catalog = await catalogCtrl.getCatalog();
+            setDataSource(catalog.data);
+        } catch (error) {
+            console.error("Failed to fetch catalog:", error);
+        }
     };
 
     useEffect(() => {
-        const fetchData = async () => {
-            const response = await fetch("http://192.168.31.204/v1/stream/app/content", requestOptions);
-            const data = await response.json();
-            setDataSource(data.catalog.map((item: any) =>{
-                return {
-                    key: item.id,
-                    id: item.id,
-                    title: item.title,
-                    category: item.category,
-                }
-            }))
-        }
-
-        fetchData().catch((error) => {
-            console.error('Catalog error!', error);
-        });
+        fetchCatalog();
     }, []);
 
     const columns = [

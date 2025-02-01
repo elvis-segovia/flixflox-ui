@@ -18,10 +18,9 @@ const LoginForm: React.FC = () => {
     const auth = useAuth();
 
     const onFinish = async (values: any) => {
-        console.log('Received values:', values);
-        auth.login();
+        auth.login(values.username, values.password);
     };
-
+    
     return (
         <Layout style={{ height: '100vh' }}>
             <Content style={{
