@@ -1,6 +1,6 @@
 import React from "react";
 import { MainBlock } from "../../components";
-import { Form, GetProp, message, Tabs, UploadFile, UploadProps } from "antd";
+import { Form, GetProp, message, notification, Tabs, UploadFile, UploadProps } from "antd";
 import { MoviesForm, TvShowForm } from "./forms";
 import { CatalogController } from "../../controllers";
 
@@ -29,6 +29,7 @@ export const CatalogCreate: React.FC = () => {
     const props: UploadProps = {
         name: 'file',
         multiple: true,
+        accept: '.mp4, .avi, .flv, .mkv, .mov, .wmv, .webm',
         beforeUpload: (file: FileType) => {
             setFileList((prev) => [...prev, file]);
             return false;
@@ -58,11 +59,11 @@ export const CatalogCreate: React.FC = () => {
             if (response.status === 200) {
                 const { file_path } = response.data;
                 const catalog = await catalogCtrl.createCatalog({ ...values, file_path });
-                if(catalog.status === 201){
-                    message.success('Upload successful.');
+                if (catalog.status === 201) {
+                    notification.success({ "message": "Upload successful.", "description": "The content has been uploaded successfully." });
                     form.resetFields();
                     setFileList([]);
-                }else{
+                } else {
                     message.error('Upload failed.');
                 }
             } else {
