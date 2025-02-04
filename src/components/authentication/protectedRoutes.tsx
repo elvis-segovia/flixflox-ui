@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 import { useAuth } from "./authProvider"
-import LoginForm from "../../pages/login";
+import LoginForm from "../../admin/login";
 
 export const ProtectedRoutes: React.FC = () => {
     const ctx = useAuth();

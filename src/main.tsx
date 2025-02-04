@@ -1,12 +1,13 @@
 import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
-import { ErrorPage } from './pages/error'
+import { ErrorPage } from './admin/error/index.tsx'
 import './index.css'
 import { menuItems } from './constants.tsx'
-import { BlankPage } from './pages/blankPage'
+import { BlankPage } from './admin/blankPage/index.tsx'
 import { AuthProvider } from './components/authentication/authProvider.tsx'
 import { ProtectedRoutes } from './components/authentication/protectedRoutes.tsx'
+import { Web } from './web/index.tsx'
 
 const getChildRoutes = (item: any) => {
 	if (item.children) {
@@ -24,8 +25,9 @@ const router = (
 	<Router>
 		<AuthProvider>
 			<Routes>
+				<Route path="/" element={<Web />} errorElement={<ErrorPage />} />
 				<Route element={<ProtectedRoutes />} >
-					<Route path="/" element={<App />} errorElement={<ErrorPage />}>
+					<Route path="dashboard" element={<App />} errorElement={<ErrorPage />}>
 						{menuItems.map((item) => {
 							return getChildRoutes(item)
 						})}

@@ -1,66 +1,31 @@
-import { HomeOutlined, PlayCircleOutlined, ContactsOutlined, TeamOutlined, FormOutlined, AppstoreOutlined } from '@ant-design/icons';
-import { Home } from './pages/home';
-import { StudentsList } from './pages/students';
-import { TeachersList } from './pages/teachers';
-import { DemoForm, ModalForm } from './pages/forms';
-import { CatalogCreate, CatalogList } from './pages/catalog';
+import { HomeOutlined, PlayCircleOutlined } from '@ant-design/icons';
+import { Home } from './admin/home';
+import { CatalogCreate, CatalogList } from './admin/catalog';
+import LoginForm from './admin/login';
 
 export const menuItems = [
-    { key: '/', icon: <HomeOutlined />, label: 'Home', to: '/', component: <Home /> },
-    { 
-        key: '/movies', 
-        icon: <PlayCircleOutlined />, 
-        label: 'Catalog', 
-        to: '/catalog', 
-        component: <CatalogList /> ,
+    { key: '/dashboard', icon: <HomeOutlined />, label: 'Home', to: '/dashboard/home', component: <Home /> },
+    {
+        key: '/dashboard/movies',
+        icon: <PlayCircleOutlined />,
+        label: 'Catalog',
+        to: '/dashboard/catalog',
+        component: <CatalogList />,
         children: [
             {
-                key: '/catalog/add',
+                key: '/dashboard/catalog/add',
                 label: 'Add',
-                to: '/catalog/add',
+                to: '/dashboard/catalog/add',
                 component: <CatalogCreate />,
                 show: false
             }
         ]
     },
-    { 
-        key: '/students', 
-        icon: <ContactsOutlined />, 
-        label: 'Students', 
-        to: '/students', 
-        component: <StudentsList />,
-        children:[
-            { key: '/students/option1', label: 'Option 1', to: '/students/option1', show: 'false' },
-        ] 
-    },
-    { key: '/teachers', icon: <TeamOutlined />, label: 'Teachers', to: '/teachers', component: <TeachersList /> },
     {
-        key: 'sub1',
-        label: 'Forms',
-        icon: <FormOutlined />,
-        children: [
-            { key: '/demoform', label: 'Form Demo', to: '/demoform', show: 'true', component: <DemoForm /> },
-            { key: '/modalform', label: 'Modal Form', to: '/modalform', show: 'true', component: <ModalForm /> },
-            { key: '/option7', label: 'Option 7', to: '/option7', show: 'true' },
-            { key: '/option8', label: 'Option 8', to: '/option8', show: 'true' },
-        ],
-    },
-    {
-        key: 'sub2',
-        label: 'Navigation Two',
-        icon: <AppstoreOutlined />,
-        children: [
-            { key: '/option9', label: 'Option 9', to: '/option9', show: 'true' },
-            { key: '/option10', label: 'Option 10', to: '/option10', show: 'true' },
-            {
-                key: 'sub3',
-                label: 'Submenu',
-                show: 'true',
-                children: [
-                    { key: '/option11', label: 'Option 11', to: '/option11', show: 'true' },
-                    { key: '/option12', label: 'Option 12', to: '/option12', show: 'true' },
-                ],
-            },
-        ],
+        key: 'login',
+        label: 'Login',
+        to: '/dashboard/login',
+        component: <LoginForm />,
+        style: { display: 'none' }
     },
 ];
