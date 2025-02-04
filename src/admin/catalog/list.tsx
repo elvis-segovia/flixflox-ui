@@ -1,0 +1,55 @@
+import React, { useEffect } from "react";
+import { MainBlock, SearchTable } from "../../components";
+import { PlusSquareOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
+import { Button } from "antd";
+import { CatalogController } from "../../controllers";
+
+const catalogCtrl = new CatalogController();
+
+export const CatalogList: React.FC = () => {
+    const [dataSource, setDataSource] = React.useState<any[]>([]);
+
+    const fetchCatalog = async () => {
+        try {
+            const catalog = await catalogCtrl.getCatalog();
+            setDataSource(catalog.data);
+        } catch (error) {
+            console.error("Failed to fetch catalog:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchCatalog();
+    }, []);
+
+    const columns = [
+        {
+            title: 'ID',
+            dataIndex: 'id',
+            key: 'id',
+        },
+        {
+            title: 'Title',
+            dataIndex: 'title',
+            key: 'title',
+        },
+        {
+            title: 'Category',
+            dataIndex: 'category',
+            key: 'category',
+        },
+        {
+            title: 'Action',
+            key: 'action',
+            render: () => (
+                <Link to="/catalog/delete">Delete</Link>
+            ),
+        }
+    ];
+    return (
+        <MainBlock title="Movies" button={<Link to="/catalog/add"><Button type="primary" size="middle" icon={<PlusSquareOutlined />}>Add</Button></Link>}>
+            <SearchTable columns={columns} dataSource={dataSource} />
+        </MainBlock>
+    )
+}
