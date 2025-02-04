@@ -1,5 +1,6 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 import { LoginController } from "../../controllers";
+import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext<any | null>(null);
 interface AuthProviderProps {
@@ -10,6 +11,7 @@ const loginCtrl = new LoginController();
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const navigate = useNavigate();
 
     const login = (username: string, password: string) => {
         loginCtrl.login(username, password)
@@ -17,6 +19,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 console.log("Login response:", res);
                 if (res.status === 200) {
                     setIsAuthenticated(true);
+                    navigate("/dashboard/home");
                 }
             })
             .catch((err) => {

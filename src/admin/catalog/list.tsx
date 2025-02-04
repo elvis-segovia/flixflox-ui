@@ -43,12 +43,12 @@ export const CatalogList: React.FC = () => {
             title: 'Action',
             key: 'action',
             render: () => (
-                <Link to="/catalog/delete">Delete</Link>
+                <Link to="/dashboard/catalog/delete">Delete</Link>
             ),
         }
     ];
     return (
-        <MainBlock title="Movies" button={<Link to="/catalog/add"><Button type="primary" size="middle" icon={<PlusSquareOutlined />}>Add</Button></Link>}>
+        <MainBlock title="Movies" button={<Link to="/dashboard/catalog/add"><Button type="primary" size="middle" icon={<PlusSquareOutlined />}>Add</Button></Link>}>
             <SearchTable columns={columns} dataSource={dataSource} />
         </MainBlock>
     )
