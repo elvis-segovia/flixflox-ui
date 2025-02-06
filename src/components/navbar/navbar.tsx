@@ -1,6 +1,6 @@
-import { Breadcrumb, Layout, Menu, theme } from "antd";
+import { Button, Layout, Menu } from "antd";
 import { Content, Footer, Header } from "antd/es/layout/layout";
-import React from "react";
+import React, { ReactElement } from "react";
 import { Link } from "react-router-dom";
 
 const items = [
@@ -11,17 +11,13 @@ const items = [
     {
         key: 'tv_shows',
         label: 'TV Shows',
-    },
-    {
-        key: 'login',
-        label: <Link to="/dashboard/login">Login</Link>,
     }
 ]
-export const WebNavbar: React.FC = () => {
-    const {
-        token: { colorBgContainer, borderRadiusLG },
-    } = theme.useToken();
 
+type WebNavbarProps = {
+    children: ReactElement
+}
+export const WebNavbar: React.FC<WebNavbarProps> = ({ children }) => {
     return (
         <Layout>
             <Header
@@ -42,23 +38,12 @@ export const WebNavbar: React.FC = () => {
                     items={items}
                     style={{ flex: 1, minWidth: 0 }}
                 />
+                <Button type="link" style={{ float: 'right', color: 'white' }}>
+                    <Link to="/dashboard/login">Login</Link>
+                </Button>
             </Header>
             <Content style={{ padding: '0 48px' }}>
-                <Breadcrumb style={{ margin: '16px 0' }}>
-                    <Breadcrumb.Item>Home</Breadcrumb.Item>
-                    <Breadcrumb.Item>List</Breadcrumb.Item>
-                    <Breadcrumb.Item>App</Breadcrumb.Item>
-                </Breadcrumb>
-                <div
-                    style={{
-                        padding: 24,
-                        minHeight: 380,
-                        background: colorBgContainer,
-                        borderRadius: borderRadiusLG,
-                    }}
-                >
-                    Content
-                </div>
+                {children}
             </Content>
             <Footer style={{ textAlign: 'center' }}>
                 Ant Design ©{new Date().getFullYear()} Created by Ant UED
