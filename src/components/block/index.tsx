@@ -1,7 +1,7 @@
 import { Card, Layout } from "antd"
 import { MainBreadcrumb } from "../breadcrumb"
 
-const { Content, Footer } = Layout;
+const { Content } = Layout;
 
 export const MainBlock: React.FC<MainBlockProps> = ({ children, showBreadcrumb, title, button }) => {
     return (

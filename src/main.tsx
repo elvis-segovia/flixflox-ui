@@ -7,7 +7,8 @@ import { menuItems } from './constants.tsx'
 import { BlankPage } from './admin/blankPage/index.tsx'
 import { AuthProvider } from './components/authentication/authProvider.tsx'
 import { ProtectedRoutes } from './components/authentication/protectedRoutes.tsx'
-import { Web } from './web/index.tsx'
+import { Web } from './web'
+import { Movies } from './web'
 
 const getChildRoutes = (item: any) => {
 	if (item.children) {
@@ -25,7 +26,9 @@ const router = (
 	<Router>
 		<AuthProvider>
 			<Routes>
-				<Route path="/" element={<Web />} errorElement={<ErrorPage />} />
+				<Route path="/" element={<Web />} errorElement={<ErrorPage />}>
+					<Route index element={<Movies />} />
+				</Route>
 				<Route element={<ProtectedRoutes />} >
 					<Route path="dashboard" element={<App />} errorElement={<ErrorPage />}>
 						{menuItems.map((item) => {

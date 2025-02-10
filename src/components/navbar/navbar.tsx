@@ -1,7 +1,7 @@
 import { Button, Layout, Menu } from "antd";
-import { Content, Footer, Header } from "antd/es/layout/layout";
-import React, { ReactElement } from "react";
-import { Link } from "react-router-dom";
+import { Header } from "antd/es/layout/layout";
+import React from "react";
+import { Link, Outlet } from "react-router-dom";
 
 const items = [
     {
@@ -14,10 +14,7 @@ const items = [
     }
 ]
 
-type WebNavbarProps = {
-    children: ReactElement
-}
-export const WebNavbar: React.FC<WebNavbarProps> = ({ children }) => {
+export const WebNavbar: React.FC = () => {
     return (
         <Layout>
             <Header
@@ -42,12 +39,7 @@ export const WebNavbar: React.FC<WebNavbarProps> = ({ children }) => {
                     <Link to="/dashboard/login">Login</Link>
                 </Button>
             </Header>
-            <Content style={{ padding: '0 48px' }}>
-                {children}
-            </Content>
-            <Footer style={{ textAlign: 'center' }}>
-                Ant Design ©{new Date().getFullYear()} Created by Ant UED
-            </Footer>
+            <Outlet />
         </Layout>
     );
 }
