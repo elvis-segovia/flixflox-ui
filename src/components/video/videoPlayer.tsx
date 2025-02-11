@@ -1,51 +1,47 @@
+import Hls from "hls.js/dist/hls.min";
 import React, { useEffect, useRef } from "react";
-import videojs from "video.js";
-import 'video.js/dist/video-js.css';
 
-export const VideoPlayer: React.FC<{ options: any, onReady: any }> = (props) => {
-    const videoRef = useRef<HTMLDivElement>(null);
-    const playerRef = useRef<any>(null);
-    const { options, onReady } = props;
+interface VideoPlayerProps {
+    src: string;
+}
+
+export const VideoPlayer: React.FC<VideoPlayerProps> = ({ src }) => {
+    const videoRef = useRef<HTMLVideoElement>(null);
 
     useEffect(() => {
-        // Make sure Video.js player is only initialized once
-        if (!playerRef.current) {
-            // The Video.js player needs to be _inside_ the component el for React 18 Strict Mode. 
-            const videoElement = document.createElement("video-js");
+        const hls = new Hls({
+            debug: true,
+        });
 
-            videoElement.classList.add('vjs-big-play-centered');
-            videoRef?.current?.appendChild(videoElement);
-
-            const player = videojs(videoElement, options, () => {
-                playerRef.current = player;
-                videojs.log('player is ready');
-                onReady && onReady(player);
+        if (Hls.isSupported()) {
+            hls.loadSource(src);
+            if (videoRef.current) {
+                hls.attachMedia(videoRef.current);
+            }
+            hls.on(Hls.Events.ERROR, (err: any) => {
+                console.log(err)
             });
 
-            // You could update an existing player in the `else` block here
-            // on prop change, for example:
-        } else {
-            const player = playerRef.current;
-
-            player.autoplay(options.autoplay);
-            player.src(options.sources);
+        } else if (videoRef.current && videoRef.current.canPlayType('application/vnd.apple.mpegurl')) {
+            // Fallback for native HLS support (e.g., Safari)
+            videoRef.current.src = src;
         }
-    }, [options, videoRef]);
-    useEffect(() => {
-        const player = playerRef.current;
 
+        // Clean up Hls.js on component unmount
         return () => {
-            if (player && !player.isDisposed()) {
-                player.dispose();
-                playerRef.current = null;
+            if (hls) {
+                hls.destroy();
             }
         };
-    }, [playerRef]);
+
+    }, [src]);
 
     return (
-        <div data-vjs-player>
-            <div ref={videoRef} />
-        </div>
-    );
-
+        <video
+            ref={videoRef}
+            controls
+            // fit the container size
+            style={{ width: "100%", height: "100%" }}
+        />
+    )
 }

@@ -11,7 +11,7 @@ export const Movies: React.FC = () => {
         catalogCtrl.getCatalog().then((res) => {
             setVideos(res.data);
         });
-    });
+    }, []);
 
     return (
         <MainBlock>
