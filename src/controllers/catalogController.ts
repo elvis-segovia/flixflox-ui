@@ -10,8 +10,13 @@ export class CatalogController {
         });
     }
 
-    async getCatalog(): Promise<any> {
+    async listCatalog(): Promise<any> {
         return await this.api.get(`/content`);
+    }
+
+    async getCatalog(id: string): Promise<any> {
+        console.log(id);
+        return await this.api.get(`/content/${id}/details`);
     }
 
     async createCatalog(data: any): Promise<any> {

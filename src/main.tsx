@@ -9,6 +9,7 @@ import { AuthProvider } from './components/authentication/authProvider.tsx'
 import { ProtectedRoutes } from './components/authentication/protectedRoutes.tsx'
 import { Web } from './web'
 import { Movies } from './web'
+import { Player } from './web/player/index.tsx'
 
 const getChildRoutes = (item: any) => {
 	if (item.children) {
@@ -28,6 +29,7 @@ const router = (
 			<Routes>
 				<Route path="/" element={<Web />} errorElement={<ErrorPage />}>
 					<Route index element={<Movies />} />
+					<Route path='play/:id' element={<Player />} />
 				</Route>
 				<Route element={<ProtectedRoutes />} >
 					<Route path="dashboard" element={<App />} errorElement={<ErrorPage />}>

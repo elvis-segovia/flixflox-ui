@@ -8,7 +8,7 @@ const catalogCtrl = new CatalogController();
 export const Movies: React.FC = () => {
     const [videos, setVideos] = React.useState<any[]>([]);
     useEffect(() => {
-        catalogCtrl.getCatalog().then((res) => {
+        catalogCtrl.listCatalog().then((res) => {
             setVideos(res.data);
         });
     }, []);

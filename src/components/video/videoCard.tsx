@@ -1,8 +1,10 @@
 import { Card, Col, Row } from "antd"
 import Meta from "antd/es/card/Meta"
 import React from "react"
+import { Link } from "react-router-dom";
 
 interface VideoCardProps {
+    uuid: string;
     title: string;
     description?: string;
     image?: string;
@@ -18,16 +20,18 @@ export const VideoCard: React.FC<ListVideoCardProps> = ({ videos }) => {
             {
                 videos.map((video, index) => {
                     return (
-                        <Col span={8}>
-                            <Card
-                                key={index}
-                                hoverable
-                                style={{ width: 240 }}
-                                cover={<img alt="example" src={video.image} />}
-                            >
-                                <Meta title={video.title} description={video.description} />
-                            </Card>
-                        </Col>
+                        <Link to={`/play/${video.uuid}`} key={`player-${index}`}>
+                            <Col span={8}>
+                                <Card
+                                    key={index}
+                                    hoverable
+                                    style={{ width: 240 }}
+                                    cover={<img alt="example" src={video.image} />}
+                                >
+                                    <Meta title={video.title} description={video.description} />
+                                </Card>
+                            </Col>
+                        </Link>
                     )
                 })
             }
