@@ -26,6 +26,24 @@ body {
   margin: 0;
 }
 
+.vjs-skip-intro {
+  position: absolute;
+  bottom: 100px;
+  right: 20px;
+  z-index: 1;
+  background-color: hsl(0, 0%, 0%) !important;
+  box-shadow: 0 2px 4px rgb(255, 255, 255) !important;
+  font-weight: bold;
+  padding: 12px 24px;
+  font-size: 16px !important;
+  color: hsl(0, 0%, 100%) !important;
+  cursor: pointer;
+}
+
+.vjs-skip-intro:hover {
+  background-color: rgba(0, 0, 0, 0.9);
+}
+
 /* h1 {
   font-size: 3.2em;
   line-height: 1.1;

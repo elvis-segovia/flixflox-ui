@@ -8,7 +8,7 @@ export class LoginController {
     }
 
     async login(username: string, password: string): Promise<any> {
-        return await axios.post(`${this.api_url}/login`, {
+        return await axios.post(`${this.api_url}/stream/login`, {
             username,
             password
         }, {

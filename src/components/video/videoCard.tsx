@@ -26,7 +26,7 @@ export const VideoCard: React.FC<ListVideoCardProps> = ({ videos }) => {
                                     key={index}
                                     hoverable
                                     style={{ width: 240 }}
-                                    cover={<img alt="example" src={video.image} />}
+                                    cover={<img alt="example" src={video.image || "https://placehold.co/240x135"} />}
                                 >
                                     <Meta title={video.title} description={video.description} />
                                 </Card>

@@ -11,20 +11,20 @@ export class CatalogController {
     }
 
     async listCatalog(): Promise<any> {
-        return await this.api.get(`/content`);
+        return await this.api.get(`/videos`);
     }
 
     async getCatalog(id: string): Promise<any> {
         console.log(id);
-        return await this.api.get(`/content/${id}/details`);
+        return await this.api.get(`/videos/${id}/details`);
     }
 
     async createCatalog(data: any): Promise<any> {
-        return await this.api.post(`/content`, data);
+        return await this.api.post(`/videos`, data);
     }
 
     async uploadFile(data: any): Promise<any> {
-        return await this.api.post(`/upload`, data);
+        return await this.api.post(`/videos/upload`, data);
     }
     
 }
