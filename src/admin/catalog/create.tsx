@@ -3,6 +3,7 @@ import { MainBlock } from "../../components";
 import { Form, GetProp, message, notification, Tabs, UploadFile, UploadProps } from "antd";
 import { MoviesForm, TvShowForm } from "./forms";
 import { CatalogController } from "../../controllers";
+import dayjs from "dayjs";
 
 interface CatalogValues {
     title: string;
@@ -13,6 +14,8 @@ interface CatalogValues {
     description: string | "";
     cast: string[] | [];
     season: number;
+    intro_start_time: string;
+    intro_end_time: string;
     duration_minutes: number;
     file_path: string;
 }
@@ -79,7 +82,8 @@ export const CatalogCreate: React.FC = () => {
     };
 
     const onCreate = async (values: CatalogValues) => {
-        console.log('Received values of form: ', values);
+        values.intro_start_time = dayjs(values.intro_start_time).format('HH:mm:ss');
+        values.intro_end_time = dayjs(values.intro_end_time).format('HH:mm:ss');
         await handleContent(values);
     }
 
@@ -87,10 +91,10 @@ export const CatalogCreate: React.FC = () => {
         <MainBlock title="Add Catalog" showBreadcrumb={true}>
             <Tabs defaultActiveKey="1">
                 <Tabs.TabPane tab="Movie" key="1">
-                    <MoviesForm form={form} onCreate={onCreate} props={props} saving={uploading} />
+                    <MoviesForm form={form} onCreate={onCreate} uploadProps={props} saving={uploading} />
                 </Tabs.TabPane>
                 <Tabs.TabPane tab="Tv Show" key="2">
-                    <TvShowForm form={form} onCreate={onCreate} props={props} />
+                    <TvShowForm form={form} onCreate={onCreate} uploadProps={props} saving={uploading} />
                 </Tabs.TabPane>
             </Tabs>
         </MainBlock>

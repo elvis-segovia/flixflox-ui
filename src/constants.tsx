@@ -4,18 +4,24 @@ import { CatalogCreate, CatalogList } from './admin/catalog';
 import LoginForm from './admin/login';
 
 export const menuItems = [
-    { key: '/dashboard', icon: <HomeOutlined />, label: 'Home', to: '/dashboard/home', component: <Home /> },
+    { 
+        key: '/dashboard/home', 
+        icon: <HomeOutlined />, 
+        label: 'Home', 
+        to: '/dashboard/home', 
+        component: <Home />
+    },
     {
         key: '/dashboard/movies',
         icon: <PlayCircleOutlined />,
         label: 'Catalog',
-        to: '/dashboard/catalog',
+        to: '/dashboard/movies',
         component: <CatalogList />,
         children: [
             {
-                key: '/dashboard/catalog/add',
+                key: '/dashboard/movies/add',
                 label: 'Add',
-                to: '/dashboard/catalog/add',
+                to: '/dashboard/movies/add',
                 component: <CatalogCreate />,
                 show: false
             }

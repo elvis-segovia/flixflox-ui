@@ -12,8 +12,11 @@ export const CatalogList: React.FC = () => {
 
     const fetchCatalog = async () => {
         try {
-            const catalog = await catalogCtrl.getCatalog();
-            setDataSource(catalog.data);
+            const catalog = await catalogCtrl.listCatalog();
+            setDataSource(catalog.data.map((item: any) => ({
+                ...item,
+                key: item.uuid
+            })));
         } catch (error) {
             console.error("Failed to fetch catalog:", error);
         }
@@ -26,8 +29,8 @@ export const CatalogList: React.FC = () => {
     const columns = [
         {
             title: 'ID',
-            dataIndex: 'id',
-            key: 'id',
+            dataIndex: 'uuid',
+            key: 'uuid',
         },
         {
             title: 'Title',
@@ -36,8 +39,8 @@ export const CatalogList: React.FC = () => {
         },
         {
             title: 'Category',
-            dataIndex: 'category',
-            key: 'category',
+            dataIndex: 'type',
+            key: 'type',
         },
         {
             title: 'Action',
@@ -48,7 +51,7 @@ export const CatalogList: React.FC = () => {
         }
     ];
     return (
-        <MainBlock title="Movies" button={<Link to="/dashboard/catalog/add"><Button type="primary" size="middle" icon={<PlusSquareOutlined />}>Add</Button></Link>}>
+        <MainBlock title="Movies" button={<Link to="/dashboard/movies/add"><Button type="primary" size="middle" icon={<PlusSquareOutlined />}>Add</Button></Link>}>
             <SearchTable columns={columns} dataSource={dataSource} />
         </MainBlock>
     )

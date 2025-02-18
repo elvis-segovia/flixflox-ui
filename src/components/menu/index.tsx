@@ -20,7 +20,8 @@ export const MainMenu: React.FC<MainMenuProps> = ({ menuItems }) => {
     //set current key
     const location = useLocation();
     const [openKeys, setOpenKeys] = useState<string[]>([]);
-    const currentPath = location.pathname.split('/').slice(1)[0]
+    const currentPath = location.pathname.split('/dashboard').slice(1)[0]
+    console.log(currentPath);
     const currentKey = useMemo(() => menuItems.find((item) => item?.key?.toString().includes(currentPath))?.key?.toString() || '', [currentPath, menuItems]);
     // close submenus on deselect
     const onSelect: MenuProps['onSelect'] = ({ key }) => {

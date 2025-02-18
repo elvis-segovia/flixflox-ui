@@ -8,7 +8,7 @@ const catalogCtrl = new CatalogController();
 
 export const Player: React.FC = () => {
     let { id } = useParams();
-    const [src, setSrc] = useState<any>(null);
+    const [video, setVideo] = useState<any>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -16,8 +16,7 @@ export const Player: React.FC = () => {
             if (id) {
                 try {
                     const res = await catalogCtrl.getCatalog(id);
-                    console.log(res);
-                    setSrc(`${import.meta.env.VITE_STREAMAPI_URL}${import.meta.env.VITE_STREAMAPI_PREFIX}/videos/stream/${res.data.file_path}`);
+                    setVideo(res.data);
                 } catch (error) {
                     console.error("Error fetching catalog:", error);
                 } finally {
@@ -42,7 +41,7 @@ export const Player: React.FC = () => {
                     }}
                 />
             ) : (
-                src ? <VideoPlayer src={src} /> : <div>Video not available</div>
+                video ? <VideoPlayer src={`${import.meta.env.VITE_STREAMAPI_URL}${import.meta.env.VITE_STREAMAPI_PREFIX}/videos/stream/${video.file_path}`} title={video.title} intro_start_time={video.intro_start_time} intro_end_time={video.intro_end_time} /> : <div>Video not available</div>
             )}
         </div>
     )
