@@ -1,7 +1,6 @@
 import videojs from 'video.js';
 import 'video.js/dist/video-js.css';
 import React, { useEffect, useRef } from "react";
-import dayjs from 'dayjs';
 
 interface VideoPlayerProps {
     src: string;
@@ -20,6 +19,8 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, title, intro_star
     const videoRef = useRef<HTMLVideoElement>(null);
     const playerRef = useRef<any>(null);  // Changed from videojs.Player
     const skipButtonRef = useRef<HTMLButtonElement | null>(null);
+    const intro_start_time_seconds = timeToSeconds(intro_start_time);
+    const intro_end_time_seconds = timeToSeconds(intro_end_time);
 
     useEffect(() => {
         if (videoRef.current) {
@@ -34,13 +35,17 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, title, intro_star
             });
 
             playerRef.current.on('timeupdate', function () {
-                const intro_start_time_seconds = timeToSeconds(intro_start_time);
-                const intro_end_time_seconds = timeToSeconds(intro_end_time);
                 if (playerRef.current.currentTime() >= intro_start_time_seconds && playerRef.current.currentTime() <= intro_end_time_seconds) {
                     if (!skipButtonRef.current) {
                         const skipButton = document.createElement('button');
                         skipButton.textContent = 'Skip Intro';
                         skipButton.className = 'vjs-skip-intro';
+                        skipButton.addEventListener('click', () => {
+                            playerRef.current.currentTime(intro_end_time_seconds);
+                        });
+                        setTimeout(() => {
+                            skipButton.style.display = 'none';
+                        }, 10000);
                         // Append to player's element
                         playerRef.current.el().appendChild(skipButton);
                         skipButtonRef.current = skipButton;
@@ -48,6 +53,26 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, title, intro_star
                 }
                 if (playerRef.current.currentTime() >= intro_end_time_seconds) {
                     playerRef.current.el().removeChild(skipButtonRef.current);
+                }
+            });
+
+            playerRef.current.on('useractive', function () {
+                if (skipButtonRef?.current &&
+                    intro_start_time_seconds <= playerRef.current.currentTime() &&
+                    intro_end_time_seconds >= playerRef.current.currentTime() &&
+                    skipButtonRef.current.style.display === 'none'
+                ) {
+                    skipButtonRef.current.style.display = 'block';
+                }
+            });
+
+            playerRef.current.on('userinactive', function () {
+                if (skipButtonRef?.current &&
+                    intro_start_time_seconds <= playerRef.current.currentTime() &&
+                    intro_end_time_seconds >= playerRef.current.currentTime() &&
+                    skipButtonRef.current.style.display === 'block'
+                ) {
+                    skipButtonRef.current.style.display = 'none';
                 }
             });
         }

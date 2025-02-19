@@ -28,8 +28,8 @@ body {
 
 .vjs-skip-intro {
   position: absolute;
-  bottom: 100px;
-  right: 20px;
+  bottom: 150px;
+  right: 50px;
   z-index: 1;
   background-color: hsl(0, 0%, 0%) !important;
   box-shadow: 0 2px 4px rgb(255, 255, 255) !important;
