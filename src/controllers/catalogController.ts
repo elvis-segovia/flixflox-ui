@@ -14,6 +14,10 @@ export class CatalogController {
         return await this.api.get(`/videos`);
     }
 
+    async listVideosByType(type: string) {
+        return await this.api.get(`/videos/${type}/list`)
+    }
+
     async getCatalog(id: string): Promise<any> {
         console.log(id);
         return await this.api.get(`/videos/${id}/details`);
@@ -26,5 +30,5 @@ export class CatalogController {
     async uploadFile(data: any): Promise<any> {
         return await this.api.post(`/videos/upload`, data);
     }
-    
+
 }

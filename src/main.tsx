@@ -29,6 +29,7 @@ const router = (
 			<Routes>
 				<Route path="/" element={<Web />} errorElement={<ErrorPage />}>
 					<Route index element={<Movies />} />
+					<Route path=':type/videos' element={<Movies />} />
 					<Route path='play/:id' element={<Player />} />
 				</Route>
 				<Route element={<ProtectedRoutes />} >

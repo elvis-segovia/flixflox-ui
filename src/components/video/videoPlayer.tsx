@@ -1,9 +1,10 @@
 import videojs from 'video.js';
 import 'video.js/dist/video-js.css';
+import 'videojs-playlist';
 import React, { useEffect, useRef } from "react";
 
 interface VideoPlayerProps {
-    src: string;
+    src: string | string[];
     title: string;
     intro_start_time: string;
     intro_end_time: string;
@@ -28,11 +29,23 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, title, intro_star
                 controls: true,
                 responsive: true,
                 fluid: true,
-                sources: [{
-                    src: src,
-                    type: 'application/x-mpegURL'
-                }]
             });
+
+            // Convert single source to array if needed
+            const sources = Array.isArray(src) ? src : [src];
+            
+            // Create playlist items
+            const playlist = sources.map(source => ({
+                name: title,
+                sources: [{
+                    src: source,
+                    type: 'application/x-mpegURL',
+                }],
+                poster: "https://peach.blender.org/wp-content/uploads/title_anouncement.jpg",
+            }));
+
+            // Initialize playlist
+            playerRef.current.playlist(playlist);
 
             playerRef.current.on('timeupdate', function () {
                 if (playerRef.current.currentTime() >= intro_start_time_seconds && playerRef.current.currentTime() <= intro_end_time_seconds) {

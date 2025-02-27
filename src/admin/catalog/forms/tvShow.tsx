@@ -1,4 +1,4 @@
-import { Button, Form, Input, InputNumber, Select, TimePicker, Upload } from "antd"
+import { Button, Form, Input, InputNumber, Select, Space, TimePicker, Upload } from "antd"
 import { InboxOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 
@@ -22,6 +22,7 @@ export const TvShowForm: React.FC<TvShowFormProps> = ({ form, onCreate, saving, 
                 type: 'tvshow',
                 rating: 0.0,
                 season: 1,
+                episode: 1,
                 release_year: new Date().getFullYear()
             }}
         >
@@ -100,25 +101,6 @@ export const TvShowForm: React.FC<TvShowFormProps> = ({ form, onCreate, saving, 
                 />
             </Form.Item>
             <Form.Item
-                name="description"
-                label="Description"
-                rules={[{ max: 500, message: 'Description cannot exceed 500 characters' }]}
-            >
-                <Input.TextArea
-                    rows={4}
-                    placeholder="Enter TV show description"
-                    showCount
-                    maxLength={500}
-                />
-            </Form.Item>
-            <Form.Item name="cast" label="Cast">
-                <Select
-                    mode="tags"
-                    placeholder="Select cast"
-                    allowClear
-                />
-            </Form.Item>
-            <Form.Item
                 name="season"
                 label="Season"
                 rules={[
@@ -133,18 +115,66 @@ export const TvShowForm: React.FC<TvShowFormProps> = ({ form, onCreate, saving, 
                 />
             </Form.Item>
             <Form.Item
-                name="intro_start_time"
-                label="Intro Start Time"
-                tooltip="Time when the intro starts in the episode"
+                name="episode"
+                label="Episode"
+                rules={[
+                    { required: true, message: 'Please input the episode number!' },
+                    { type: 'number', min: 1, message: 'Episode must be at least 1' }
+                ]}
             >
-                <TimePicker format="HH:mm:ss" showNow={false} />
+                <InputNumber
+                    min={1}
+                    style={{ width: '100%' }}
+                    placeholder="Enter episode number"
+                />
+            </Form.Item>
+            <Space.Compact>
+                <Form.Item
+                    name="intro_start_time"
+                    label="Intro Start Time"
+                    tooltip="Time when the intro starts in the movie"
+                >
+                    <TimePicker format="HH:mm:ss" showNow={false} />
+                </Form.Item>
+                <Form.Item
+                    name="intro_end_time"
+                    label="Intro End Time"
+                    dependencies={['intro_start_time']}
+                    rules={[
+                        ({ getFieldValue }) => ({
+                            validator(_, value) {
+                                if (!value || !getFieldValue('intro_start_time')) {
+                                    return Promise.resolve();
+                                }
+                                if (value.isBefore(getFieldValue('intro_start_time'))) {
+                                    return Promise.reject(new Error('End time must be after start time!'));
+                                }
+                                return Promise.resolve();
+                            },
+                        }),
+                    ]}
+                >
+                    <TimePicker format="HH:mm:ss" showNow={false} />
+                </Form.Item>
+            </Space.Compact>
+            <Form.Item name="cast" label="Cast">
+                <Select
+                    mode="tags"
+                    placeholder="Select cast"
+                    allowClear
+                />
             </Form.Item>
             <Form.Item
-                name="intro_end_time"
-                label="Intro End Time"
-                tooltip="Time when the intro ends in the episode"
+                name="description"
+                label="Description"
+                rules={[{ max: 500, message: 'Description cannot exceed 500 characters' }]}
             >
-                <TimePicker format="HH:mm:ss" showNow={false} />
+                <Input.TextArea
+                    rows={4}
+                    placeholder="Enter TV show description"
+                    showCount
+                    maxLength={500}
+                />
             </Form.Item>
             <Form.Item name="file_path" label="Files" rules={[{ required: true, message: 'Please input the file path!' }]}>
                 <Dragger {...uploadProps}>

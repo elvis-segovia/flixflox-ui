@@ -1,4 +1,4 @@
-import { Button, Form, Input, InputNumber, Select, TimePicker, Upload } from "antd"
+import { Button, Form, Input, InputNumber, Select, Space, TimePicker, Upload } from "antd"
 import { InboxOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 
@@ -59,9 +59,35 @@ export const MoviesForm: React.FC<MovieFormProps> = ({ form, onCreate, saving, u
                     placeholder="Rating"
                 />
             </Form.Item>
-            <Form.Item name="description" label="Description">
-                <Input />
-            </Form.Item>
+            <Space.Compact>
+                <Form.Item
+                    name="intro_start_time"
+                    label="Intro Start Time"
+                    tooltip="Time when the intro starts in the movie"
+                >
+                    <TimePicker format="HH:mm:ss" showNow={false} />
+                </Form.Item>
+                <Form.Item
+                    name="intro_end_time"
+                    label="Intro End Time"
+                    dependencies={['intro_start_time']}
+                    rules={[
+                        ({ getFieldValue }) => ({
+                            validator(_, value) {
+                                if (!value || !getFieldValue('intro_start_time')) {
+                                    return Promise.resolve();
+                                }
+                                if (value.isBefore(getFieldValue('intro_start_time'))) {
+                                    return Promise.reject(new Error('End time must be after start time!'));
+                                }
+                                return Promise.resolve();
+                            },
+                        }),
+                    ]}
+                >
+                    <TimePicker format="HH:mm:ss" showNow={false} />
+                </Form.Item>
+            </Space.Compact>
             <Form.Item name="cast" label="Cast">
                 <Select
                     mode="tags"
@@ -70,32 +96,16 @@ export const MoviesForm: React.FC<MovieFormProps> = ({ form, onCreate, saving, u
                 />
             </Form.Item>
             <Form.Item
-                name="intro_start_time"
-                label="Intro Start Time"
-                rules={[{ required: true, message: 'Please input the intro start time!' }]}
-                tooltip="Time when the intro starts in the movie"
+                name="description"
+                label="Description"
+                rules={[{ max: 500, message: 'Description cannot exceed 500 characters' }]}
             >
-                <TimePicker format="HH:mm:ss" showNow={false} />
-            </Form.Item>
-            <Form.Item
-                name="intro_end_time"
-                label="Intro End Time"
-                dependencies={['intro_start_time']}
-                rules={[
-                    ({ getFieldValue }) => ({
-                        validator(_, value) {
-                            if (!value || !getFieldValue('intro_start_time')) {
-                                return Promise.resolve();
-                            }
-                            if (value.isBefore(getFieldValue('intro_start_time'))) {
-                                return Promise.reject(new Error('End time must be after start time!'));
-                            }
-                            return Promise.resolve();
-                        },
-                    }),
-                ]}
-            >
-                <TimePicker format="HH:mm:ss" showNow={false} />
+                <Input.TextArea
+                    rows={4}
+                    placeholder="Enter the movie description"
+                    showCount
+                    maxLength={500}
+                />
             </Form.Item>
             <Form.Item name="file_path" label="File" rules={[{ required: true, message: 'Please upload a file!' }]}>
                 <Dragger {...uploadProps} maxCount={1} accept="video/*">

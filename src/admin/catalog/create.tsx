@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { MainBlock } from "../../components";
 import { Form, GetProp, message, notification, Tabs, UploadFile, UploadProps } from "antd";
 import { MoviesForm, TvShowForm } from "./forms";
@@ -13,7 +13,8 @@ interface CatalogValues {
     rating: number;
     description: string | "";
     cast: string[] | [];
-    season: number;
+    season: string;
+    episode: string;
     intro_start_time: string;
     intro_end_time: string;
     duration_minutes: number;
@@ -26,8 +27,9 @@ const catalogCtrl = new CatalogController();
 
 export const CatalogCreate: React.FC = () => {
     const [form] = Form.useForm();
-    const [fileList, setFileList] = React.useState<UploadFile[]>([]);
-    const [uploading, setUploading] = React.useState<boolean>(false);
+    const [fileList, setFileList] = useState<UploadFile[]>([]);
+    const [uploading, setUploading] = useState<boolean>(false);
+    const [activeTab, setActiveTab] = useState<string | null>(null);
 
     const props: UploadProps = {
         name: 'file',
@@ -43,6 +45,10 @@ export const CatalogCreate: React.FC = () => {
         }
     }
 
+    const onChangeTab = (key: string) => {
+        setActiveTab(key);
+    }
+
     const handleContent = async (values: CatalogValues) => {
         if (fileList.length === 0) {
             message.error('Please select at least one file before uploading.');
@@ -53,29 +59,40 @@ export const CatalogCreate: React.FC = () => {
         fileList.forEach((file) => {
             formData.append('file', file as any);
         });
+        formData.append('type', activeTab || "movie");
+
+        if (activeTab === 'tvShow') {
+            formData.append('name', values.title.toLowerCase());
+            formData.append('season', values.season);
+            formData.append('episode', values.episode);
+        }
 
         try {
-            // Send the files using fetch or axios
             setUploading(true);
             const response = await catalogCtrl.uploadFile(formData);
 
             if (response.status === 200) {
                 const { file_path } = response.data;
-                const catalog = await catalogCtrl.createCatalog({ ...values, file_path });
-                if (catalog.status === 201) {
-                    notification.success({ "message": "Upload successful.", "description": "The content has been uploaded successfully." });
+                const catalogResponse = await catalogCtrl.createCatalog({ ...values, file_path });
+
+                if (catalogResponse.status === 201) {
+                    notification.success({
+                        message: "Upload successful.",
+                        description: "The content has been uploaded successfully."
+                    });
                     form.resetFields();
                     setFileList([]);
                 } else {
-                    message.error('Upload failed.');
+                    message.error('Failed to create catalog entry.');
                 }
             } else {
-                console.log('Upload failed:', response.json());
-                message.error('Upload failed.');
+                const errorData = await response.json();
+                console.error('Upload failed:', errorData);
+                message.error('Upload failed. Please try again.');
             }
         } catch (error) {
-            console.error('Error:', error);
-            message.error('An error occurred during the upload.');
+            console.error('Error during upload:', error);
+            message.error('An unexpected error occurred during the upload.');
         } finally {
             setUploading(false);
         }
@@ -89,11 +106,11 @@ export const CatalogCreate: React.FC = () => {
 
     return (
         <MainBlock title="Add Catalog" showBreadcrumb={true}>
-            <Tabs defaultActiveKey="1">
-                <Tabs.TabPane tab="Movie" key="1">
+            <Tabs defaultActiveKey="movie" onChange={onChangeTab}>
+                <Tabs.TabPane tab="Movie" key="movie">
                     <MoviesForm form={form} onCreate={onCreate} uploadProps={props} saving={uploading} />
                 </Tabs.TabPane>
-                <Tabs.TabPane tab="Tv Show" key="2">
+                <Tabs.TabPane tab="Tv Show" key="tvShow">
                     <TvShowForm form={form} onCreate={onCreate} uploadProps={props} saving={uploading} />
                 </Tabs.TabPane>
             </Tabs>
