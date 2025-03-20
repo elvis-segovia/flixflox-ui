@@ -29,7 +29,7 @@ export const CatalogCreate: React.FC = () => {
     const [form] = Form.useForm();
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [uploading, setUploading] = useState<boolean>(false);
-    const [activeTab, setActiveTab] = useState<string | null>(null);
+    const [activeTab, setActiveTab] = useState<string | null>('movie');
 
     const props: UploadProps = {
         name: 'file',
@@ -61,7 +61,7 @@ export const CatalogCreate: React.FC = () => {
         });
         formData.append('type', activeTab || "movie");
 
-        if (activeTab === 'tvShow') {
+        if (activeTab === 'tvshow') {
             formData.append('name', values.title.toLowerCase());
             formData.append('season', values.season);
             formData.append('episode', values.episode);
@@ -73,6 +73,7 @@ export const CatalogCreate: React.FC = () => {
 
             if (response.status === 200) {
                 const { file_path } = response.data;
+                values.type = activeTab || 'movie';
                 const catalogResponse = await catalogCtrl.createCatalog({ ...values, file_path });
 
                 if (catalogResponse.status === 201) {
@@ -108,10 +109,22 @@ export const CatalogCreate: React.FC = () => {
         <MainBlock title="Add Catalog" showBreadcrumb={true}>
             <Tabs defaultActiveKey="movie" onChange={onChangeTab}>
                 <Tabs.TabPane tab="Movie" key="movie">
-                    <MoviesForm form={form} onCreate={onCreate} uploadProps={props} saving={uploading} />
+                    <MoviesForm
+                        form={form}
+                        onCreate={onCreate}
+                        uploadProps={props}
+                        saving={uploading}
+                        disabled={activeTab !== 'movie'}
+                    />
                 </Tabs.TabPane>
-                <Tabs.TabPane tab="Tv Show" key="tvShow">
-                    <TvShowForm form={form} onCreate={onCreate} uploadProps={props} saving={uploading} />
+                <Tabs.TabPane tab="Tv Show" key="tvshow">
+                    <TvShowForm
+                        form={form}
+                        onCreate={onCreate}
+                        uploadProps={props}
+                        saving={uploading}
+                        disabled={activeTab !== 'tvshow'}
+                    />
                 </Tabs.TabPane>
             </Tabs>
         </MainBlock>

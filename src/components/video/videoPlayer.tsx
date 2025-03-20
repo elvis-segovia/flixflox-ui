@@ -33,7 +33,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, title, intro_star
 
             // Convert single source to array if needed
             const sources = Array.isArray(src) ? src : [src];
-            
+
             // Create playlist items
             const playlist = sources.map(source => ({
                 name: title,

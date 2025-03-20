@@ -1,17 +1,25 @@
-import { Button, Form, Input, InputNumber, Select, Space, TimePicker, Upload } from "antd"
-import { InboxOutlined } from "@ant-design/icons";
+import { Button, Card, Form, Input, InputNumber, Select, Space, TimePicker, Upload } from "antd"
+import { InboxOutlined, MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 
 interface TvShowFormProps {
     form: any;
     onCreate: (values: any) => void;
     saving: boolean;
+    disabled: boolean;
     uploadProps: any;
 }
 
 const { Dragger } = Upload;
 
-export const TvShowForm: React.FC<TvShowFormProps> = ({ form, onCreate, saving, uploadProps }) => {
+export const TvShowForm: React.FC<TvShowFormProps> = ({ form, onCreate, saving, disabled, uploadProps }) => {
+    const genres = [
+        'Action', 'Adventure', 'Animation', 'Biography', 'Comedy', 'Crime',
+        'Documentary', 'Drama', 'Family', 'Fantasy', 'Film-Noir', 'History',
+        'Horror', 'Music', 'Musical', 'Mystery', 'Romance', 'Sci-Fi',
+        'Sport', 'Thriller', 'War', 'Western'
+    ];
+
     return (
         <Form
             form={form}
@@ -23,8 +31,10 @@ export const TvShowForm: React.FC<TvShowFormProps> = ({ form, onCreate, saving, 
                 rating: 0.0,
                 season: 1,
                 episode: 1,
-                release_year: new Date().getFullYear()
+                release_year: new Date().getFullYear(),
+                show_details: [{}] // Initialize with one episode
             }}
+            disabled={disabled}
         >
             <Form.Item
                 name="title"
@@ -57,30 +67,7 @@ export const TvShowForm: React.FC<TvShowFormProps> = ({ form, onCreate, saving, 
                 <Select
                     mode="multiple"
                     placeholder="Select genre"
-                    options={[
-                        { label: 'Action', value: 'Action' },
-                        { label: 'Adventure', value: 'Adventure' },
-                        { label: 'Animation', value: 'Animation' },
-                        { label: 'Biography', value: 'Biography' },
-                        { label: 'Comedy', value: 'Comedy' },
-                        { label: 'Crime', value: 'Crime' },
-                        { label: 'Documentary', value: 'Documentary' },
-                        { label: 'Drama', value: 'Drama' },
-                        { label: 'Family', value: 'Family' },
-                        { label: 'Fantasy', value: 'Fantasy' },
-                        { label: 'Film-Noir', value: 'Film-Noir' },
-                        { label: 'History', value: 'History' },
-                        { label: 'Horror', value: 'Horror' },
-                        { label: 'Music', value: 'Music' },
-                        { label: 'Musical', value: 'Musical' },
-                        { label: 'Mystery', value: 'Mystery' },
-                        { label: 'Romance', value: 'Romance' },
-                        { label: 'Sci-Fi', value: 'Sci-Fi' },
-                        { label: 'Sport', value: 'Sport' },
-                        { label: 'Thriller', value: 'Thriller' },
-                        { label: 'War', value: 'War' },
-                        { label: 'Western', value: 'Western' }
-                    ]}
+                    options={genres.map((genre) => ({ label: genre, value: genre }))}
                     allowClear
                 />
             </Form.Item>
@@ -100,95 +87,132 @@ export const TvShowForm: React.FC<TvShowFormProps> = ({ form, onCreate, saving, 
                     placeholder="Enter rating (0.0 - 10.0)"
                 />
             </Form.Item>
-            <Form.Item
-                name="season"
-                label="Season"
-                rules={[
-                    { required: true, message: 'Please input the season number!' },
-                    { type: 'number', min: 1, message: 'Season must be at least 1' }
-                ]}
-            >
-                <InputNumber
-                    min={1}
-                    style={{ width: '100%' }}
-                    placeholder="Enter season number"
-                />
-            </Form.Item>
-            <Form.Item
-                name="episode"
-                label="Episode"
-                rules={[
-                    { required: true, message: 'Please input the episode number!' },
-                    { type: 'number', min: 1, message: 'Episode must be at least 1' }
-                ]}
-            >
-                <InputNumber
-                    min={1}
-                    style={{ width: '100%' }}
-                    placeholder="Enter episode number"
-                />
-            </Form.Item>
-            <Space.Compact>
-                <Form.Item
-                    name="intro_start_time"
-                    label="Intro Start Time"
-                    tooltip="Time when the intro starts in the movie"
-                >
-                    <TimePicker format="HH:mm:ss" showNow={false} />
-                </Form.Item>
-                <Form.Item
-                    name="intro_end_time"
-                    label="Intro End Time"
-                    dependencies={['intro_start_time']}
-                    rules={[
-                        ({ getFieldValue }) => ({
-                            validator(_, value) {
-                                if (!value || !getFieldValue('intro_start_time')) {
-                                    return Promise.resolve();
+            <Form.List name="show_details">
+                {(fields, { add, remove }) => (
+                    <Space direction="vertical" size="middle" style={{ display: 'flex', width: '100%' }}>
+                        {fields.map(({ key, name }) => (
+                            <Card
+                                key={key}
+                                title={`S${name + 1}E${name + 1}`}
+                                extra={
+                                    <MinusCircleOutlined
+                                        onClick={() => fields.length > 1 && remove(name)}
+                                        style={{ color: fields.length === 1 ? '#ccc' : '#ff4d4f' }}
+                                    />
                                 }
-                                if (value.isBefore(getFieldValue('intro_start_time'))) {
-                                    return Promise.reject(new Error('End time must be after start time!'));
-                                }
-                                return Promise.resolve();
-                            },
-                        }),
-                    ]}
-                >
-                    <TimePicker format="HH:mm:ss" showNow={false} />
-                </Form.Item>
-            </Space.Compact>
-            <Form.Item name="cast" label="Cast">
-                <Select
-                    mode="tags"
-                    placeholder="Select cast"
-                    allowClear
-                />
-            </Form.Item>
-            <Form.Item
-                name="description"
-                label="Description"
-                rules={[{ max: 500, message: 'Description cannot exceed 500 characters' }]}
-            >
-                <Input.TextArea
-                    rows={4}
-                    placeholder="Enter TV show description"
-                    showCount
-                    maxLength={500}
-                />
-            </Form.Item>
-            <Form.Item name="file_path" label="Files" rules={[{ required: true, message: 'Please input the file path!' }]}>
-                <Dragger {...uploadProps}>
-                    <p className="ant-upload-drag-icon">
-                        <InboxOutlined />
-                    </p>
-                    <p className="ant-upload-text">Click or drag file to this area to upload</p>
-                </Dragger>
-            </Form.Item>
+                            >
+                                <Space direction="horizontal" style={{ width: '100%', gap: '16px' }}>
+                                    <Form.Item
+                                        name={[name, "season"]}
+                                        label="Season"
+                                        rules={[
+                                            { required: true, message: 'Season required!' },
+                                            { type: 'number', min: 1 }
+                                        ]}
+                                    >
+                                        <InputNumber min={1} style={{ width: '100%' }} />
+                                    </Form.Item>
+                                    <Form.Item
+                                        name={[name, "episode"]}
+                                        label="Episode"
+                                        rules={[
+                                            { required: true, message: 'Episode required!' },
+                                            { type: 'number', min: 1 }
+                                        ]}
+                                    >
+                                        <InputNumber min={1} style={{ width: '100%' }} />
+                                    </Form.Item>
+                                </Space>
+                                <Space.Compact>
+                                    <Form.Item
+                                        name={[name, "intro_start_time"]}
+                                        label="Intro Start Time"
+                                        tooltip="Time when the intro starts in the movie"
+                                    >
+                                        <TimePicker format="HH:mm:ss" showNow={false} />
+                                    </Form.Item>
+                                    <Form.Item
+                                        name={[name, "intro_end_time"]}
+                                        label="Intro End Time"
+                                        dependencies={["intro_start_time"]}
+                                        rules={[
+                                            ({ getFieldValue }) => ({
+                                                validator(_, value) {
+                                                    if (!value || !getFieldValue("intro_start_time")) {
+                                                        return Promise.resolve();
+                                                    }
+                                                    if (value.isBefore(getFieldValue("intro_start_time"))) {
+                                                        return Promise.reject(new Error("End time must be after start time!"));
+                                                    }
+                                                    return Promise.resolve();
+                                                },
+                                            }),
+                                        ]}
+                                    >
+                                        <TimePicker format="HH:mm:ss" showNow={false} />
+                                    </Form.Item>
+                                </Space.Compact>
+                                <Form.Item name={[name, "cast"]} label="Cast">
+                                    <Select
+                                        mode="tags"
+                                        placeholder="Select cast"
+                                        allowClear
+                                    />
+                                </Form.Item>
+                                <Form.Item
+                                    name={[name, "description"]}
+                                    label="Description"
+                                    rules={[{ max: 500, message: "Description cannot exceed 500 characters" }]}
+                                >
+                                    <Input.TextArea
+                                        rows={4}
+                                        placeholder="Enter TV show description"
+                                        showCount
+                                        maxLength={500}
+                                    />
+                                </Form.Item>
+                                <Form.Item name={[name, "file_path"]} label="Files" rules={[{ required: true, message: 'Please input the file path!' }]}>
+                                    <Dragger
+                                        {...uploadProps}
+                                        showUploadList={{
+                                            showRemoveIcon: true,
+                                            showPreviewIcon: true,
+                                        }}
+                                        progress={{
+                                            strokeColor: {
+                                                '0%': '#108ee9',
+                                                '100%': '#87d068',
+                                            },
+                                            strokeWidth: 3,
+                                            format: (percent) => `${parseFloat(percent?.toFixed(2) || '0')}%`,
+                                        }}
+                                    >
+                                        <p className="ant-upload-drag-icon">
+                                            <InboxOutlined />
+                                        </p>
+                                        <p className="ant-upload-text">Click or drag file to this area to upload</p>
+                                    </Dragger>
+                                </Form.Item>
+                            </Card>
+                        ))}
+                        <Form.Item>
+                            <Button
+                                type="dashed"
+                                onClick={() => add()}
+                                block
+                                icon={<PlusOutlined />}
+                            >
+                                Add Episode
+                            </Button>
+                        </Form.Item>
+                    </Space>
+                )}
+            </Form.List>
             <Form.Item style={{ textAlign: 'center' }}>
                 <Button type="primary" htmlType="submit" loading={saving}>
                     {saving ? 'Saving...' : 'Save'}
                 </Button>
-                <Link to="/movies/catalog" style={{ marginLeft: 8 }}>
+                <Link to={`${import.meta.env.VITE_STREAMAPI_PREFIX_ADMIN}/movies`} style={{ marginLeft: 8 }}>
                     <Button>
                         Cancel
                     </Button>

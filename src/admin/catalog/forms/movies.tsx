@@ -6,6 +6,7 @@ interface MovieFormProps {
     form: any;
     onCreate: (values: any) => void;
     saving: boolean;
+    disabled: boolean;
     uploadProps: any;
 }
 const { Dragger } = Upload;
@@ -24,16 +25,34 @@ const genreOptions = [
     'War', 'Western'
 ].map(genre => ({ label: genre, value: genre }));
 
-export const MoviesForm: React.FC<MovieFormProps> = ({ form, onCreate, saving, uploadProps }) => {
+export const MoviesForm: React.FC<MovieFormProps> = ({ form, onCreate, saving, disabled, uploadProps }) => {
     return (
-        <Form form={form} layout="vertical" name="movieForm" onFinish={(values) => onCreate(values)} initialValues={{ type: 'movie', rating: '0.0' }}>
-            <Form.Item name="title" label="Title" rules={[{ required: true, message: 'Please input the title!' }]}>
+        <Form
+            form={form}
+            layout="vertical"
+            name="movieForm"
+            onFinish={(values) => onCreate(values)} initialValues={{ type: 'movie', rating: '0.0' }}
+            disabled={disabled}
+        >
+            <Form.Item
+                name="title"
+                label="Title"
+                rules={[{ required: true, message: 'Please input the title!' }]}
+            >
                 <Input />
             </Form.Item>
-            <Form.Item name="type" label="Type" hidden>
+            <Form.Item
+                name="type"
+                label="Type"
+                hidden
+            >
                 <Input />
             </Form.Item>
-            <Form.Item name="release_year" label="Release Year" rules={[{ required: true, message: 'Please input the release year!' }]}>
+            <Form.Item
+                name="release_year"
+                label="Release Year"
+                rules={[{ required: true, message: 'Please input the release year!' }]}
+            >
                 <Select
                     placeholder="Select a year"
                     showSearch
@@ -42,7 +61,11 @@ export const MoviesForm: React.FC<MovieFormProps> = ({ form, onCreate, saving, u
                     allowClear
                 />
             </Form.Item>
-            <Form.Item name="genre" label="Genre" rules={[{ required: true, message: 'Please input the genre!' }]}>
+            <Form.Item
+                name="genre"
+                label="Genre"
+                rules={[{ required: true, message: 'Please input the genre!' }]}
+            >
                 <Select
                     mode="multiple"
                     placeholder="Select genre"
@@ -50,7 +73,11 @@ export const MoviesForm: React.FC<MovieFormProps> = ({ form, onCreate, saving, u
                     allowClear
                 />
             </Form.Item>
-            <Form.Item name="rating" label="Rating" rules={[{ required: true, message: 'Please input the rating!' }]}>
+            <Form.Item
+                name="rating"
+                label="Rating"
+                rules={[{ required: true, message: 'Please input the rating!' }]}
+            >
                 <InputNumber
                     min={0}
                     max={10}
@@ -85,10 +112,16 @@ export const MoviesForm: React.FC<MovieFormProps> = ({ form, onCreate, saving, u
                         }),
                     ]}
                 >
-                    <TimePicker format="HH:mm:ss" showNow={false} />
+                    <TimePicker
+                        format="HH:mm:ss"
+                        showNow={false}
+                    />
                 </Form.Item>
             </Space.Compact>
-            <Form.Item name="cast" label="Cast">
+            <Form.Item
+                name="cast"
+                label="Cast"
+            >
                 <Select
                     mode="tags"
                     placeholder="Select cast"
@@ -107,7 +140,11 @@ export const MoviesForm: React.FC<MovieFormProps> = ({ form, onCreate, saving, u
                     maxLength={500}
                 />
             </Form.Item>
-            <Form.Item name="file_path" label="File" rules={[{ required: true, message: 'Please upload a file!' }]}>
+            <Form.Item
+                name="file_path"
+                label="File"
+                rules={[{ required: true, message: 'Please upload a file!' }]}
+            >
                 <Dragger {...uploadProps} maxCount={1} accept="video/*">
                     <p className="ant-upload-drag-icon">
                         <InboxOutlined />
@@ -120,7 +157,7 @@ export const MoviesForm: React.FC<MovieFormProps> = ({ form, onCreate, saving, u
                 <Button type="primary" htmlType="submit" loading={saving}>
                     {saving ? 'Saving...' : 'Save'}
                 </Button>
-                <Link to="/movies/catalog" style={{ marginLeft: 8 }}>
+                <Link to={`${import.meta.env.VITE_STREAMAPI_PREFIX_ADMIN}/movies`} style={{ marginLeft: 8 }}>
                     <Button>
                         Cancel
                     </Button>

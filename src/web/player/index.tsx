@@ -41,7 +41,15 @@ export const Player: React.FC = () => {
                     }}
                 />
             ) : (
-                video ? <VideoPlayer src={`${import.meta.env.VITE_STREAMAPI_URL}${import.meta.env.VITE_STREAMAPI_PREFIX}/videos/stream/${video.file_path}`} title={video.title} intro_start_time={video.intro_start_time} intro_end_time={video.intro_end_time} /> : <div>Video not available</div>
+                video ?
+                    <VideoPlayer
+                        src={`${import.meta.env.VITE_STREAMAPI_URL}${import.meta.env.VITE_STREAMAPI_PREFIX}/videos/stream/${video.file_path}`}
+                        title={video.title}
+                        intro_start_time={video.intro_start_time}
+                        intro_end_time={video.intro_end_time}
+                    />
+                    :
+                    <div>Video not available</div>
             )}
         </div>
     )
