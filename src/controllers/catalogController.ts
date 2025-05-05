@@ -23,6 +23,10 @@ export class CatalogController {
         return await this.api.get(`/videos/${id}/details`);
     }
 
+    async getEpisode(id: string, season: any, episode: any): Promise<any> {
+        return await this.api.get(`/videos/${id}/season/${season}/episode/${episode}`);
+    }
+
     async createCatalog(data: any): Promise<any> {
         return await this.api.post(`/videos`, data);
     }

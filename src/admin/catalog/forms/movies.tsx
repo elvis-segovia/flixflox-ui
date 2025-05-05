@@ -1,5 +1,5 @@
 import { Button, Form, Input, InputNumber, Select, Space, TimePicker, Upload } from "antd"
-import { InboxOutlined } from "@ant-design/icons";
+import { InboxOutlined, UploadOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 
 interface MovieFormProps {
@@ -11,7 +11,7 @@ interface MovieFormProps {
 }
 const { Dragger } = Upload;
 
-const currentYear = new Date().getFullYear();
+const currentYear = new Date().getFullYear() + 1;
 const yearOptions = Array.from({ length: currentYear - 1980 }, (_v, k) => ({
     label: k + 1980,
     value: k + 1980
@@ -26,12 +26,25 @@ const genreOptions = [
 ].map(genre => ({ label: genre, value: genre }));
 
 export const MoviesForm: React.FC<MovieFormProps> = ({ form, onCreate, saving, disabled, uploadProps }) => {
+
+    const normFile = (e: any) => {
+        if (Array.isArray(e)) {
+            return e;
+        }
+        return e?.file;
+    };
+
     return (
         <Form
             form={form}
             layout="vertical"
             name="movieForm"
-            onFinish={(values) => onCreate(values)} initialValues={{ type: 'movie', rating: '0.0' }}
+            onFinish={(values) => onCreate(values)}
+            initialValues={{
+                type: 'movie',
+                rating: 5,
+                release_year: new Date().getFullYear()
+            }}
             disabled={disabled}
         >
             <Form.Item
@@ -142,16 +155,22 @@ export const MoviesForm: React.FC<MovieFormProps> = ({ form, onCreate, saving, d
             </Form.Item>
             <Form.Item
                 name="file_path"
-                label="File"
-                rules={[{ required: true, message: 'Please upload a file!' }]}
+                label="Files"
+                valuePropName="file"
+                rules={[{ required: true, message: 'Please input the file path!' }]}
+                getValueFromEvent={normFile}
             >
-                <Dragger {...uploadProps} maxCount={1} accept="video/*">
-                    <p className="ant-upload-drag-icon">
-                        <InboxOutlined />
-                    </p>
-                    <p className="ant-upload-text">Click or drag video file to this area to upload</p>
-                    <p className="ant-upload-hint">Supported formats: MP4, AVI, MKV</p>
-                </Dragger>
+                <Upload
+                    listType="picture"
+                    accept=".mp4, .avi, .flv, .mkv, .mov, .wmv, .webm"
+                    beforeUpload={() => {
+                        return false;
+                    }}
+                >
+                    <Button type="primary" icon={<UploadOutlined />}>
+                        Upload
+                    </Button>
+                </Upload>
             </Form.Item>
             <Form.Item style={{ textAlign: 'center' }}>
                 <Button type="primary" htmlType="submit" loading={saving}>

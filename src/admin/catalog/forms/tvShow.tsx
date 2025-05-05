@@ -1,5 +1,5 @@
 import { Button, Card, Form, Input, InputNumber, Select, Space, TimePicker, Upload } from "antd"
-import { InboxOutlined, MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import { MinusCircleOutlined, PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 
 interface TvShowFormProps {
@@ -10,15 +10,22 @@ interface TvShowFormProps {
     uploadProps: any;
 }
 
-const { Dragger } = Upload;
 
-export const TvShowForm: React.FC<TvShowFormProps> = ({ form, onCreate, saving, disabled, uploadProps }) => {
+export const TvShowForm: React.FC<TvShowFormProps> = ({ form, onCreate, saving, disabled }) => {
     const genres = [
         'Action', 'Adventure', 'Animation', 'Biography', 'Comedy', 'Crime',
         'Documentary', 'Drama', 'Family', 'Fantasy', 'Film-Noir', 'History',
         'Horror', 'Music', 'Musical', 'Mystery', 'Romance', 'Sci-Fi',
         'Sport', 'Thriller', 'War', 'Western'
     ];
+
+    const normFile = (e: any) => {
+        if (Array.isArray(e)) {
+            return e;
+        }
+        return e?.file;
+    };
+
 
     return (
         <Form
@@ -28,11 +35,12 @@ export const TvShowForm: React.FC<TvShowFormProps> = ({ form, onCreate, saving, 
             onFinish={onCreate}
             initialValues={{
                 type: 'tvshow',
-                rating: 0.0,
-                season: 1,
-                episode: 1,
+                rating: 5,
                 release_year: new Date().getFullYear(),
-                show_details: [{}] // Initialize with one episode
+                show_details: [{
+                    season: 1,
+                    episode: 1
+                }] // Initialize with one episode
             }}
             disabled={disabled}
         >
@@ -56,7 +64,7 @@ export const TvShowForm: React.FC<TvShowFormProps> = ({ form, onCreate, saving, 
                     showSearch
                     optionFilterProp="label"
                     options={
-                        Array.from({ length: new Date().getFullYear() - 1980 }, (_v, k) => k + 1980)
+                        Array.from({ length: (new Date().getFullYear() + 1) - 1980 }, (_v, k) => k + 1980)
                             .map((year) => ({ label: year, value: year }))
                             .reverse()
                     }
@@ -93,7 +101,7 @@ export const TvShowForm: React.FC<TvShowFormProps> = ({ form, onCreate, saving, 
                         {fields.map(({ key, name }) => (
                             <Card
                                 key={key}
-                                title={`S${name + 1}E${name + 1}`}
+                                title={`S${form.getFieldValue(['show_details', name, 'season']) || ''}E${form.getFieldValue(['show_details', name, 'episode']) || ''}`}
                                 extra={
                                     <MinusCircleOutlined
                                         onClick={() => fields.length > 1 && remove(name)}
@@ -101,6 +109,13 @@ export const TvShowForm: React.FC<TvShowFormProps> = ({ form, onCreate, saving, 
                                     />
                                 }
                             >
+                                <Form.Item
+                                    name={[name, "title"]}
+                                    label="Title"
+                                    rules={[{ required: true, message: 'Please input the title!' }]}
+                                >
+                                    <Input placeholder="Episode title" />
+                                </Form.Item>
                                 <Space direction="horizontal" style={{ width: '100%', gap: '16px' }}>
                                     <Form.Item
                                         name={[name, "season"]}
@@ -171,34 +186,33 @@ export const TvShowForm: React.FC<TvShowFormProps> = ({ form, onCreate, saving, 
                                         maxLength={500}
                                     />
                                 </Form.Item>
-                                <Form.Item name={[name, "file_path"]} label="Files" rules={[{ required: true, message: 'Please input the file path!' }]}>
-                                    <Dragger
-                                        {...uploadProps}
-                                        showUploadList={{
-                                            showRemoveIcon: true,
-                                            showPreviewIcon: true,
-                                        }}
-                                        progress={{
-                                            strokeColor: {
-                                                '0%': '#108ee9',
-                                                '100%': '#87d068',
-                                            },
-                                            strokeWidth: 3,
-                                            format: (percent) => `${parseFloat(percent?.toFixed(2) || '0')}%`,
+                                <Form.Item name={[name, "file_path"]} label="Files" valuePropName="file" rules={[{ required: true, message: 'Please input the file path!' }]} getValueFromEvent={normFile}>
+                                    <Upload
+                                        listType="picture"
+                                        accept=".mp4, .avi, .flv, .mkv, .mov, .wmv, .webm"
+                                        beforeUpload={() => {
+                                            return false;
                                         }}
                                     >
-                                        <p className="ant-upload-drag-icon">
-                                            <InboxOutlined />
-                                        </p>
-                                        <p className="ant-upload-text">Click or drag file to this area to upload</p>
-                                    </Dragger>
+                                        <Button type="primary" icon={<UploadOutlined />}>
+                                            Upload
+                                        </Button>
+                                    </Upload>
                                 </Form.Item>
                             </Card>
                         ))}
                         <Form.Item>
                             <Button
                                 type="dashed"
-                                onClick={() => add()}
+                                onClick={() => {
+                                    const lastIndex = fields.length - 1;
+                                    const lastSeason = form.getFieldValue(['show_details', lastIndex, 'season']) || 1;
+                                    const lastEpisode = form.getFieldValue(['show_details', lastIndex, 'episode']) || 0;
+                                    add({
+                                        season: lastSeason,
+                                        episode: lastEpisode + 1
+                                    });
+                                }}
                                 block
                                 icon={<PlusOutlined />}
                             >

@@ -13,6 +13,7 @@ interface CatalogValues {
     rating: number;
     description: string | "";
     cast: string[] | [];
+    show_details: [],
     season: string;
     episode: string;
     intro_start_time: string;
@@ -49,6 +50,59 @@ export const CatalogCreate: React.FC = () => {
         setActiveTab(key);
     }
 
+    const handleUpload = async (values: CatalogValues) => {
+        const formData = new FormData();
+        formData.append('type', activeTab || "movie");
+        formData.append('values', JSON.stringify(values))
+        if (activeTab == 'tvshow') {
+            if (values.show_details.length === 0) {
+                message.error('Please select at least one file before uploading.');
+                return;
+            }
+            values.show_details.forEach((element: any) => {
+                formData.append(`file`, element.file_path as any)
+                formData.append(`metadata`, JSON.stringify({
+                    name: values.title.toLowerCase(),
+                    season: element.season,
+                    episode: element.episode
+                }));
+            });
+        } else {
+            formData.append(`file`, values.file_path as any)
+        }
+
+        try {
+            setUploading(true);
+            const response = await catalogCtrl.uploadFile(formData);
+
+            if (response.status === 201) {
+                // const { file_path } = response.data;
+                // values.type = activeTab || 'movie';
+                // const catalogResponse = await catalogCtrl.createCatalog({ ...values, file_path });
+
+                // if (catalogResponse.status === 201) {
+                notification.success({
+                    message: "Upload successful.",
+                    description: "The content has been uploaded successfully."
+                });
+                //     form.resetFields();
+                //     setFileList([]);
+                // } else {
+                //     message.error('Failed to create catalog entry.');
+                // }
+            } else {
+                const errorData = await response.json();
+                console.error('Upload failed:', errorData);
+                message.error('Upload failed. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error during upload:', error);
+            message.error('An unexpected error occurred during the upload.');
+        } finally {
+            setUploading(false);
+        }
+    }
+
     const handleContent = async (values: CatalogValues) => {
         if (fileList.length === 0) {
             message.error('Please select at least one file before uploading.');
@@ -57,6 +111,7 @@ export const CatalogCreate: React.FC = () => {
 
         const formData = new FormData();
         fileList.forEach((file) => {
+            console.log(file)
             formData.append('file', file as any);
         });
         formData.append('type', activeTab || "movie");
@@ -71,7 +126,7 @@ export const CatalogCreate: React.FC = () => {
             setUploading(true);
             const response = await catalogCtrl.uploadFile(formData);
 
-            if (response.status === 200) {
+            if (response.status === 202) {
                 const { file_path } = response.data;
                 values.type = activeTab || 'movie';
                 const catalogResponse = await catalogCtrl.createCatalog({ ...values, file_path });
@@ -102,29 +157,33 @@ export const CatalogCreate: React.FC = () => {
     const onCreate = async (values: CatalogValues) => {
         values.intro_start_time = dayjs(values.intro_start_time).format('HH:mm:ss');
         values.intro_end_time = dayjs(values.intro_end_time).format('HH:mm:ss');
-        await handleContent(values);
+        await handleUpload(values);
     }
 
     return (
         <MainBlock title="Add Catalog" showBreadcrumb={true}>
             <Tabs defaultActiveKey="movie" onChange={onChangeTab}>
                 <Tabs.TabPane tab="Movie" key="movie">
-                    <MoviesForm
-                        form={form}
-                        onCreate={onCreate}
-                        uploadProps={props}
-                        saving={uploading}
-                        disabled={activeTab !== 'movie'}
-                    />
+                    {activeTab === 'movie' &&
+                        <MoviesForm
+                            form={form}
+                            onCreate={onCreate}
+                            uploadProps={props}
+                            saving={uploading}
+                            disabled={activeTab !== 'movie'}
+                        />
+                    }
                 </Tabs.TabPane>
                 <Tabs.TabPane tab="Tv Show" key="tvshow">
-                    <TvShowForm
-                        form={form}
-                        onCreate={onCreate}
-                        uploadProps={props}
-                        saving={uploading}
-                        disabled={activeTab !== 'tvshow'}
-                    />
+                    {activeTab === 'tvshow' &&
+                        <TvShowForm
+                            form={form}
+                            onCreate={onCreate}
+                            uploadProps={props}
+                            saving={uploading}
+                            disabled={activeTab !== 'tvshow'}
+                        />
+                    }
                 </Tabs.TabPane>
             </Tabs>
         </MainBlock>
