@@ -4,7 +4,8 @@ import 'videojs-playlist';
 import React, { useEffect, useRef } from "react";
 
 interface VideoPlayerProps {
-    src: string | string[];
+    id: string;
+    src: string | any[];
     title: string;
     intro_start_time: string;
     intro_end_time: string;
@@ -16,12 +17,13 @@ const timeToSeconds = (timeString: string) => {
 }
 
 
-export const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, title, intro_start_time, intro_end_time }) => {
+export const VideoPlayer: React.FC<VideoPlayerProps> = ({ id = "0", src, title, intro_start_time, intro_end_time }) => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const playerRef = useRef<any>(null);  // Changed from videojs.Player
     const skipButtonRef = useRef<HTMLButtonElement | null>(null);
     const intro_start_time_seconds = timeToSeconds(intro_start_time);
     const intro_end_time_seconds = timeToSeconds(intro_end_time);
+
 
     useEffect(() => {
         if (videoRef.current) {
@@ -30,15 +32,18 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, title, intro_star
                 responsive: true,
                 fluid: true,
             });
-
             // Convert single source to array if needed
-            const sources = Array.isArray(src) ? src : [src];
-
+            const sources = Array.isArray(src) ? src : [{
+                id: 0,
+                src: src
+            }];
+            console.log(src)
             // Create playlist items
             const playlist = sources.map(source => ({
+                id: source.id,
                 name: title,
                 sources: [{
-                    src: source,
+                    src: source.src,
                     type: 'application/x-mpegURL',
                 }],
                 poster: "https://peach.blender.org/wp-content/uploads/title_anouncement.jpg",
@@ -46,7 +51,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, title, intro_star
 
             // Initialize playlist
             playerRef.current.playlist(playlist);
-
+            playerRef.current.playlist.currentItem(sources.findIndex(x => x.id === parseInt(id)));
             playerRef.current.on('timeupdate', function () {
                 if (playerRef.current.currentTime() >= intro_start_time_seconds && playerRef.current.currentTime() <= intro_end_time_seconds) {
                     if (!skipButtonRef.current) {
@@ -88,6 +93,10 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, title, intro_star
                     skipButtonRef.current.style.display = 'none';
                 }
             });
+
+            playerRef.current.on('ended', function(){
+                playerRef.current.playlist.next()
+            })
         }
 
         return () => {

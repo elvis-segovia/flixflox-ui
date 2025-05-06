@@ -19,12 +19,11 @@ export class CatalogController {
     }
 
     async getCatalog(id: string): Promise<any> {
-        console.log(id);
         return await this.api.get(`/videos/${id}/details`);
     }
 
-    async getEpisode(id: string, season: any, episode: any): Promise<any> {
-        return await this.api.get(`/videos/${id}/season/${season}/episode/${episode}`);
+    async getEpisode(id: string, season: any): Promise<any> {
+        return await this.api.get(`/videos/${id}/season/${season}`);
     }
 
     async createCatalog(data: any): Promise<any> {

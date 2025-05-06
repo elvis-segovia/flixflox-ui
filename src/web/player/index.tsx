@@ -11,8 +11,11 @@ interface Video {
     title: string;
     image?: string;
     file_path: string;
+    uuid?: string;
+    release_year?: number;
     intro_start_time?: number;
     intro_end_time?: number;
+    season_number?: number;
     seasons?: Array<{
         season_number: number;
         episodes: Array<{
@@ -39,6 +42,7 @@ const EpisodeCard: React.FC<{ id: any; season: any; episode: any, video: Video }
 export const Player: React.FC = () => {
     let { id, season, episode } = useParams();
     const [video, setVideo] = useState<Video | null>(null);
+    const [sources, setSources] = useState<any>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -46,10 +50,20 @@ export const Player: React.FC = () => {
         const fetchData = async () => {
             if (id) {
                 try {
-                    const res = season && episode
-                        ? await catalogCtrl.getEpisode(id, season, episode)
-                        : await catalogCtrl.getCatalog(id);
-                    setVideo(res.data);
+                    if (season) {
+                        const res = await catalogCtrl.getEpisode(id, season)
+                        setSources(res.data.map((episode: any) => {
+                            return {
+                                "id": episode.episode,
+                                "src": `${import.meta.env.VITE_STREAMAPI_URL}${import.meta.env.VITE_STREAMAPI_PREFIX}/videos/stream/${episode.file_path}`
+                            }
+                        }
+                        ))
+                        console.log(res.data)
+                    } else {
+                        const res = await catalogCtrl.getCatalog(id);
+                        setVideo(res.data);
+                    }
                 } catch (error) {
                     console.error("Error fetching catalog:", error);
                     setError("Failed to load video. Please try again later.");
@@ -60,7 +74,7 @@ export const Player: React.FC = () => {
             }
         };
         fetchData();
-    }, [id, season, episode]);
+    }, [id, season]);
 
     if (loading) {
         return (
@@ -87,7 +101,7 @@ export const Player: React.FC = () => {
 
     return (
         <>
-            {video.type === 'tvshow' ? (
+            {video.type === 'tvshow' && sources.length === 0 ? (
                 <MainBlock>
                     <Tabs
                         defaultActiveKey="1"
@@ -107,7 +121,8 @@ export const Player: React.FC = () => {
             ) : (
                 <div className="player-container">
                     <VideoPlayer
-                        src={`${import.meta.env.VITE_STREAMAPI_URL}${import.meta.env.VITE_STREAMAPI_PREFIX}/videos/stream/${video.file_path}`}
+                        id={episode || ""}
+                        src={sources.length > 0 ? sources : `${import.meta.env.VITE_STREAMAPI_URL}${import.meta.env.VITE_STREAMAPI_PREFIX}/videos/stream/${video.file_path}`}
                         title={video.title}
                         intro_start_time={video.intro_start_time?.toString() || ""}
                         intro_end_time={video.intro_end_time?.toString() || ""}
