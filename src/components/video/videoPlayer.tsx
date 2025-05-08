@@ -9,6 +9,7 @@ interface VideoPlayerProps {
     title: string;
     intro_start_time: string;
     intro_end_time: string;
+    next_episode_offset?: string;
 }
 
 const timeToSeconds = (timeString: string) => {
@@ -17,12 +18,12 @@ const timeToSeconds = (timeString: string) => {
 }
 
 
-export const VideoPlayer: React.FC<VideoPlayerProps> = ({ id = "0", src, title, intro_start_time, intro_end_time }) => {
+export const VideoPlayer: React.FC<VideoPlayerProps> = ({ id = "0", src, title, intro_start_time, intro_end_time, next_episode_offset = import.meta.env.VITE_DEFAULT_NEXT_EPISODE_OFFSET }) => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const playerRef = useRef<any>(null);  // Changed from videojs.Player
     const customButtonRef = useRef<HTMLButtonElement | null>(null);
-    const intro_start_time_seconds = timeToSeconds(intro_start_time);
-    const intro_end_time_seconds = timeToSeconds(intro_end_time);
+    const introStartTimeSeconds = timeToSeconds(intro_start_time);
+    const introEndTimeSeconds = timeToSeconds(intro_end_time);
 
     useEffect(() => {
         if (videoRef.current) {
@@ -61,14 +62,14 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ id = "0", src, title, 
             };
 
             playerRef.current.on('timeupdate', function () {
-                const currentTime = playerRef.current.currentTime();
                 const duration = playerRef.current.duration();
-
+                const currentTime = playerRef.current.currentTime();
+                const nextEpisodeDelay = Math.floor(playerRef.current.duration()) - parseInt(next_episode_offset);
                 // Handle Skip Intro button
-                if (currentTime >= intro_start_time_seconds && currentTime <= intro_end_time_seconds) {
+                if (currentTime >= introStartTimeSeconds && currentTime <= introEndTimeSeconds) {
                     if (!customButtonRef.current) {
                         const skipButton = createButton('Skip Intro', () => {
-                            playerRef.current.currentTime(intro_end_time_seconds);
+                            playerRef.current.currentTime(introEndTimeSeconds);
                         });
                         setTimeout(() => {
                             skipButton.style.display = 'none';
@@ -79,7 +80,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ id = "0", src, title, 
                 }
 
                 // Handle Next Episode button
-                if (Math.floor(currentTime) === Math.floor(duration - 10)) {
+                if (Math.floor(currentTime) === nextEpisodeDelay) {
                     if (!customButtonRef.current) {
                         const nextButton = createButton('Next Episode', () => {
                             playerRef.current.el().removeChild(customButtonRef.current);
@@ -94,7 +95,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ id = "0", src, title, 
                 }
 
                 // Remove button when intro is skipped or video ends
-                if (currentTime >= intro_end_time_seconds || currentTime >= duration) {
+                if (currentTime >= introEndTimeSeconds || currentTime >= duration) {
                     if (customButtonRef.current) {
                         playerRef.current.el().removeChild(customButtonRef.current);
                         customButtonRef.current = null;
@@ -104,8 +105,8 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ id = "0", src, title, 
 
             playerRef.current.on('useractive', function () {
                 if (customButtonRef?.current &&
-                    intro_start_time_seconds <= playerRef.current.currentTime() &&
-                    intro_end_time_seconds >= playerRef.current.currentTime() &&
+                    introStartTimeSeconds <= playerRef.current.currentTime() &&
+                    introEndTimeSeconds >= playerRef.current.currentTime() &&
                     customButtonRef.current.style.display === 'none'
                 ) {
                     customButtonRef.current.style.display = 'block';
@@ -114,8 +115,8 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ id = "0", src, title, 
 
             playerRef.current.on('userinactive', function () {
                 if (customButtonRef?.current &&
-                    intro_start_time_seconds <= playerRef.current.currentTime() &&
-                    intro_end_time_seconds >= playerRef.current.currentTime() &&
+                    introStartTimeSeconds <= playerRef.current.currentTime() &&
+                    introEndTimeSeconds >= playerRef.current.currentTime() &&
                     customButtonRef.current.style.display === 'block'
                 ) {
                     customButtonRef.current.style.display = 'none';
