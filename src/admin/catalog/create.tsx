@@ -3,7 +3,6 @@ import { MainBlock } from "../../components";
 import { Form, GetProp, message, notification, Tabs, UploadFile, UploadProps } from "antd";
 import { MoviesForm, TvShowForm } from "./forms";
 import { CatalogController } from "../../controllers";
-import dayjs from "dayjs";
 
 interface CatalogValues {
     title: string;
@@ -53,7 +52,7 @@ export const CatalogCreate: React.FC = () => {
     const handleUpload = async (values: CatalogValues) => {
         const formData = new FormData();
         formData.append('type', activeTab || "movie");
-        formData.append('values', JSON.stringify(values))
+
         if (activeTab == 'tvshow') {
             if (values.show_details.length === 0) {
                 message.error('Please select at least one file before uploading.');
@@ -67,7 +66,26 @@ export const CatalogCreate: React.FC = () => {
                     episode: element.episode
                 }));
             });
+
+            formData.append('values', JSON.stringify({
+                title: values.title,
+                type: activeTab,
+                release_year: values.release_year,
+                genre: values.genre,
+                rating: values.rating,
+                show_details: values.show_details.map((value: any) => {
+                    return {
+                        season: value.season,
+                        title: value.title,
+                        episode: value.episode,
+                        intro_start_time: value.intro_start_time.format("HH:mm:ss"),
+                        intro_end_time: value.intro_end_time.format("HH:mm:ss"),
+                        next_episode_time: value.next_episode_time.format("HH:mm:ss")
+                    }
+                })
+            }))
         } else {
+            formData.append('values', JSON.stringify(values))
             formData.append(`file`, values.file_path as any)
         }
 
@@ -103,60 +121,7 @@ export const CatalogCreate: React.FC = () => {
         }
     }
 
-    const handleContent = async (values: CatalogValues) => {
-        if (fileList.length === 0) {
-            message.error('Please select at least one file before uploading.');
-            return;
-        }
-
-        const formData = new FormData();
-        fileList.forEach((file) => {
-            console.log(file)
-            formData.append('file', file as any);
-        });
-        formData.append('type', activeTab || "movie");
-
-        if (activeTab === 'tvshow') {
-            formData.append('name', values.title.toLowerCase());
-            formData.append('season', values.season);
-            formData.append('episode', values.episode);
-        }
-
-        try {
-            setUploading(true);
-            const response = await catalogCtrl.uploadFile(formData);
-
-            if (response.status === 202) {
-                const { file_path } = response.data;
-                values.type = activeTab || 'movie';
-                const catalogResponse = await catalogCtrl.createCatalog({ ...values, file_path });
-
-                if (catalogResponse.status === 201) {
-                    notification.success({
-                        message: "Upload successful.",
-                        description: "The content has been uploaded successfully."
-                    });
-                    form.resetFields();
-                    setFileList([]);
-                } else {
-                    message.error('Failed to create catalog entry.');
-                }
-            } else {
-                const errorData = await response.json();
-                console.error('Upload failed:', errorData);
-                message.error('Upload failed. Please try again.');
-            }
-        } catch (error) {
-            console.error('Error during upload:', error);
-            message.error('An unexpected error occurred during the upload.');
-        } finally {
-            setUploading(false);
-        }
-    };
-
     const onCreate = async (values: CatalogValues) => {
-        values.intro_start_time = dayjs(values.intro_start_time).format('HH:mm:ss');
-        values.intro_end_time = dayjs(values.intro_end_time).format('HH:mm:ss');
         await handleUpload(values);
     }
 

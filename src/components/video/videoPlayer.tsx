@@ -7,9 +7,6 @@ interface VideoPlayerProps {
     id: string;
     src: string | any[];
     title: string;
-    intro_start_time: string;
-    intro_end_time: string;
-    next_episode_offset?: string;
 }
 
 const timeToSeconds = (timeString: string) => {
@@ -18,12 +15,12 @@ const timeToSeconds = (timeString: string) => {
 }
 
 
-export const VideoPlayer: React.FC<VideoPlayerProps> = ({ id = "0", src, title, intro_start_time, intro_end_time, next_episode_offset = import.meta.env.VITE_DEFAULT_NEXT_EPISODE_OFFSET }) => {
+export const VideoPlayer: React.FC<VideoPlayerProps> = ({ id = "0", src, title }) => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const playerRef = useRef<any>(null);  // Changed from videojs.Player
-    const customButtonRef = useRef<HTMLButtonElement | null>(null);
-    const introStartTimeSeconds = timeToSeconds(intro_start_time);
-    const introEndTimeSeconds = timeToSeconds(intro_end_time);
+    const skipButtonRef = useRef<HTMLButtonElement | null>(null);
+    const nextButtonRef = useRef<HTMLButtonElement | null>(null);
+
 
     useEffect(() => {
         if (videoRef.current) {
@@ -37,7 +34,6 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ id = "0", src, title, 
                 id: 0,
                 src: src
             }];
-            console.log(src)
             // Create playlist items
             const playlist = sources.map(source => ({
                 id: source.id,
@@ -46,12 +42,19 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ id = "0", src, title, 
                     src: source.src,
                     type: 'application/x-mpegURL',
                 }],
+                intro_start_time: source.intro_start_time,
+                intro_end_time: source.intro_end_time,
+                next_episode_time: source.next_episode_time,
                 poster: "https://peach.blender.org/wp-content/uploads/title_anouncement.jpg",
             }));
-
+            //current video
+            const currentVideo = sources.findIndex(x => x.id === parseInt(id));
+            const introStartTimeSeconds = timeToSeconds(sources[currentVideo]?.intro_start_time);
+            const introEndTimeSeconds = timeToSeconds(sources[currentVideo]?.intro_end_time);
+            const nextEpisodeOffset = timeToSeconds(sources[currentVideo]?.intro_end_time);
             // Initialize playlist
             playerRef.current.playlist(playlist);
-            playerRef.current.playlist.currentItem(sources.findIndex(x => x.id === parseInt(id)));
+            playerRef.current.playlist.currentItem(currentVideo);
 
             const createButton = (text: string, onClick: () => void) => {
                 const button = document.createElement('button');
@@ -62,12 +65,12 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ id = "0", src, title, 
             };
 
             playerRef.current.on('timeupdate', function () {
-                const duration = playerRef.current.duration();
                 const currentTime = playerRef.current.currentTime();
-                const nextEpisodeDelay = Math.floor(playerRef.current.duration()) - parseInt(next_episode_offset);
+                const nextEpisodeDelay = Math.floor(playerRef.current.duration()) - nextEpisodeOffset;
+
                 // Handle Skip Intro button
                 if (currentTime >= introStartTimeSeconds && currentTime <= introEndTimeSeconds) {
-                    if (!customButtonRef.current) {
+                    if (!skipButtonRef.current) {
                         const skipButton = createButton('Skip Intro', () => {
                             playerRef.current.currentTime(introEndTimeSeconds);
                         });
@@ -75,51 +78,53 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ id = "0", src, title, 
                             skipButton.style.display = 'none';
                         }, 10000);
                         playerRef.current.el().appendChild(skipButton);
-                        customButtonRef.current = skipButton;
+                        skipButtonRef.current = skipButton;
                     }
                 }
 
                 // Handle Next Episode button
                 if (Math.floor(currentTime) === nextEpisodeDelay) {
-                    if (!customButtonRef.current) {
+                    if (!nextButtonRef.current) {
                         const nextButton = createButton('Next Episode', () => {
-                            playerRef.current.el().removeChild(customButtonRef.current);
                             playerRef.current.playlist.next();
                         });
                         setTimeout(() => {
                             nextButton.style.display = 'none';
                         }, 10000);
                         playerRef.current.el().appendChild(nextButton);
-                        customButtonRef.current = nextButton;
+                        nextButtonRef.current = nextButton;
                     }
                 }
 
                 // Remove button when intro is skipped or video ends
-                if (currentTime >= introEndTimeSeconds || currentTime >= duration) {
-                    if (customButtonRef.current) {
-                        playerRef.current.el().removeChild(customButtonRef.current);
-                        customButtonRef.current = null;
-                    }
+                if (skipButtonRef.current && (currentTime >= introEndTimeSeconds || currentTime >= playerRef.current.duration())) {
+                    playerRef.current.el().removeChild(skipButtonRef.current);
+                    skipButtonRef.current = null;
+                }
+
+                if (nextButtonRef.current && (currentTime <= nextEpisodeDelay || currentTime >= playerRef.current.duration())) {
+                    playerRef.current.el().removeChild(nextButtonRef.current);
+                    nextButtonRef.current = null;
                 }
             });
 
             playerRef.current.on('useractive', function () {
-                if (customButtonRef?.current &&
+                if (nextButtonRef?.current &&
                     introStartTimeSeconds <= playerRef.current.currentTime() &&
                     introEndTimeSeconds >= playerRef.current.currentTime() &&
-                    customButtonRef.current.style.display === 'none'
+                    nextButtonRef.current.style.display === 'none'
                 ) {
-                    customButtonRef.current.style.display = 'block';
+                    nextButtonRef.current.style.display = 'block';
                 }
             });
 
             playerRef.current.on('userinactive', function () {
-                if (customButtonRef?.current &&
+                if (nextButtonRef?.current &&
                     introStartTimeSeconds <= playerRef.current.currentTime() &&
                     introEndTimeSeconds >= playerRef.current.currentTime() &&
-                    customButtonRef.current.style.display === 'block'
+                    nextButtonRef.current.style.display === 'block'
                 ) {
-                    customButtonRef.current.style.display = 'none';
+                    nextButtonRef.current.style.display = 'none';
                 }
             });
 

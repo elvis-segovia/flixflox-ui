@@ -55,11 +55,13 @@ export const Player: React.FC = () => {
                         setSources(res.data.map((episode: any) => {
                             return {
                                 "id": episode.episode,
-                                "src": `${import.meta.env.VITE_STREAMAPI_URL}${import.meta.env.VITE_STREAMAPI_PREFIX}/videos/stream/${episode.file_path}`
+                                "src": `${import.meta.env.VITE_STREAMAPI_URL}${import.meta.env.VITE_STREAMAPI_PREFIX}/videos/stream/${episode.file_path}`,
+                                "intro_start_time": episode.intro_start_time || "",
+                                "intro_end_time": episode.intro_end_time || "",
+                                "next_episode_time": episode.next_episode_time || ""
                             }
                         }
                         ))
-                        console.log(res.data)
                     } else {
                         const res = await catalogCtrl.getCatalog(id);
                         setVideo(res.data);
@@ -124,8 +126,6 @@ export const Player: React.FC = () => {
                         id={episode || ""}
                         src={sources.length > 0 ? sources : `${import.meta.env.VITE_STREAMAPI_URL}${import.meta.env.VITE_STREAMAPI_PREFIX}/videos/stream/${video.file_path}`}
                         title={video.title}
-                        intro_start_time={video.intro_start_time?.toString() || ""}
-                        intro_end_time={video.intro_end_time?.toString() || ""}
                     />
                 </div>
             )}

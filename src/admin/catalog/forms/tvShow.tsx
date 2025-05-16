@@ -1,6 +1,7 @@
 import { Button, Card, Form, Input, InputNumber, Select, Space, TimePicker, Upload } from "antd"
 import { MinusCircleOutlined, PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
+import dayjs from 'dayjs';
 
 interface TvShowFormProps {
     form: any;
@@ -25,7 +26,6 @@ export const TvShowForm: React.FC<TvShowFormProps> = ({ form, onCreate, saving, 
         }
         return e?.file;
     };
-
 
     return (
         <Form
@@ -144,7 +144,19 @@ export const TvShowForm: React.FC<TvShowFormProps> = ({ form, onCreate, saving, 
                                         label="Intro Start Time"
                                         tooltip="Time when the intro starts in the movie"
                                     >
-                                        <TimePicker format="HH:mm:ss" showNow={false} />
+                                        <TimePicker 
+                                            showNow={false} 
+                                            format="HH:mm:ss"
+                                            onChange={(time) => {
+                                                if (time) {
+                                                    form.setFieldsValue({
+                                                        [name]: {
+                                                            intro_start_time: dayjs(time).format('HH:mm:ss')
+                                                        }
+                                                    });
+                                                }
+                                            }}
+                                        />
                                     </Form.Item>
                                     <Form.Item
                                         name={[name, "intro_end_time"]}
@@ -164,9 +176,39 @@ export const TvShowForm: React.FC<TvShowFormProps> = ({ form, onCreate, saving, 
                                             }),
                                         ]}
                                     >
-                                        <TimePicker format="HH:mm:ss" showNow={false} />
+                                        <TimePicker 
+                                            showNow={false} 
+                                            format="HH:mm:ss"
+                                            onChange={(time) => {
+                                                if (time) {
+                                                    form.setFieldsValue({
+                                                        [name]: {
+                                                            intro_end_time: dayjs(time).format('HH:mm:ss')
+                                                        }
+                                                    });
+                                                }
+                                            }}
+                                        />
                                     </Form.Item>
                                 </Space.Compact>
+                                <Form.Item
+                                    name={[name, "next_episode_time"]}
+                                    label="Next Episode"
+                                >
+                                    <TimePicker 
+                                        showNow={false} 
+                                        format="HH:mm:ss"
+                                        onChange={(time) => {
+                                            if (time) {
+                                                form.setFieldsValue({
+                                                    [name]: {
+                                                        next_episode_time: dayjs(time).format('HH:mm:ss')
+                                                    }
+                                                });
+                                            }
+                                        }}
+                                    />
+                                </Form.Item>
                                 <Form.Item name={[name, "cast"]} label="Cast">
                                     <Select
                                         mode="tags"
