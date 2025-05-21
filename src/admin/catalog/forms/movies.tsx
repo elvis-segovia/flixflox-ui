@@ -1,6 +1,7 @@
 import { Button, Form, Input, InputNumber, Select, Space, TimePicker, Upload } from "antd"
 import { InboxOutlined, UploadOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
+import dayjs from "dayjs";
 
 interface MovieFormProps {
     form: any;
@@ -43,7 +44,9 @@ export const MoviesForm: React.FC<MovieFormProps> = ({ form, onCreate, saving, d
             initialValues={{
                 type: 'movie',
                 rating: 5,
-                release_year: new Date().getFullYear()
+                release_year: new Date().getFullYear(),
+                intro_start_time: dayjs('00:00:00', "HH:mm:ss"),
+                intro_end_time: dayjs('00:00:00', "HH:mm:ss"),
             }}
             disabled={disabled}
         >
@@ -52,7 +55,7 @@ export const MoviesForm: React.FC<MovieFormProps> = ({ form, onCreate, saving, d
                 label="Title"
                 rules={[{ required: true, message: 'Please input the title!' }]}
             >
-                <Input />
+                <Input placeholder="Enter the movie title"/>
             </Form.Item>
             <Form.Item
                 name="type"
@@ -67,7 +70,7 @@ export const MoviesForm: React.FC<MovieFormProps> = ({ form, onCreate, saving, d
                 rules={[{ required: true, message: 'Please input the release year!' }]}
             >
                 <Select
-                    placeholder="Select a year"
+                    placeholder="Select release year"
                     showSearch
                     optionFilterProp="label"
                     options={yearOptions}
@@ -96,7 +99,7 @@ export const MoviesForm: React.FC<MovieFormProps> = ({ form, onCreate, saving, d
                     max={10}
                     step={0.1}
                     style={{ width: '100%' }}
-                    placeholder="Rating"
+                    placeholder="Enter rating (0.0 - 10.0)"
                 />
             </Form.Item>
             <Space.Compact>

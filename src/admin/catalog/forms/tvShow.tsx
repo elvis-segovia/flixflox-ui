@@ -39,7 +39,10 @@ export const TvShowForm: React.FC<TvShowFormProps> = ({ form, onCreate, saving, 
                 release_year: new Date().getFullYear(),
                 show_details: [{
                     season: 1,
-                    episode: 1
+                    episode: 1,
+                    intro_start_time: dayjs('00:00:00', "HH:mm:ss"),
+                    intro_end_time: dayjs('00:00:00', "HH:mm:ss"),
+                    next_episode_time: dayjs('00:00:00', "HH:mm:ss"),
                 }] // Initialize with one episode
             }}
             disabled={disabled}
