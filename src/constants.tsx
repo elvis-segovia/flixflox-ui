@@ -1,14 +1,14 @@
-import { HomeOutlined, PlayCircleOutlined } from '@ant-design/icons';
+import { ContactsOutlined, HomeOutlined, PlayCircleOutlined, VideoCameraOutlined } from '@ant-design/icons';
 import { Home } from './admin/home';
 import { CatalogCreate, CatalogList } from './admin/catalog';
 import LoginForm from './admin/login';
 
 export const menuItems = [
-    { 
-        key: '/dashboard/home', 
-        icon: <HomeOutlined />, 
-        label: 'Home', 
-        to: '/dashboard/home', 
+    {
+        key: '/dashboard/home',
+        icon: <HomeOutlined />,
+        label: 'Home',
+        to: '/dashboard/home',
         component: <Home />
     },
     {
@@ -26,6 +26,20 @@ export const menuItems = [
                 show: false
             }
         ]
+    },
+    {
+        key: '/dashboard/genres',
+        icon: <VideoCameraOutlined />,
+        label: 'Genres',
+        to: '/dashboard/genres',
+        component: <Home />
+    },
+    {
+        key: '/dashboard/actors',
+        icon: <ContactsOutlined />,
+        label: 'Actors',
+        to: '/dashboard/actors',
+        component: <Home />
     },
     {
         key: 'login',

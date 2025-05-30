@@ -1,5 +1,6 @@
 import { Card, Layout } from "antd"
 import { MainBreadcrumb } from "../breadcrumb"
+import { Footer } from "antd/es/layout/layout";
 
 const { Content } = Layout;
 
@@ -12,9 +13,9 @@ export const MainBlock: React.FC<MainBlockProps> = ({ children, showBreadcrumb, 
                     {children}
                 </Card>
             </Content>
-            {/* <Footer style={{ textAlign: 'center' }}>
-                Ant Design ©{new Date().getFullYear()} Created by Ant UED
-            </Footer> */}
+            <Footer style={{ textAlign: 'center' }}>
+                StreamUI ©{new Date().getFullYear()} Created by <a href="https://github.com/elvus">elvus</a>
+            </Footer>
         </Layout>
     )
 }

@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { MainBlock, SearchTable } from "../../components";
-import { PlusSquareOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, PlusSquareOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
-import { Button } from "antd";
+import { Button, Space, Tooltip } from "antd";
 import { CatalogController } from "../../controllers";
 
 const catalogCtrl = new CatalogController();
@@ -45,8 +45,35 @@ export const CatalogList: React.FC = () => {
         {
             title: 'Action',
             key: 'action',
-            render: () => (
-                <Link to="/dashboard/catalog/delete">Delete</Link>
+            render: (_: any, record: any) => (
+                <Space>
+                    {record.type === "tvshow" && (
+                        <Tooltip title="Add">
+                            <Link to={`/add`}>
+                                <Button
+                                    type="default"
+                                    icon={<PlusSquareOutlined />}
+                                    size="small"
+                                />
+                            </Link>
+                        </Tooltip>
+                    )}
+                    <Tooltip title="Edit">
+                        <Button
+                            type="default"
+                            size="small"
+                            icon={<EditOutlined />}
+                        />
+                    </Tooltip>
+                    <Tooltip title="Delete">
+                        <Button
+                            type="default"
+                            size="small"
+                            icon={<DeleteOutlined />}
+                            danger
+                        />
+                    </Tooltip>
+                </Space>
             ),
         }
     ];

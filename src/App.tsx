@@ -1,4 +1,4 @@
-import { ConfigProvider, theme } from "antd"
+import { ConfigProvider } from "antd"
 import { MainMenu } from "./components"
 import type { MenuProps } from 'antd';
 import { Link } from "react-router-dom";
@@ -15,12 +15,12 @@ const getMenuChildren = (item: any) => {
 				...rest,
 				label: rest.to ? <Link to={rest.to}>{rest.label}</Link> : rest.label
 			}
-		}else{
-			return{
+		} else {
+			return {
 				...item,
 				children: childrenItems
 			};
-		
+
 		}
 	}
 	return item.show === 'false' ? null : {
@@ -36,7 +36,36 @@ const items: MenuItem[] = menuItems.map((item) => {
 
 function App() {
 	return (
-		<ConfigProvider theme={{ algorithm: theme.defaultAlgorithm }}>
+		<ConfigProvider
+			theme={{
+				token: {
+					colorPrimary: '#2563eb',
+					colorSuccess: '#10b981',
+					colorWarning: '#f59e0b',
+					colorError: '#ef4444',
+					colorInfo: '#3b82f6',
+					borderRadius: 6,
+				},
+				components: {
+					Layout: {
+						siderBg: '#1e293b',
+						headerBg: '#ffffff',
+						bodyBg: '#f8fafc',
+					},
+					Menu: {
+						subMenuItemBg: '#1e293b',
+						darkItemBg: '#1e293b',
+						darkItemColor: '#94a3b8',
+						darkItemSelectedColor: '#ffffff',
+						darkItemHoverColor: '#e2e8f0',
+						itemBg: '#1e293b',
+						itemSelectedBg: '#2563eb',
+						itemHoverBg: '#334155',
+						itemBorderRadius: 0
+					}
+				}
+			}}
+		>
 			<MainMenu menuItems={items} />
 		</ConfigProvider>
 	)

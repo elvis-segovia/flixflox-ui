@@ -17,7 +17,7 @@ export const WebNavbar: React.FC<NavbarProps> = ({
     style
 }) => {
     return (
-        <Layout>
+        <Layout style={{ minHeight: '100vh' }}>
             <Header
                 style={{
                     position: 'sticky',
