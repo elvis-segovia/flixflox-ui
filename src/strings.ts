@@ -1,2 +1,2 @@
-export const APP_NAME = 'STREAMADMIN';
+export const APP_NAME = 'StreamUI';
 export const SEARCH_PLACEHOLDER = 'Search...';
