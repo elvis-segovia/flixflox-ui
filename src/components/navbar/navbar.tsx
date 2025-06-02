@@ -37,9 +37,11 @@ export const WebNavbar: React.FC<NavbarProps> = ({
                     items={items}
                     style={{ flex: 1, minWidth: 0 }}
                 />
-                <Button type="link" style={{ float: 'right', color: 'white' }}>
-                    <Link to={loginPath}>Login</Link>
-                </Button>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                    <Button style={{ float: 'right' }} type="primary">
+                        <Link to={loginPath}>Login</Link>
+                    </Button>
+                </div>
             </Header>
             <Outlet />
         </Layout>

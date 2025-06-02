@@ -6,6 +6,7 @@ import { Outlet } from 'react-router-dom';
 import { Header } from 'antd/es/layout/layout';
 import { APP_NAME } from '../../strings';
 import { DownOutlined, LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined, UserOutlined } from '@ant-design/icons';
+import { useAuth } from '../authentication/authProvider';
 
 const { Sider } = Layout;
 const { Title } = Typography;
@@ -15,6 +16,16 @@ type MenuItem = Required<MenuProps>['items'][number];
 interface MainMenuProps {
     menuItems: MenuItem[];
 }
+const siderStyle: React.CSSProperties = {
+    overflow: 'auto',
+    height: '100vh',
+    position: 'sticky',
+    insetInlineStart: 0,
+    top: 0,
+    bottom: 0,
+    scrollbarWidth: 'thin',
+    scrollbarGutter: 'stable',
+};
 
 export const MainMenu: React.FC<MainMenuProps> = ({ menuItems }) => {
     const [collapsed, setCollapsed] = useState(false);
@@ -23,7 +34,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({ menuItems }) => {
     const [openKeys, setOpenKeys] = useState<string[]>([]);
     const currentPath = location.pathname.split('/').slice(2, 3).filter(elm => elm).join('/')
     const currentKey = useMemo(() => menuItems.find((item) => item?.key?.toString().includes(currentPath))?.key?.toString() || '', [currentPath, menuItems]);
-    console.log(currentPath, currentKey)
+    const auth = useAuth();
     const {
         token: { colorBgContainer }
     } = theme.useToken()
@@ -40,7 +51,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({ menuItems }) => {
         {
             key: 'logout',
             label: (
-                <a>
+                <a onClick={() => auth.logout()}>
                     <Space>
                         <LogoutOutlined />
                         <span>Logout</span>
@@ -52,7 +63,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({ menuItems }) => {
 
     return (
         <Layout style={{ minHeight: '100vh' }}>
-            <Sider trigger={null} collapsible collapsed={collapsed} theme='dark'>
+            <Sider style={siderStyle} trigger={null} collapsible collapsed={collapsed}>
                 <div className="logo-container">
                     <div className="logo-content">
                         {collapsed && (

@@ -1,4 +1,4 @@
-import { ContactsOutlined, HomeOutlined, PlayCircleOutlined, VideoCameraOutlined } from '@ant-design/icons';
+import { ContactsOutlined, HomeOutlined, PlayCircleOutlined, UserOutlined, VideoCameraOutlined } from '@ant-design/icons';
 import { Home } from './admin/home';
 import { CatalogCreate, CatalogList } from './admin/catalog';
 import LoginForm from './admin/login';
@@ -39,6 +39,13 @@ export const menuItems = [
         icon: <ContactsOutlined />,
         label: 'Actors',
         to: '/dashboard/actors',
+        component: <Home />
+    },
+    {
+        key: '/dashboard/users',
+        icon: <UserOutlined />,
+        label: 'Users',
+        to: '/dashboard/users',
         component: <Home />
     },
     {
