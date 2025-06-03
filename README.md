@@ -48,7 +48,7 @@ docker-compose up -d
 
 4. Create a `.env` file in the root directory with the following variables:
 ```env
-VITE_STREAMAPI_URL=http://127.0.0.1:5000
+VITE_STREAMAPI_URL=http://localhost:5000
 VITE_STREAMAPI_PREFIX=/v1/api
 VITE_STREAMAPI_PREFIX_ADMIN=/dashboard
 VITE_DEFAULT_NEXT_EPISODE_OFFSET=15
