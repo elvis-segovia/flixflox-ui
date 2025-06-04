@@ -5,7 +5,7 @@ import React, { useEffect, useRef } from "react";
 
 interface VideoPlayerProps {
     id: string;
-    src: string | any[];
+    video: any | any[];
     title: string;
 }
 
@@ -15,12 +15,11 @@ const timeToSeconds = (timeString: string) => {
 }
 
 
-export const VideoPlayer: React.FC<VideoPlayerProps> = ({ id = "0", src, title }) => {
+export const VideoPlayer: React.FC<VideoPlayerProps> = ({ id = "0", video, title }) => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const playerRef = useRef<any>(null);  // Changed from videojs.Player
     const skipButtonRef = useRef<HTMLButtonElement | null>(null);
     const nextButtonRef = useRef<HTMLButtonElement | null>(null);
-
 
     useEffect(() => {
         if (videoRef.current) {
@@ -30,9 +29,10 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ id = "0", src, title }
                 fluid: true,
             });
             // Convert single source to array if needed
-            const sources = Array.isArray(src) ? src : [{
+            const sources = Array.isArray(video) ? video : [{
                 id: 0,
-                src: src
+                src: `${import.meta.env.VITE_STREAMAPI_URL}${import.meta.env.VITE_STREAMAPI_PREFIX}/videos/stream/${video.file_path}`,
+                ...video
             }];
             // Create playlist items
             const playlist = sources.map(source => ({
@@ -47,8 +47,9 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ id = "0", src, title }
                 next_episode_time: source.next_episode_time,
                 poster: "https://peach.blender.org/wp-content/uploads/title_anouncement.jpg",
             }));
+
             //current video
-            const currentVideo = sources.findIndex(x => x.id === parseInt(id));
+            const currentVideo = video.type === "movie" ? 0 : sources.findIndex(x => x.id === parseInt(id));
             const introStartTimeSeconds = timeToSeconds(sources[currentVideo]?.intro_start_time);
             const introEndTimeSeconds = timeToSeconds(sources[currentVideo]?.intro_end_time);
             const nextEpisodeOffset = timeToSeconds(sources[currentVideo]?.intro_end_time);
@@ -140,7 +141,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ id = "0", src, title }
                 playerRef.current.dispose();
             }
         };
-    }, [src]);
+    }, [video]);
 
 
 

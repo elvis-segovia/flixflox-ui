@@ -15,8 +15,8 @@ interface CatalogValues {
     show_details: [],
     season: string;
     episode: string;
-    intro_start_time: string;
-    intro_end_time: string;
+    intro_start_time: any;
+    intro_end_time: any;
     duration_minutes: number;
     file_path: string;
 }
@@ -85,7 +85,18 @@ export const CatalogCreate: React.FC = () => {
                 })
             }))
         } else {
-            formData.append('values', JSON.stringify(values))
+            formData.append('values', JSON.stringify({
+                title: values.title,
+                type: activeTab,
+                release_year: values.release_year,
+                genre: values.genre,
+                rating: values.rating,
+                cast: values.cast,
+                description: values.description,
+                intro_start_time: values.intro_start_time.format("HH:mm:ss"),
+                intro_end_time: values.intro_end_time.format("HH:mm:ss"),
+            }))
+            console.log(formData.get('values'))
             formData.append(`file`, values.file_path as any)
         }
 

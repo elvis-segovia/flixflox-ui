@@ -1,5 +1,5 @@
 import { Button, Form, Input, InputNumber, Select, Space, TimePicker, Upload } from "antd"
-import { InboxOutlined, UploadOutlined } from "@ant-design/icons";
+import { UploadOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 
@@ -10,7 +10,6 @@ interface MovieFormProps {
     disabled: boolean;
     uploadProps: any;
 }
-const { Dragger } = Upload;
 
 const currentYear = new Date().getFullYear() + 1;
 const yearOptions = Array.from({ length: currentYear - 1980 }, (_v, k) => ({
@@ -26,7 +25,7 @@ const genreOptions = [
     'War', 'Western'
 ].map(genre => ({ label: genre, value: genre }));
 
-export const MoviesForm: React.FC<MovieFormProps> = ({ form, onCreate, saving, disabled, uploadProps }) => {
+export const MoviesForm: React.FC<MovieFormProps> = ({ form, onCreate, saving, disabled }) => {
 
     const normFile = (e: any) => {
         if (Array.isArray(e)) {
@@ -55,7 +54,7 @@ export const MoviesForm: React.FC<MovieFormProps> = ({ form, onCreate, saving, d
                 label="Title"
                 rules={[{ required: true, message: 'Please input the title!' }]}
             >
-                <Input placeholder="Enter the movie title"/>
+                <Input placeholder="Enter the movie title" autoComplete="off"/>
             </Form.Item>
             <Form.Item
                 name="type"

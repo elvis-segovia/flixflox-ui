@@ -7,14 +7,16 @@ import Meta from "antd/es/card/Meta";
 import { MainBlock } from "../../components";
 
 interface Video {
+    id: string;
+    src: string;
     type: string;
     title: string;
     image?: string;
     file_path: string;
     uuid?: string;
     release_year?: number;
-    intro_start_time?: number;
-    intro_end_time?: number;
+    intro_start_time?: string;
+    intro_end_time?: string;
     season_number?: number;
     seasons?: Array<{
         season_number: number;
@@ -123,8 +125,8 @@ export const Player: React.FC = () => {
             ) : (
                 <div className="player-container">
                     <VideoPlayer
-                        id={episode || ""}
-                        src={sources.length > 0 ? sources : `${import.meta.env.VITE_STREAMAPI_URL}${import.meta.env.VITE_STREAMAPI_PREFIX}/videos/stream/${video.file_path}`}
+                        id={episode || "0"}
+                        video={sources.length > 0 ? sources : video}
                         title={video.title}
                     />
                 </div>
