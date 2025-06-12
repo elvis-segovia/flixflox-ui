@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { MainBlock, SearchTable } from "../../components";
 import { DeleteOutlined, EditOutlined, PlusSquareOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
-import { Button, Space, Tooltip } from "antd";
+import { Button, Space, Tag, Tooltip } from "antd";
 import { CatalogController } from "../../controllers";
 
 const catalogCtrl = new CatalogController();
@@ -41,6 +41,14 @@ export const CatalogList: React.FC = () => {
             title: 'Category',
             dataIndex: 'type',
             key: 'type',
+        },
+        {
+            title: 'Status',
+            dataIndex: 'status',
+            key: 'status',
+            render: (status: string) => (
+                <Tag color={status == "In-Progress" ? "processing" : "success"}>{status}</Tag>
+            )
         },
         {
             title: 'Action',

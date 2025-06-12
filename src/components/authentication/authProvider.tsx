@@ -11,14 +11,15 @@ const loginCtrl = new LoginController();
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [username, setUsername] = useState('None');
     const navigate = useNavigate();
 
     const login = (username: string, password: string) => {
         loginCtrl.login(username, password)
             .then((res) => {
-                console.log("Login response:", res);
                 if (res.status === 200) {
                     setIsAuthenticated(true);
+                    setUsername(res.data.user.username)
                     navigate("/dashboard/home");
                 }
             })
@@ -33,7 +34,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+        <AuthContext.Provider value={{ isAuthenticated, login, logout, username }}>
             {children}
         </AuthContext.Provider>
     );

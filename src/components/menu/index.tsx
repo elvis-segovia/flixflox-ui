@@ -127,7 +127,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({ menuItems }) => {
                                     fontSize: '14px',
                                     fontWeight: 500
                                 }}>
-                                    Elvis
+                                    {auth.username}
                                 </span>
                                 <DownOutlined style={{ fontSize: '12px', color: 'rgba(0, 0, 0, 0.45)' }} />
                             </div>
