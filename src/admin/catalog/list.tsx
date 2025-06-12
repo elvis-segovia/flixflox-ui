@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { MainBlock, SearchTable } from "../../components";
-import { DeleteOutlined, EditOutlined, PlusSquareOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, PlusSquareOutlined, ReloadOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { Button, Space, Tag, Tooltip } from "antd";
 import { CatalogController } from "../../controllers";
@@ -8,7 +8,8 @@ import { CatalogController } from "../../controllers";
 const catalogCtrl = new CatalogController();
 
 export const CatalogList: React.FC = () => {
-    const [dataSource, setDataSource] = React.useState<any[]>([]);
+    const [dataSource, setDataSource] = useState<any[]>([]);
+    const [refresh, setRefresh] = useState<boolean>(true)
 
     const fetchCatalog = async () => {
         try {
@@ -24,7 +25,7 @@ export const CatalogList: React.FC = () => {
 
     useEffect(() => {
         fetchCatalog();
-    }, []);
+    }, [refresh]);
 
     const columns = [
         {
@@ -86,7 +87,12 @@ export const CatalogList: React.FC = () => {
         }
     ];
     return (
-        <MainBlock title="Movies" button={<Link to="/dashboard/movies/add"><Button type="primary" size="middle" icon={<PlusSquareOutlined />}>Add</Button></Link>}>
+        <MainBlock title="Movies" button={
+            <Space>
+                <Link to="/dashboard/movies/add"><Button type="primary" size="middle" icon={<PlusSquareOutlined />}>Add</Button></Link>
+                <Button type="default" size="middle" icon={<ReloadOutlined />} onClick={() => setRefresh(!refresh)} />
+            </Space>
+        }>
             <SearchTable columns={columns} dataSource={dataSource} />
         </MainBlock>
     )
