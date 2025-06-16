@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext, useState, useEffect } from "react";
+import { createContext, ReactNode, useContext, useState, useEffect, useCallback } from "react";
 import { LoginController } from "../../controllers";
 import { useNavigate } from "react-router-dom";
 
@@ -48,6 +48,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
         checkAuth();
     }, []);
+
+    const checkAuthentication = useCallback(async () => {
+        try {
+            const res = await loginCtrl.checkAuth();
+            if (res.status === 200) {
+                setIsAuthenticated(true);
+            }
+        } catch (err) {
+            console.error('Authentication check failed:', err);
+            setIsAuthenticated(false);
+            setUsername('None');
+            setError('Authentication check failed');
+        } 
+    }, [navigate]);
+
+    useEffect(() => {
+        checkAuthentication();
+    }, [checkAuthentication]);
 
     const login = async (username: string, password: string): Promise<void> => {
         try {
