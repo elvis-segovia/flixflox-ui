@@ -10,6 +10,7 @@ import { ProtectedRoutes } from './components/authentication/protectedRoutes.tsx
 import { Web } from './web'
 import { Movies } from './web'
 import { Player } from './web/player/index.tsx'
+import LoginForm from './admin/login/index.tsx'
 
 const getChildRoutes = (item: any) => {
 	if (item.children) {
@@ -40,6 +41,7 @@ const router = (
 						})}
 					</Route>
 				</Route>
+				<Route path='/dashboard/login' element={<LoginForm />} />
 				<Route path='/logout' element={<ErrorPage />} />
 			</Routes>
 		</AuthProvider>

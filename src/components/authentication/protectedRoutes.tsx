@@ -1,12 +1,20 @@
-import { Outlet } from "react-router-dom";
-import { useAuth } from "./authProvider"
-import LoginForm from "../../admin/login";
+import { Outlet, Navigate } from "react-router-dom";
+import { useAuth } from "./authProvider";
+import LoadingPage from "../../admin/loading";
 
 export const ProtectedRoutes: React.FC = () => {
-    const ctx = useAuth();
-    if (!ctx.isAuthenticated) {
-        return <LoginForm />;
+    const { isAuthenticated, isLoading, error } = useAuth();
+
+    // Show loading state while checking authentication
+    if (isLoading) {
+        return <LoadingPage />;
     }
 
+    // Handle error or unauthenticated state
+    if (error || !isAuthenticated) {
+        return <Navigate to="/dashboard/login" replace />;
+    }
+
+    // Render protected content if authenticated
     return <Outlet />;
-}
+};

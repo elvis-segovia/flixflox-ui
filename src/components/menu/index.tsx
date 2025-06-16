@@ -51,7 +51,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({ menuItems }) => {
         {
             key: 'logout',
             label: (
-                <a onClick={() => auth.logout()}>
+                <a onClick={async () => await auth.logout()}>
                     <Space>
                         <LogoutOutlined />
                         <span>Logout</span>

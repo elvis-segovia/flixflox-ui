@@ -1,7 +1,9 @@
-import { ContactsOutlined, HomeOutlined, PlayCircleOutlined, UserOutlined, VideoCameraOutlined } from '@ant-design/icons';
+import { TeamOutlined, HomeOutlined, PlayCircleOutlined, UserOutlined, VideoCameraOutlined } from '@ant-design/icons';
 import { Home } from './admin/home';
 import { CatalogCreate, CatalogList } from './admin/catalog';
-import LoginForm from './admin/login';
+import { CategoriesList } from './admin/categories';
+import { CastList } from './admin/cast';
+import { UsersCreate, UsersList } from './admin/users';
 
 export const menuItems = [
     {
@@ -28,31 +30,33 @@ export const menuItems = [
         ]
     },
     {
-        key: '/dashboard/genres',
+        key: '/dashboard/categories',
         icon: <VideoCameraOutlined />,
-        label: 'Genres',
-        to: '/dashboard/genres',
-        component: <Home />
+        label: 'Categories',
+        to: '/dashboard/categories',
+        component: <CategoriesList />
     },
     {
-        key: '/dashboard/actors',
-        icon: <ContactsOutlined />,
-        label: 'Actors',
-        to: '/dashboard/actors',
-        component: <Home />
+        key: '/dashboard/cast',
+        icon: <TeamOutlined />,
+        label: 'Cast',
+        to: '/dashboard/cast',
+        component: <CastList />
     },
     {
         key: '/dashboard/users',
         icon: <UserOutlined />,
         label: 'Users',
         to: '/dashboard/users',
-        component: <Home />
-    },
-    {
-        key: 'login',
-        label: 'Login',
-        to: '/dashboard/login',
-        component: <LoginForm />,
-        style: { display: 'none' }
-    },
+        component: <UsersList />,
+        children: [
+            {
+                key: '/dashboard/users/add',
+                label: 'Add',
+                to: '/dashboard/users/add',
+                component: <UsersCreate />,
+                show: false
+            }
+        ]
+    }
 ];

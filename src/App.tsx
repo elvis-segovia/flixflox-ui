@@ -23,6 +23,11 @@ const getMenuChildren = (item: any) => {
 
 		}
 	}
+
+	if (item.type) {
+		return item
+	}
+
 	return item.show === 'false' ? null : {
 		...item,
 		label: item.to ? <Link to={item.to}>{item.label}</Link> : item.label
