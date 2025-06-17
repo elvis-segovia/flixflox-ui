@@ -25,6 +25,16 @@ export class LoginController {
         });
     }
 
+    async refreshToken(): Promise<any> {
+        return await axios.post(`${this.api_url}/auth/token/refresh`, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        }, {
+            withCredentials: true
+        })
+    }
+
     async logout(): Promise<any> {
         return await axios.delete(`${this.api_url}/auth/logout`, {
             withCredentials: true

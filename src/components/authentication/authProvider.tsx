@@ -26,6 +26,29 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
 
+    const checkAuthentication = useCallback(async () => {
+        try {
+            const res = await loginCtrl.checkAuth();
+            if (res.status === 200) {
+                setIsAuthenticated(true);
+                setUsername(res.data.user.username);
+            } else {
+                const res = await loginCtrl.refreshToken();
+                if (res.status !== 200) {
+                    await logout();
+                    setIsAuthenticated(false);
+                    setUsername('None');
+                    setError('Authentication check failed');
+                }
+            }
+        } catch (err) {
+            await logout();
+            setIsAuthenticated(false);
+            setUsername('None');
+            setError('Authentication check failed');
+        }
+    }, [navigate]);
+
     useEffect(() => {
         const checkAuth = async () => {
             try {
@@ -48,20 +71,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
         checkAuth();
     }, []);
-
-    const checkAuthentication = useCallback(async () => {
-        try {
-            const res = await loginCtrl.checkAuth();
-            if (res.status === 200) {
-                setIsAuthenticated(true);
-            }
-        } catch (err) {
-            console.error('Authentication check failed:', err);
-            setIsAuthenticated(false);
-            setUsername('None');
-            setError('Authentication check failed');
-        } 
-    }, [navigate]);
 
     useEffect(() => {
         checkAuthentication();
