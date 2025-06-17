@@ -35,14 +35,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             } else {
                 const res = await loginCtrl.refreshToken();
                 if (res.status !== 200) {
-                    await logout();
                     setIsAuthenticated(false);
                     setUsername('None');
                     setError('Authentication check failed');
                 }
             }
         } catch (err) {
-            await logout();
             setIsAuthenticated(false);
             setUsername('None');
             setError('Authentication check failed');
