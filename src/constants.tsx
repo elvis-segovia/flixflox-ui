@@ -1,9 +1,9 @@
 import { TeamOutlined, HomeOutlined, PlayCircleOutlined, UserOutlined, VideoCameraOutlined } from '@ant-design/icons';
-import { Home } from './admin/home';
-import { CatalogCreate, CatalogList } from './admin/catalog';
-import { CategoriesList } from './admin/categories';
-import { CastList } from './admin/cast';
-import { UsersCreate, UsersList } from './admin/users';
+import { Home } from './pages/admin/home';
+import { CatalogCreate, CatalogList } from './pages/admin/catalog';
+import { CategoriesList } from './pages/admin/categories';
+import { CastList } from './pages/admin/cast';
+import { UsersCreate, UsersList } from './pages/admin/users';
 
 export const menuItems = [
     {

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { PlusSquareOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import { MainBlock, SearchTable } from "../../components";
+import { MainBlock, SearchTable } from "../../../components";
 import { Button, Space, Tooltip } from "antd";
 import { Link } from "react-router-dom";
 

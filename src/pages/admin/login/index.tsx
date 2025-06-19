@@ -1,10 +1,10 @@
 import React from 'react';
 import { Form, Input, Button, Layout, Grid, theme, Typography, Card, Alert, Flex, Spin, Space } from 'antd';
-import Template from '../../assets/template.svg';
+import Template from '../../../assets/template.svg';
 
 import { Content } from 'antd/es/layout/layout';
-import { APP_NAME } from '../../strings';
-import { useAuth } from '../../components/authentication/authProvider';
+import { APP_NAME } from '../../../strings';
+import { useAuth } from '../../../components/authentication/authProvider';
 
 const { useToken } = theme;
 const { useBreakpoint } = Grid;

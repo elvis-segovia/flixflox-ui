@@ -18,7 +18,7 @@ import {
     UploadProps,
     message,
 } from 'antd';
-import { MainBlock } from '../../components';
+import { MainBlock } from '../../../components';
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 const { Dragger } = Upload;

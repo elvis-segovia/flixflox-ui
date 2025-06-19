@@ -1,9 +1,9 @@
 import React from "react";
-import { MainBlock } from "../../components";
+import { MainBlock } from "../../../components";
 import { Button, Form, FormInstance, Input, Select, Space, DatePicker, Row, Col, Card, notification } from "antd";
 import { UserOutlined, LockOutlined, MailOutlined, PictureOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
-import { UsersController } from "../../controllers";
+import { UsersController } from "../../../controllers";
 
 interface SubmitButtonProps {
     form: FormInstance;

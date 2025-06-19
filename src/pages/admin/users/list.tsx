@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { DeleteOutlined, EditOutlined, PlusSquareOutlined, ReloadOutlined } from "@ant-design/icons";
-import { MainBlock, SearchTable } from "../../components";
-import { Button, Space, Tag, Tooltip } from "antd";
+import { MainBlock, SearchTable } from "../../../components";
+import { Button, message, Modal, Space, Tag, Tooltip } from "antd";
 import { Link } from "react-router-dom";
-import { UsersController } from "../../controllers";
-
-const usersCtrl = new UsersController
+import { UsersController } from "../../../controllers";
 
 export const UsersList: React.FC = () => {
+    const usersCtrl = new UsersController();
     const [dataSource, setDataSource] = useState<any[]>([]);
     const [refresh, setRefresh] = useState<boolean>(false);
     const fetchUsers = async () => {
@@ -21,6 +20,26 @@ export const UsersList: React.FC = () => {
             console.error("Failed to fetch catalog:", error);
         }
     };
+
+    const handleDelete = useCallback((record: any) => {
+        Modal.confirm({
+            title: `Delete Client`,
+            content: <span>Are you sure you want to delete user <b>{record.username}</b>?</span>,
+            onOk: async () => {
+                try {
+                    const response = await usersCtrl.deleteUser(record.id);
+                    if (response.status === 200) {
+                        message.success(`User ${record.username} deleted successfully`);
+                        setRefresh(true);
+                    } else {
+                        message.error(`Error deleting user ${record.username}`);
+                    }
+                } catch (error) {
+                    message.error(`Error deleting user ${record.username}`);
+                }
+            }
+        });
+    }, [usersCtrl]);
 
     useEffect(() => {
         fetchUsers();
@@ -88,6 +107,7 @@ export const UsersList: React.FC = () => {
                             type="default"
                             size="small"
                             icon={<DeleteOutlined />}
+                            onClick={() => handleDelete(record)}
                             danger
                         />
                     </Tooltip>

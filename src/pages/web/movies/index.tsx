@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
-import { MainBlock } from "../../components";
-import { VideoCard } from "../../components/video";
-import { CatalogController } from "../../controllers";
+import { MainBlock } from "../../../components";
+import { VideoCard } from "../../../components/video";
+import { CatalogController } from "../../../controllers";
 import { useParams } from "react-router-dom";
 import { Empty } from "antd";
 

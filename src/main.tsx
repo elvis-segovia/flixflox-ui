@@ -1,16 +1,14 @@
 import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
-import { ErrorPage } from './admin/error/index.tsx'
+import { ErrorPage } from './pages/admin/error/index.tsx'
 import './index.css'
 import { menuItems } from './constants.tsx'
-import { BlankPage } from './admin/blankPage/index.tsx'
+import { BlankPage } from './pages/admin/blankPage/index.tsx'
 import { AuthProvider } from './components/authentication/authProvider.tsx'
 import { ProtectedRoutes } from './components/authentication/protectedRoutes.tsx'
-import { Web } from './web'
-import { Movies } from './web'
-import { Player } from './web/player/index.tsx'
-import LoginForm from './admin/login/index.tsx'
+import { Web, Movies, Player } from './pages/web'
+import LoginForm from './pages/admin/login/index.tsx'
 
 const getChildRoutes = (item: any) => {
 	if (item.children) {

@@ -1,5 +1,5 @@
 import React from "react";
-import { WebNavbar } from "../../components/navbar";
+import { WebNavbar } from "../../../components/navbar";
 import { ConfigProvider, theme } from "antd";
 import { Link } from "react-router-dom";
 

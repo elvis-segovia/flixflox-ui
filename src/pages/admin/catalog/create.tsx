@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { MainBlock } from "../../components";
+import { MainBlock } from "../../../components";
 import { Form, GetProp, message, notification, Tabs, UploadFile, UploadProps } from "antd";
 import { MoviesForm, TvShowForm } from "./forms";
-import { CatalogController } from "../../controllers";
+import { CatalogController } from "../../../controllers";
 
 interface CatalogValues {
     title: string;

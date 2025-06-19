@@ -1,5 +1,5 @@
 import React from "react";
-import { MainBlock } from "../../components";
+import { MainBlock } from "../../../components";
 
 export const Home: React.FC = () => {
     return (

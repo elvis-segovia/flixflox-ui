@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { MainBlock, SearchTable } from "../../components";
+import { MainBlock, SearchTable } from "../../../components";
 import { DeleteOutlined, EditOutlined, PlusSquareOutlined, ReloadOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { Button, Space, Tag, Tooltip } from "antd";
-import { CatalogController } from "../../controllers";
+import { CatalogController } from "../../../controllers";
 
 const catalogCtrl = new CatalogController();
 

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { VideoPlayer } from "../../components/video";
+import { VideoPlayer } from "../../../components/video";
 import { Link, useParams } from "react-router-dom";
-import { CatalogController } from "../../controllers";
+import { CatalogController } from "../../../controllers";
 import { Card, Space, Spin, Tabs, message } from "antd";
 import Meta from "antd/es/card/Meta";
-import { MainBlock } from "../../components";
+import { MainBlock } from "../../../components";
 
 interface Video {
     id: string;
