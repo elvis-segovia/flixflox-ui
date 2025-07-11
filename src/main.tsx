@@ -1,13 +1,13 @@
 import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom'
 import { ErrorPage } from './pages/admin/error/index.tsx'
 import './index.css'
 import { menuItems } from './constants.tsx'
 import { BlankPage } from './pages/admin/blankPage/index.tsx'
 import { AuthProvider } from './components/authentication/authProvider.tsx'
 import { ProtectedRoutes } from './components/authentication/protectedRoutes.tsx'
-import { Web, Movies, Player } from './pages/web'
+import { Movies, Player, Users, Web } from './pages/web'
 import LoginForm from './pages/admin/login/index.tsx'
 
 const getChildRoutes = (item: any) => {
@@ -26,20 +26,21 @@ const router = (
 	<Router>
 		<AuthProvider>
 			<Routes>
-				<Route path="/" element={<Web />} errorElement={<ErrorPage />}>
-					<Route index element={<Movies />} />
-					<Route path=':type/videos' element={<Movies />} />
-					<Route path='play/:id/season/:season/episode/:episode' element={<Player />} />
-					<Route path='play/:id' element={<Player />} />
-				</Route>
-				<Route element={<ProtectedRoutes />} >
+				<Route path='/' element={<ProtectedRoutes />} >
+					<Route index element={<Users />} />
+					<Route path="web" element={<Web />} errorElement={<ErrorPage />}>
+						<Route path="catalog" element={<Movies />} />
+						<Route path=':type/videos' element={<Movies />} />
+						<Route path='play/:id/season/:season/episode/:episode' element={<Player />} />
+						<Route path='play/:id' element={<Player />} />
+					</Route>
 					<Route path="dashboard" element={<App />} errorElement={<ErrorPage />}>
 						{menuItems.map((item) => {
 							return getChildRoutes(item)
 						})}
 					</Route>
 				</Route>
-				<Route path='/dashboard/login' element={<LoginForm />} />
+				<Route path='/login' element={<LoginForm />} />
 				<Route path='/logout' element={<ErrorPage />} />
 			</Routes>
 		</AuthProvider>

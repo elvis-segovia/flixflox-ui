@@ -6,12 +6,12 @@ import { Link } from "react-router-dom";
 const items = [
     {
         key: 'movies',
-        label: <Link to='/movies/videos'>Movies</Link>,
+        label: <Link to='movies/videos'>Movies</Link>,
 
     },
     {
         key: 'tv_shows',
-        label: <Link to='/tv-shows/videos'>Tv Shows</Link>
+        label: <Link to='tv-shows/videos'>Tv Shows</Link>
     }
 ]
 

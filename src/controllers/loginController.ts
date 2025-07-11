@@ -7,10 +7,11 @@ export class LoginController {
         this.api_url = `${import.meta.env.VITE_STREAMAPI_URL}${import.meta.env.VITE_STREAMAPI_PREFIX}`;
     }
 
-    async login(username: string, password: string): Promise<any> {
+    async login(username: string, password: string, role: string = 'viewer'): Promise<any> {
         return await axios.post(`${this.api_url}/auth/login`, {
             username,
-            password
+            password,
+            role
         }, {
             headers: {
                 'Content-Type': 'application/json'

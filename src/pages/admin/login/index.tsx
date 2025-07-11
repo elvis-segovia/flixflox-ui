@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Input, Button, Layout, Grid, theme, Typography, Card, Alert, Flex, Spin, Space } from 'antd';
+import { Form, Input, Button, Layout, Grid, theme, Typography, Card, Space, notification } from 'antd';
 import Template from '../../../assets/template.svg';
 
 import { Content } from 'antd/es/layout/layout';
@@ -11,14 +11,32 @@ const { useBreakpoint } = Grid;
 
 const LoginForm: React.FC = () => {
     const { token } = useToken();
-    const [showSpinner, _setShowSpinner] = React.useState(false);
-    const [response, _setResponse] = React.useState<any>({});
     const screens = useBreakpoint();
     const { Title, Text } = Typography;
     const auth = useAuth();
+    const [form] = Form.useForm();
 
-    const onFinish = async (values: any) => {
-        auth.login(values.username, values.password);
+    const onFinish = async (values: any, role: string) => {
+        try {
+            await auth.login(values.username, values.password, role);
+        } catch (error: any) {
+            notification.error({
+                message: "Login failed.",
+                description: "Please check your credentials."
+            });
+        }
+    };
+
+    const handleViewerLogin = () => {
+        form.validateFields().then((values) => {
+            onFinish(values, 'viewer');
+        });
+    };
+
+    const handleAdminLogin = () => {
+        form.validateFields().then((values) => {
+            onFinish(values, 'admin');
+        });
     };
     
     return (
@@ -52,21 +70,11 @@ const LoginForm: React.FC = () => {
                             </div>
                         </div>
                     }>
-                    <Space direction="vertical" style={{ width: "100%", marginBottom: `${token.padding}px` }}>
-                        {
-                            showSpinner ? <Flex style={{ justifyContent: "center" }}>
-                                <Spin />
-                            </Flex> : null
-                        }
-                        {
-                            response.error ? <Alert message={response.message} type="error" showIcon /> : null
-                        }
-                    </Space>
                     <Form
+                        form={form}
                         name="basic"
                         layout='vertical'
                         initialValues={{ remember: true }}
-                        onFinish={onFinish}
                         autoComplete="off"
                     >
                         <Form.Item
@@ -85,9 +93,23 @@ const LoginForm: React.FC = () => {
                             <Input.Password />
                         </Form.Item>
                         <Form.Item>
-                            <Button block={true} type="primary" htmlType="submit">
-                                Login
-                            </Button>
+                            <Space direction="vertical" style={{ width: "100%" }}>
+                                <Button 
+                                    block={true} 
+                                    type="primary" 
+                                    onClick={handleAdminLogin}
+                                    style={{ marginBottom: `${token.paddingXS}px` }}
+                                >
+                                    Login as Admin
+                                </Button>
+                                <Button 
+                                    block={true} 
+                                    type="default" 
+                                    onClick={handleViewerLogin}
+                                >
+                                    Login as Viewer
+                                </Button>
+                            </Space>
                         </Form.Item>
                     </Form>
                 </Card>

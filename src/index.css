@@ -121,3 +121,26 @@ body {
 .user-dropdown:hover {
   background-color: rgba(0, 0, 0, 0.04);
 }
+
+.user-card {
+  transition: all 0.3s ease;
+}
+
+.user-card:hover {
+  transform: scale(1.05) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4) !important;
+}
+
+.logout-menu-item {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.logout-menu-item:hover {
+  background-color: #ff4d4f !important;
+  color: white !important;
+}
+
+.logout-menu-item:hover .anticon {
+  color: white !important;
+}

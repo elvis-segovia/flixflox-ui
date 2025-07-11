@@ -6,8 +6,9 @@ interface AuthContextType {
     isAuthenticated: boolean;
     isLoading: boolean;
     username: string;
+    userRole: string;
     error: string | null;
-    login: (username: string, password: string) => Promise<void>;
+    login: (username: string, password: string, role?: string) => Promise<void>;
     logout: () => Promise<void>;
 }
 
@@ -23,6 +24,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [username, setUsername] = useState('None');
+    const [userRole, setUserRole] = useState('viewer');
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
 
@@ -32,17 +34,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             if (res.status === 200) {
                 setIsAuthenticated(true);
                 setUsername(res.data.user.username);
+                setUserRole(res.data.user.role || 'viewer');
             } else {
                 const res = await loginCtrl.refreshToken();
                 if (res.status !== 200) {
                     setIsAuthenticated(false);
                     setUsername('None');
+                    setUserRole('viewer');
                     setError('Authentication check failed');
                 }
             }
         } catch (err) {
             setIsAuthenticated(false);
             setUsername('None');
+            setUserRole('viewer');
             setError('Authentication check failed');
         }
     }, [navigate]);
@@ -56,11 +61,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 if (res.status === 200) {
                     setIsAuthenticated(true);
                     setUsername(res.data.user.username);
+                    setUserRole(res.data.user.role || 'viewer');
                 }
             } catch (err) {
                 console.error('Auth check failed:', err);
                 setIsAuthenticated(false);
                 setUsername('None');
+                setUserRole('viewer');
                 setError('Authentication check failed');
             } finally {
                 setIsLoading(false);
@@ -74,15 +81,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         checkAuthentication();
     }, [checkAuthentication]);
 
-    const login = async (username: string, password: string): Promise<void> => {
+    const login = async (username: string, password: string, role: string = 'viewer'): Promise<void> => {
         try {
             setIsLoading(true);
             setError(null);
-            const res = await loginCtrl.login(username, password);
+            const res = await loginCtrl.login(username, password, role);
             if (res.status === 200) {
                 setIsAuthenticated(true);
                 setUsername(res.data.user.username);
-                navigate("/dashboard/home");
+                setUserRole(role);
+                // Navigate based on role
+                if (role === 'admin') {
+                    navigate("/dashboard/home");
+                } else {
+                    navigate("/");
+                }
             }
         } catch (err) {
             console.error('Login failed:', err);
@@ -101,6 +114,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             if (res.status === 200) {
                 setIsAuthenticated(false);
                 setUsername('None');
+                setUserRole('viewer');
                 navigate("/");
             }
         } catch (err) {
@@ -116,6 +130,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         isAuthenticated,
         isLoading,
         username,
+        userRole,
         error,
         login,
         logout
