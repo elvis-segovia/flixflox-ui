@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import type { MenuProps } from 'antd';
-import { Avatar, Button, Dropdown, Layout, Menu, Space, theme, Typography, Spin, Modal } from 'antd';
+import { Avatar, Button, Dropdown, Layout, Menu, Space, theme, Typography } from 'antd';
 import { Outlet } from 'react-router-dom';
 import { Header } from 'antd/es/layout/layout';
 import { APP_NAME } from '../../strings';
@@ -29,7 +29,6 @@ const siderStyle: React.CSSProperties = {
 
 export const MainMenu: React.FC<MainMenuProps> = ({ menuItems }) => {
     const [collapsed, setCollapsed] = useState(false);
-    const [isLoggingOut, setIsLoggingOut] = useState(false);
     //set current key
     const location = useLocation();
     const [openKeys, setOpenKeys] = useState<string[]>([]);

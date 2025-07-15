@@ -30,7 +30,7 @@ interface Video {
 const catalogCtrl = new CatalogController();
 
 const EpisodeCard: React.FC<{ id: any; season: any; episode: any, video: Video }> = ({ id, season, episode, video }) => (
-    <Link to={`/play/${id}/season/${season}/episode/${episode.episode_number}`}>
+    <Link to={`/web/play/${id}/season/${season}/episode/${episode.episode_number}`}>
         <Card
             hoverable
             style={{ width: 240 }}

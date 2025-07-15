@@ -33,11 +33,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             const res = await loginCtrl.checkAuth();
             if (res.status === 200) {
                 setIsAuthenticated(true);
-                setUsername(res.data.user.username);
-                setUserRole(res.data.user.role || 'viewer');
+                setUsername(res.data.username);
+                setUserRole(res.data.role || 'viewer');
+                setError(null);
             } else {
-                const res = await loginCtrl.refreshToken();
-                if (res.status !== 200) {
+                // Try to refresh token if check fails
+                const refreshRes = await loginCtrl.refreshToken();
+                if (refreshRes.status === 200) {
+                    setIsAuthenticated(true);
+                    setUsername(refreshRes.data.username);
+                    setUserRole(refreshRes.data.role || 'viewer');
+                    setError(null);
+                } else {
                     setIsAuthenticated(false);
                     setUsername('None');
                     setUserRole('viewer');
@@ -45,10 +52,26 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 }
             }
         } catch (err) {
-            setIsAuthenticated(false);
-            setUsername('None');
-            setUserRole('viewer');
-            setError('Authentication check failed');
+            // Try to refresh token on error
+            try {
+                const refreshRes = await loginCtrl.refreshToken();
+                if (refreshRes.status === 200) {
+                    setIsAuthenticated(true);
+                    setUsername(refreshRes.data.username);
+                    setUserRole(refreshRes.data.role || 'viewer');
+                    setError(null);
+                } else {
+                    setIsAuthenticated(false);
+                    setUsername('None');
+                    setUserRole('viewer');
+                    setError('Authentication check failed');
+                }
+            } catch (refreshErr) {
+                setIsAuthenticated(false);
+                setUsername('None');
+                setUserRole('viewer');
+                setError('Authentication check failed');
+            }
         }
     }, [navigate]);
 
@@ -60,15 +83,30 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 const res = await loginCtrl.checkAuth();
                 if (res.status === 200) {
                     setIsAuthenticated(true);
-                    setUsername(res.data.user.username);
-                    setUserRole(res.data.user.role || 'viewer');
+                    setUsername(res.data.username);
+                    setUserRole(res.data.role || 'viewer');
                 }
             } catch (err) {
                 console.error('Auth check failed:', err);
-                setIsAuthenticated(false);
-                setUsername('None');
-                setUserRole('viewer');
-                setError('Authentication check failed');
+                // Try to refresh token
+                try {
+                    const refreshRes = await loginCtrl.refreshToken();
+                    if (refreshRes.status === 200) {
+                        setIsAuthenticated(true);
+                        setUsername(refreshRes.data.username);
+                        setUserRole(refreshRes.data.role || 'viewer');
+                    } else {
+                        setIsAuthenticated(false);
+                        setUsername('None');
+                        setUserRole('viewer');
+                        setError('Authentication check failed');
+                    }
+                } catch (refreshErr) {
+                    setIsAuthenticated(false);
+                    setUsername('None');
+                    setUserRole('viewer');
+                    setError('Authentication check failed');
+                }
             } finally {
                 setIsLoading(false);
             }
@@ -88,7 +126,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             const res = await loginCtrl.login(username, password, role);
             if (res.status === 200) {
                 setIsAuthenticated(true);
-                setUsername(res.data.user.username);
+                setUsername(res.data.username);
                 setUserRole(role);
                 // Navigate based on role
                 if (role === 'admin') {

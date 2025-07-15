@@ -5,7 +5,7 @@ import { Button, Space, Tooltip } from "antd";
 import { Link } from "react-router-dom";
 
 export const CategoriesList: React.FC = () => {
-    const [dataSource, setDataSource] = useState<any[]>([]);
+    const [dataSource, _setDataSource] = useState<any[]>([]);
     const columns = [
         {
             title: 'ID',

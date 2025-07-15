@@ -6,7 +6,9 @@ export class CatalogController {
     constructor() {
         this.api = axios.create({
             baseURL: `${import.meta.env.VITE_STREAMAPI_URL}${import.meta.env.VITE_STREAMAPI_PREFIX}`,
-            withCredentials: true
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            }
         });
     }
 

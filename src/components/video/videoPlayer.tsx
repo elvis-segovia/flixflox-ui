@@ -50,12 +50,18 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ id = "0", video, title
 
             //current video
             const currentVideo = video.type === "movie" ? 0 : sources.findIndex(x => x.id === parseInt(id));
-            const introStartTimeSeconds = timeToSeconds(sources[currentVideo]?.intro_start_time);
-            const introEndTimeSeconds = timeToSeconds(sources[currentVideo]?.intro_end_time);
-            const nextEpisodeOffset = timeToSeconds(sources[currentVideo]?.intro_end_time);
+            let introStartTimeSeconds = timeToSeconds(sources[currentVideo]?.intro_start_time);
+            let introEndTimeSeconds = timeToSeconds(sources[currentVideo]?.intro_end_time);
+            let nextEpisodeOffset = timeToSeconds(sources[currentVideo]?.intro_end_time);
             // Initialize playlist
             playerRef.current.playlist(playlist);
             playerRef.current.playlist.currentItem(currentVideo);
+
+            playerRef.current.on('playlistitem', function (_event: any, playlistItem: any, _index: number) {
+                introStartTimeSeconds = timeToSeconds(playlistItem.intro_start_time);
+                introEndTimeSeconds = timeToSeconds(playlistItem.intro_end_time);
+                nextEpisodeOffset = timeToSeconds(playlistItem.intro_end_time);
+            });
 
             const createButton = (text: string, onClick: () => void) => {
                 const button = document.createElement('button');

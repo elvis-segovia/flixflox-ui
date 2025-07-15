@@ -11,54 +11,6 @@
   color: #a5a4a4;
 }
 
-div.trafficBars {
-  -webkit-text-size-adjust: 100%;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  line-height: 1.42857143;
-  font-weight: 400;
-  letter-spacing: .5px;
-  font-kerning: auto;
-  -webkit-font-smoothing: antialiased;
-  font-family: Lato, sans-serif;
-  font-size: 14px;
-  color: inherit;
-  box-sizing: border-box;
-  display: inline-block;
-  vertical-align: middle;
-  width: 18px;
-  height: 18px;
-  margin: 0 20px 0 5px;
-}
-
-div.trafficBars div {
-  height: 2px;
-  background-color: #cdcecf;
-  border: 1px solid #cdcecf;
-  border-radius: 5px;
-  margin-bottom: 2px;
-}
-
-div.trafficBars div:nth-child(1) {
-  width: 100%;
-}
-
-div.trafficBars div:nth-child(2) {
-  width: 75%;
-}
-
-div.trafficBars div:nth-child(3) {
-  width: 50%;
-}
-
-div.trafficBars div:nth-child(4) {
-  width: 25%;
-}
-
-div.trafficBars div.activated {
-  background-color: #3425af;
-  border-color: #3425af;
-}
-
 body {
   margin: 0;
 }
@@ -143,4 +95,22 @@ body {
 
 .logout-menu-item:hover .anticon {
   color: white !important;
+}
+
+.vjs-skip-intro {
+  position: absolute;
+  bottom: 150px;
+  right: 50px;
+  z-index: 1;
+  background-color: hsl(0, 0%, 0%) !important;
+  box-shadow: 0 2px 4px rgb(255, 255, 255) !important;
+  font-weight: bold;
+  padding: 12px 24px;
+  font-size: 16px !important;
+  color: hsl(0, 0%, 100%) !important;
+  cursor: pointer;
+}
+
+.vjs-skip-intro:hover {
+  background-color: rgba(0, 0, 0, 0.9);
 }

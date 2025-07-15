@@ -22,3 +22,5 @@ yarn-error.log*
 dockerfile
 
 #custom
+.env.local
+.env.example

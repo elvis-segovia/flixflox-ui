@@ -20,7 +20,7 @@ export const VideoCard: React.FC<ListVideoCardProps> = ({ videos }) => {
             {
                 videos.map((video, index) => {
                     return (
-                        <Link to={`/play/${video.uuid}`} key={`player-${index}`}>
+                        <Link to={`/web/play/${video.uuid}`} key={`player-${index}`}>
                             <Col span={8}>
                                 <Card
                                     key={index}

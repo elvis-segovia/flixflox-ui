@@ -1,13 +1,9 @@
-import { Outlet, Navigate, useLocation } from "react-router-dom";
+import { Outlet, Navigate } from "react-router-dom";
 import { useAuth } from "./authProvider";
 import LoadingPage from "../../pages/admin/loading";
 
-type UserRole = "admin" | "user" | "guest";
-
 export const ProtectedRoutes: React.FC = () => {
-    const { isAuthenticated, isLoading, error, userRole } = useAuth();
-    const location = useLocation();
-
+    const { isAuthenticated, isLoading, error } = useAuth();
     // Show loading state while checking authentication
     if (isLoading) {
         return <LoadingPage />;
@@ -17,13 +13,6 @@ export const ProtectedRoutes: React.FC = () => {
     if (error || !isAuthenticated) {
         return <Navigate to="/login" replace />;
     }
-
-    // Redirect based on user role
-    const redirectPath = {
-        admin: "/dashboard",
-        user: "/",
-        guest: "/login",
-    }[userRole as UserRole] || "/";
     
 
     // Redirect based on user role
