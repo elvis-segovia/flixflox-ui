@@ -58,7 +58,7 @@ export const CatalogList: React.FC = () => {
                 <Space>
                     {record.type === "tvshow" && (
                         <Tooltip title="Add">
-                            <Link to={`/add`}>
+                            <Link to={`/dashboard/movies/add/${record.uuid}`}>
                                 <Button
                                     type="default"
                                     icon={<PlusSquareOutlined />}

@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MainBlock } from "../../../components";
 import { Form, GetProp, message, notification, Tabs, UploadFile, UploadProps } from "antd";
 import { MoviesForm, TvShowForm } from "./forms";
 import { CatalogController } from "../../../controllers";
+import { useParams } from "react-router-dom";
 
 interface CatalogValues {
     title: string;
@@ -27,9 +28,22 @@ const catalogCtrl = new CatalogController();
 
 export const CatalogCreate: React.FC = () => {
     const [form] = Form.useForm();
+    const { uuid } = useParams();
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [uploading, setUploading] = useState<boolean>(false);
     const [activeTab, setActiveTab] = useState<string | null>('movie');
+
+    const fetchCatalog = async () => {
+        try {
+            setActiveTab('tvshow');
+            if (uuid) {
+                const catalog = await catalogCtrl.getCatalog(uuid);
+                form.setFieldsValue(catalog.data);
+            }
+        } catch (error) {
+            console.error('Error fetching catalog:', error);
+        }
+    }
 
     const props: UploadProps = {
         name: 'file',
@@ -136,20 +150,28 @@ export const CatalogCreate: React.FC = () => {
         await handleUpload(values);
     }
 
+    useEffect(() => {
+        if (uuid) {
+            fetchCatalog();
+        }
+    }, [uuid]);
+
     return (
         <MainBlock title="Add Catalog" showBreadcrumb={true}>
-            <Tabs defaultActiveKey="movie" onChange={onChangeTab}>
-                <Tabs.TabPane tab="Movie" key="movie">
-                    {activeTab === 'movie' &&
-                        <MoviesForm
-                            form={form}
-                            onCreate={onCreate}
-                            uploadProps={props}
-                            saving={uploading}
-                            disabled={activeTab !== 'movie'}
-                        />
-                    }
-                </Tabs.TabPane>
+            <Tabs onChange={onChangeTab} activeKey={activeTab || 'movie'}>
+                {!uuid &&
+                    <Tabs.TabPane tab="Movie" key="movie">
+                        {activeTab === 'movie' &&
+                            <MoviesForm
+                                form={form}
+                                onCreate={onCreate}
+                                uploadProps={props}
+                                saving={uploading}
+                                disabled={activeTab !== 'movie'}
+                            />
+                        }
+                    </Tabs.TabPane>
+                }
                 <Tabs.TabPane tab="Tv Show" key="tvshow">
                     {activeTab === 'tvshow' &&
                         <TvShowForm

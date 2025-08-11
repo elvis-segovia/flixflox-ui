@@ -26,6 +26,13 @@ export const menuItems = [
                 to: '/dashboard/movies/add',
                 component: <CatalogCreate />,
                 show: false
+            },
+            {
+                key: '/dashboard/movies/add/:uuid',
+                label: 'Add',
+                to: '/dashboard/movies/add/:uuid',
+                component: <CatalogCreate />,
+                show: false
             }
         ]
     },
