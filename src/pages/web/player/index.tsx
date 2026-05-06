@@ -2,9 +2,8 @@ import React, { useEffect, useState } from "react";
 import { VideoPlayer } from "../../../components/video";
 import { Link, useParams } from "react-router-dom";
 import { CatalogController } from "../../../controllers";
-import { Card, Space, Spin, Tabs, message } from "antd";
-import Meta from "antd/es/card/Meta";
-import { MainBlock } from "../../../components";
+import { Spin, message } from "antd";
+import { PlayCircleFilled } from "@ant-design/icons";
 
 interface Video {
     id: string;
@@ -29,15 +28,21 @@ interface Video {
 
 const catalogCtrl = new CatalogController();
 
-const EpisodeCard: React.FC<{ id: any; season: any; episode: any, video: Video }> = ({ id, season, episode, video }) => (
+const EpisodeCard: React.FC<{ id: any; season: any; episode: any; video: Video; isActive?: boolean }> = ({ id, season, episode, video, isActive }) => (
     <Link to={`/web/play/${id}/season/${season}/episode/${episode.episode_number}`}>
-        <Card
-            hoverable
-            style={{ width: 240 }}
-            cover={<img alt="example" src={video.image || "https://placehold.co/240x135"} />}
-        >
-            <Meta title={`Episode ${episode.episode_number}`} description={episode.title} />
-        </Card>
+        <div className={`stream-episode-card ${isActive ? 'stream-episode-card-active' : ''}`}>
+            <div className="stream-episode-thumb">
+                <img alt={episode.title} src={video.image || "https://placehold.co/320x180/1a1a1a/666"} />
+                <div className="stream-episode-play-overlay">
+                    <PlayCircleFilled />
+                </div>
+                <span className="stream-episode-number">E{episode.episode_number}</span>
+            </div>
+            <div className="stream-episode-info">
+                <div className="stream-episode-title">Episode {episode.episode_number}</div>
+                <div className="stream-episode-subtitle">{episode.title}</div>
+            </div>
+        </div>
     </Link>
 );
 
@@ -47,6 +52,7 @@ export const Player: React.FC = () => {
     const [sources, setSources] = useState<any>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [activeSeason, setActiveSeason] = useState<number>(0);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -54,16 +60,13 @@ export const Player: React.FC = () => {
                 try {
                     if (season) {
                         const res = await catalogCtrl.getEpisode(id, season)
-                        setSources(res.data.map((episode: any) => {
-                            return {
-                                "id": episode.episode,
-                                "src": `${import.meta.env.VITE_STREAMAPI_URL}${import.meta.env.VITE_STREAMAPI_PREFIX}/videos/stream/${episode.file_path}`,
-                                "intro_start_time": episode.intro_start_time || "",
-                                "intro_end_time": episode.intro_end_time || "",
-                                "next_episode_time": episode.next_episode_time || ""
-                            }
-                        }
-                        ))
+                        setSources(res.data.map((episode: any) => ({
+                            "id": episode.episode,
+                            "src": `${import.meta.env.VITE_STREAMAPI_URL}${import.meta.env.VITE_STREAMAPI_PREFIX}/videos/stream/${episode.file_path}`,
+                            "intro_start_time": episode.intro_start_time || "",
+                            "intro_end_time": episode.intro_end_time || "",
+                            "next_episode_time": episode.next_episode_time || ""
+                        })));
                     } else {
                         const res = await catalogCtrl.getCatalog(id);
                         setVideo(res.data);
@@ -82,55 +85,98 @@ export const Player: React.FC = () => {
 
     if (loading) {
         return (
-            <Spin
-                size="large"
-                tip="Loading video..."
-                style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: "100vh"
-                }}
-            />
+            <div className="stream-loading">
+                <Spin size="large" />
+            </div>
         );
     }
 
-    if (error) {
-        return <div>{error}</div>;
-    }
-
-    if (!video) {
-        return <div>Video not available</div>;
+    if (error || !video) {
+        return (
+            <div className="stream-empty">
+                <h2>{error || "Video not available"}</h2>
+            </div>
+        );
     }
 
     return (
-        <>
+        <div className="stream-player-page">
             {video.type === 'tvshow' && sources.length === 0 ? (
-                <MainBlock>
-                    <Tabs
-                        defaultActiveKey="1"
-                        items={video.seasons?.map((season, index) => ({
-                            label: `Season ${season.season_number}`,
-                            key: index.toString(),
-                            children: (
-                                <Space size="middle" style={{ display: 'flex' }}>
-                                    {season.episodes.map((episode, idx) => (
-                                        <EpisodeCard key={idx} id={id} episode={episode} season={season.season_number} video={video} />
-                                    ))}
-                                </Space>
-                            ),
-                        }))}
-                    />
-                </MainBlock>
+                <>
+                    {/* TV Show Hero */}
+                    <div className="stream-show-hero" style={{
+                        backgroundImage: `url(${video.image || ''})`,
+                    }}>
+                        <div className="stream-hero-gradient" />
+                        <div className="stream-show-hero-content">
+                            <h1>{video.title}</h1>
+                            {video.release_year && <span className="stream-show-year">{video.release_year}</span>}
+                        </div>
+                    </div>
+
+                    {/* Season Tabs */}
+                    <div className="stream-seasons">
+                        <div className="stream-season-tabs">
+                            {video.seasons?.map((s, index) => (
+                                <button
+                                    key={index}
+                                    className={`stream-season-tab ${activeSeason === index ? 'active' : ''}`}
+                                    onClick={() => setActiveSeason(index)}
+                                >
+                                    Season {s.season_number}
+                                </button>
+                            ))}
+                        </div>
+                        <div className="stream-episodes-grid">
+                            {video.seasons?.[activeSeason]?.episodes.map((ep, idx) => (
+                                <EpisodeCard
+                                    key={idx}
+                                    id={id}
+                                    episode={ep}
+                                    season={video.seasons![activeSeason].season_number}
+                                    video={video}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                </>
             ) : (
-                <div className="player-container">
+                <div className="stream-player-container">
                     <VideoPlayer
                         id={episode || "0"}
                         video={sources.length > 0 ? sources : video}
                         title={video.title}
                     />
+                    {/* Episode list below player for TV shows */}
+                    {video.type === 'tvshow' && video.seasons && (
+                        <div className="stream-seasons" style={{ marginTop: 24 }}>
+                            <div className="stream-season-tabs">
+                                {video.seasons.map((s, index) => (
+                                    <button
+                                        key={index}
+                                        className={`stream-season-tab ${(season && s.season_number === parseInt(season)) ? 'active' : activeSeason === index ? 'active' : ''}`}
+                                        onClick={() => setActiveSeason(index)}
+                                    >
+                                        Season {s.season_number}
+                                    </button>
+                                ))}
+                            </div>
+                            <div className="stream-episodes-grid">
+                                {video.seasons[season ? video.seasons.findIndex(s => s.season_number === parseInt(season)) : activeSeason]?.episodes.map((ep, idx) => (
+                                    <EpisodeCard
+                                        key={idx}
+                                        id={id}
+                                        episode={ep}
+                                        season={video.seasons![season ? video.seasons!.findIndex(s => s.season_number === parseInt(season)) : activeSeason].season_number}
+                                        video={video}
+                                        isActive={episode ? ep.episode_number === parseInt(episode) : false}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
             )}
-        </>
+        </div>
     );
 };

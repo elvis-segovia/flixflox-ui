@@ -5,8 +5,10 @@ import { Avatar, Button, Dropdown, Layout, Menu, Space, theme, Typography } from
 import { Outlet } from 'react-router-dom';
 import { Header } from 'antd/es/layout/layout';
 import { APP_NAME } from '../../strings';
-import { DownOutlined, LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined, UserOutlined } from '@ant-design/icons';
+import { DownOutlined, LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined, MoonOutlined, SunOutlined, UserOutlined } from '@ant-design/icons';
 import { useAuth } from '../authentication/authProvider';
+import { useTheme } from '../theme/themeProvider';
+import Logo from '../../assets/logo.png';
 
 const { Sider } = Layout;
 const { Title } = Typography;
@@ -29,20 +31,20 @@ const siderStyle: React.CSSProperties = {
 
 export const MainMenu: React.FC<MainMenuProps> = ({ menuItems }) => {
     const [collapsed, setCollapsed] = useState(false);
-    //set current key
     const location = useLocation();
     const [openKeys, setOpenKeys] = useState<string[]>([]);
     const currentPath = location.pathname.split('/').slice(2, 3).filter(elm => elm).join('/')
     const currentKey = useMemo(() => menuItems.find((item) => item?.key?.toString().includes(currentPath))?.key?.toString() || '', [currentPath, menuItems]);
     const auth = useAuth();
+    const { mode, toggleTheme } = useTheme();
     const {
-        token: { colorBgContainer }
+        token: { colorBgContainer, colorText, colorTextSecondary }
     } = theme.useToken()
-    // close submenus on deselect
+
     const onSelect: MenuProps['onSelect'] = ({ key }) => {
         if (openKeys.includes(key as string)) return;
     }
-    // open one submenu on select
+
     const onOpenChange: MenuProps['onOpenChange'] = (keys) => {
         setOpenKeys(keys as string[]);
     }
@@ -67,11 +69,11 @@ export const MainMenu: React.FC<MainMenuProps> = ({ menuItems }) => {
                 <div className="logo-container">
                     <div className="logo-content">
                         {collapsed && (
-                            <img src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg" alt="Logo" className="logo-image" />
+                            <img src={Logo} alt="Logo" className="logo-image" />
                         )}
                         {!collapsed && (
                             <>
-                                <img src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg" alt="Logo" className="logo-image" />
+                                <img src={Logo} alt="Logo" className="logo-image" />
                                 <Space className="title-space">
                                     <div className="title-container">
                                         <Title level={5} ellipsis className="main-title">
@@ -93,7 +95,9 @@ export const MainMenu: React.FC<MainMenuProps> = ({ menuItems }) => {
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     height: '64px',
-                    boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.03)'
+                    boxShadow: mode === 'dark'
+                        ? '0 1px 2px 0 rgba(0, 0, 0, 0.2)'
+                        : '0 1px 2px 0 rgba(0, 0, 0, 0.03)'
                 }}>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         <Button
@@ -110,12 +114,26 @@ export const MainMenu: React.FC<MainMenuProps> = ({ menuItems }) => {
                             }}
                         />
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <Button
+                            type="text"
+                            icon={mode === 'dark' ? <SunOutlined /> : <MoonOutlined />}
+                            onClick={toggleTheme}
+                            style={{
+                                fontSize: '18px',
+                                width: 40,
+                                height: 40,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                color: mode === 'dark' ? '#fbbf24' : colorTextSecondary,
+                            }}
+                        />
                         <Dropdown menu={{ items: logout }} placement="bottomRight" trigger={['click']}>
                             <div className="user-dropdown">
                                 <Avatar
                                     style={{
-                                        backgroundColor: '#1890ff',
+                                        backgroundColor: '#e8611a',
                                         display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: 'center'
@@ -123,13 +141,13 @@ export const MainMenu: React.FC<MainMenuProps> = ({ menuItems }) => {
                                     icon={<UserOutlined />}
                                 />
                                 <span style={{
-                                    color: 'rgba(0, 0, 0, 0.85)',
+                                    color: colorText,
                                     fontSize: '14px',
                                     fontWeight: 500
                                 }}>
                                     {auth.username}
                                 </span>
-                                <DownOutlined style={{ fontSize: '12px', color: 'rgba(0, 0, 0, 0.45)' }} />
+                                <DownOutlined style={{ fontSize: '12px', color: colorTextSecondary }} />
                             </div>
                         </Dropdown>
                     </div>

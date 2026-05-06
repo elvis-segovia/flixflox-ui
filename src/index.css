@@ -13,8 +13,14 @@
 
 body {
   margin: 0;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background: #141414;
+  color: #e5e5e5;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* Logo */
 .logo-container {
   padding: 16px;
   margin-bottom: 8px;
@@ -28,8 +34,8 @@ body {
 }
 
 .logo-image {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   object-fit: contain;
 }
 
@@ -60,20 +66,22 @@ body {
   margin-top: 2px;
 }
 
+/* User dropdown */
 .user-dropdown {
   display: flex;
   align-items: center;
   gap: 8px;
   cursor: pointer;
   padding: 4px 8px;
-  border-radius: 4px;
+  border-radius: 6px;
   transition: all 0.2s;
 }
 
 .user-dropdown:hover {
-  background-color: rgba(0, 0, 0, 0.04);
+  background-color: rgba(128, 128, 128, 0.1);
 }
 
+/* Profile selection cards */
 .user-card {
   transition: all 0.3s ease;
 }
@@ -83,6 +91,7 @@ body {
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4) !important;
 }
 
+/* Logout */
 .logout-menu-item {
   cursor: pointer;
   transition: all 0.2s ease;
@@ -97,20 +106,605 @@ body {
   color: white !important;
 }
 
+/* Video player */
 .vjs-skip-intro {
   position: absolute;
   bottom: 150px;
   right: 50px;
   z-index: 1;
-  background-color: hsl(0, 0%, 0%) !important;
-  box-shadow: 0 2px 4px rgb(255, 255, 255) !important;
-  font-weight: bold;
-  padding: 12px 24px;
-  font-size: 16px !important;
-  color: hsl(0, 0%, 100%) !important;
+  background-color: rgba(255, 255, 255, 0.15) !important;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  font-weight: 600;
+  padding: 12px 28px;
+  font-size: 15px !important;
+  color: #fff !important;
   cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  letter-spacing: 0.5px;
 }
 
 .vjs-skip-intro:hover {
-  background-color: rgba(0, 0, 0, 0.9);
+  background-color: rgba(255, 255, 255, 0.25) !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Smooth theme transitions */
+[data-theme] .ant-layout,
+[data-theme] .ant-layout-sider,
+[data-theme] .ant-layout-header,
+[data-theme] .ant-card,
+[data-theme] .ant-input,
+[data-theme] .ant-table {
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* ===== NETFLIX / HBO MAX STYLE ===== */
+
+/* Web Navbar */
+.web-navbar {
+  transition: background 0.4s ease, backdrop-filter 0.4s ease !important;
+}
+
+.web-nav-menu .ant-menu-item {
+  color: #b3b3b3 !important;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.web-nav-menu .ant-menu-item:hover,
+.web-nav-menu .ant-menu-item-selected {
+  color: #ffffff !important;
+}
+
+.web-nav-menu .ant-menu-item-selected::after,
+.web-nav-menu .ant-menu-item::after {
+  border-bottom: none !important;
+}
+
+.web-nav-menu .ant-menu-item a {
+  color: inherit !important;
+  text-decoration: none;
+}
+
+/* Hero Banner */
+.stream-hero {
+  position: relative;
+  width: 100%;
+  height: 80vh;
+  min-height: 500px;
+  max-height: 800px;
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  margin-top: -68px;
+}
+
+.stream-hero-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(20, 20, 20, 0.1) 0%,
+    rgba(20, 20, 20, 0.4) 50%,
+    rgba(20, 20, 20, 0.9) 80%,
+    #141414 100%
+  );
+}
+
+.stream-hero-content {
+  position: absolute;
+  bottom: 15%;
+  left: 48px;
+  max-width: 600px;
+  z-index: 2;
+}
+
+.stream-hero-title {
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 16px 0;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+}
+
+.stream-hero-description {
+  font-size: 1.15rem;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0 0 24px 0;
+  line-height: 1.5;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.stream-hero-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.stream-hero-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  border-radius: 4px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
+}
+
+.stream-hero-btn-play {
+  background: #fff;
+  color: #141414;
+}
+
+.stream-hero-btn-play:hover {
+  background: rgba(255, 255, 255, 0.8);
+  color: #141414;
+}
+
+.stream-hero-btn-info {
+  background: rgba(109, 109, 110, 0.7);
+  color: #fff;
+}
+
+.stream-hero-btn-info:hover {
+  background: rgba(109, 109, 110, 0.5);
+  color: #fff;
+}
+
+/* Catalog Rows Container */
+.stream-catalog {
+  background: #141414;
+  min-height: 100vh;
+}
+
+.stream-catalog-rows {
+  position: relative;
+  margin-top: -80px;
+  z-index: 3;
+  padding-bottom: 60px;
+}
+
+/* Content Row */
+.stream-row {
+  padding: 0 48px;
+  margin-bottom: 40px;
+}
+
+.stream-row-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #e5e5e5;
+  margin: 0 0 12px 0;
+}
+
+.stream-row-container {
+  position: relative;
+}
+
+.stream-row-scroll {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 12px 0;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.stream-row-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.stream-row-arrow {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 48px;
+  z-index: 10;
+  background: rgba(20, 20, 20, 0.7);
+  border: none;
+  color: #fff;
+  font-size: 2.5rem;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stream-row-container:hover .stream-row-arrow {
+  opacity: 1;
+}
+
+.stream-row-arrow:hover {
+  background: rgba(20, 20, 20, 0.9);
+}
+
+.stream-row-arrow-left {
+  left: -48px;
+  border-radius: 0 4px 4px 0;
+}
+
+.stream-row-arrow-right {
+  right: -48px;
+  border-radius: 4px 0 0 4px;
+}
+
+/* Stream Card (Netflix-style) */
+.stream-card-link {
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.stream-card {
+  width: 230px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #1a1a1a;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, z-index 0s 0.3s;
+  cursor: pointer;
+  position: relative;
+}
+
+.stream-card:hover {
+  transform: scale(1.15);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.75);
+  z-index: 20;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, z-index 0s;
+}
+
+.stream-card-image {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+.stream-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: filter 0.3s ease;
+}
+
+.stream-card:hover .stream-card-image img {
+  filter: brightness(0.6);
+}
+
+.stream-card-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.stream-card:hover .stream-card-overlay {
+  opacity: 1;
+}
+
+.stream-card-play-icon {
+  font-size: 48px;
+  color: #fff;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5));
+}
+
+.stream-card-info {
+  padding: 10px 12px;
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.stream-card:hover .stream-card-info {
+  opacity: 1;
+  max-height: 80px;
+}
+
+.stream-card-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stream-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  font-size: 0.78rem;
+  color: #999;
+}
+
+.stream-card-badge {
+  background: rgba(232, 97, 26, 0.2);
+  color: #e8611a;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* Loading & Empty States */
+.stream-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  background: #141414;
+}
+
+.stream-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  background: #141414;
+  text-align: center;
+}
+
+.stream-empty-icon {
+  font-size: 4rem;
+  margin-bottom: 16px;
+}
+
+.stream-empty h2 {
+  color: #e5e5e5;
+  font-size: 1.5rem;
+  margin: 0 0 8px 0;
+}
+
+.stream-empty p {
+  color: #808080;
+  font-size: 1rem;
+}
+
+/* ===== PLAYER PAGE ===== */
+.stream-player-page {
+  background: #141414;
+  min-height: 100vh;
+}
+
+.stream-player-container {
+  padding: 68px 0 0 0;
+}
+
+/* TV Show Hero (smaller than catalog hero) */
+.stream-show-hero {
+  position: relative;
+  width: 100%;
+  height: 50vh;
+  min-height: 350px;
+  background-size: cover;
+  background-position: center;
+  margin-top: -68px;
+}
+
+.stream-show-hero-content {
+  position: absolute;
+  bottom: 15%;
+  left: 48px;
+  z-index: 2;
+}
+
+.stream-show-hero-content h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 0;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+.stream-show-year {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+}
+
+/* Season Tabs */
+.stream-seasons {
+  padding: 0 48px 60px;
+}
+
+.stream-season-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 24px;
+  border-bottom: 2px solid #333;
+  padding-bottom: 0;
+}
+
+.stream-season-tab {
+  background: none;
+  border: none;
+  color: #808080;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 12px 24px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+}
+
+.stream-season-tab:hover {
+  color: #b3b3b3;
+}
+
+.stream-season-tab.active {
+  color: #fff;
+  border-bottom-color: #e8611a;
+}
+
+/* Episodes Grid */
+.stream-episodes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+/* Episode Card */
+.stream-episode-card {
+  display: flex;
+  gap: 12px;
+  background: #1a1a1a;
+  border-radius: 6px;
+  overflow: hidden;
+  transition: background 0.2s ease;
+  cursor: pointer;
+}
+
+.stream-episode-card:hover {
+  background: #2a2a2a;
+}
+
+.stream-episode-card-active {
+  outline: 2px solid #e8611a;
+  outline-offset: -2px;
+}
+
+.stream-episode-thumb {
+  position: relative;
+  width: 160px;
+  min-width: 160px;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+.stream-episode-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.stream-episode-play-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  font-size: 28px;
+  color: #fff;
+}
+
+.stream-episode-card:hover .stream-episode-play-overlay {
+  opacity: 1;
+}
+
+.stream-episode-number {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.stream-episode-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 8px 12px 8px 0;
+}
+
+.stream-episode-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e5e5e5;
+}
+
+.stream-episode-subtitle {
+  font-size: 0.82rem;
+  color: #808080;
+  margin-top: 4px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .stream-hero {
+    height: 60vh;
+    min-height: 350px;
+  }
+
+  .stream-hero-content {
+    left: 20px;
+    right: 20px;
+    bottom: 20%;
+  }
+
+  .stream-hero-title {
+    font-size: 2rem;
+  }
+
+  .stream-hero-description {
+    font-size: 0.95rem;
+    -webkit-line-clamp: 2;
+  }
+
+  .stream-hero-btn {
+    padding: 10px 20px;
+    font-size: 0.95rem;
+  }
+
+  .stream-row {
+    padding: 0 16px;
+  }
+
+  .stream-card {
+    width: 150px;
+  }
+
+  .stream-card:hover {
+    transform: scale(1.05);
+  }
+
+  .stream-seasons {
+    padding: 0 16px 40px;
+  }
+
+  .stream-episodes-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stream-row-arrow {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .stream-hero-title {
+    font-size: 1.5rem;
+  }
+
+  .stream-card {
+    width: 130px;
+  }
 }

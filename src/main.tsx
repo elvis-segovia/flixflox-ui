@@ -9,6 +9,7 @@ import { AuthProvider } from './components/authentication/authProvider.tsx'
 import { ProtectedRoutes } from './components/authentication/protectedRoutes.tsx'
 import { Movies, Player, Users, Web } from './pages/web'
 import LoginForm from './pages/admin/login/index.tsx'
+import { ThemeProvider } from './components/theme/themeProvider.tsx'
 
 const getChildRoutes = (item: any) => {
 	if (item.children) {
@@ -23,6 +24,7 @@ const getChildRoutes = (item: any) => {
 }
 
 const router = (
+	<ThemeProvider>
 	<Router>
 		<AuthProvider>
 			<Routes>
@@ -45,6 +47,7 @@ const router = (
 			</Routes>
 		</AuthProvider>
 	</Router>
+	</ThemeProvider>
 )
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
