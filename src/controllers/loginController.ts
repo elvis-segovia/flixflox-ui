@@ -1,10 +1,11 @@
 import axios from "axios";
+import { env } from "../env";
 
 export class LoginController {
     api_url: string | undefined;
 
     constructor() {
-        this.api_url = `${import.meta.env.VITE_STREAMAPI_URL}${import.meta.env.VITE_STREAMAPI_PREFIX}`;
+        this.api_url = `${env.VITE_STREAMAPI_URL}${env.VITE_STREAMAPI_PREFIX}`;
     }
 
     // Save token to localStorage

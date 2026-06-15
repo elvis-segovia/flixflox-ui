@@ -4,6 +4,7 @@ import { Link, useParams } from "react-router-dom";
 import { CatalogController } from "../../../controllers";
 import { Spin, message } from "antd";
 import { PlayCircleFilled } from "@ant-design/icons";
+import { env } from "../../../env";
 
 interface Video {
     id: string;
@@ -22,6 +23,7 @@ interface Video {
         episodes: Array<{
             episode_number: number;
             title: string;
+            thumbail_path: string;
         }>;
     }>;
 }
@@ -62,7 +64,8 @@ export const Player: React.FC = () => {
                         const res = await catalogCtrl.getEpisode(id, season)
                         setSources(res.data.map((episode: any) => ({
                             "id": episode.episode,
-                            "src": `${import.meta.env.VITE_STREAMAPI_URL}${import.meta.env.VITE_STREAMAPI_PREFIX}/videos/stream/${episode.file_path}`,
+                            "src": `${env.VITE_STREAMAPI_URL}${env.VITE_STREAMAPI_PREFIX}/videos/stream/${episode.file_path}`,
+                            "poster": `${env.VITE_STREAMAPI_URL}${env.VITE_STREAMAPI_PREFIX}/videos/stream/${episode.thumbail_path}`,
                             "intro_start_time": episode.intro_start_time || "",
                             "intro_end_time": episode.intro_end_time || "",
                             "next_episode_time": episode.next_episode_time || ""

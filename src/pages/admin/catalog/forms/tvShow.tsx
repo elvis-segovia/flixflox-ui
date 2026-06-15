@@ -1,7 +1,9 @@
-import { Button, Card, Form, Input, InputNumber, Select, Space, TimePicker, Upload } from "antd"
+import { Button, Card, Form, Input, InputNumber, Select, Space, TimePicker, Upload, UploadProps } from "antd"
 import { MinusCircleOutlined, PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import dayjs from 'dayjs';
+import { env } from "../../../../env";
+import { useState } from "react";
 
 interface TvShowFormProps {
     form: any;
@@ -11,6 +13,12 @@ interface TvShowFormProps {
     uploadProps: any;
 }
 
+const getBase64 = (img: Blob, callback: (url: string) => void) => {
+    const reader = new FileReader();
+    reader.addEventListener('load', () => callback(reader.result as string));
+    reader.readAsDataURL(img);
+};
+
 
 export const TvShowForm: React.FC<TvShowFormProps> = ({ form, onCreate, saving, disabled }) => {
     const genres = [
@@ -19,6 +27,22 @@ export const TvShowForm: React.FC<TvShowFormProps> = ({ form, onCreate, saving, 
         'Horror', 'Music', 'Musical', 'Mystery', 'Romance', 'Sci-Fi',
         'Sport', 'Thriller', 'War', 'Western'
     ];
+    const [imageUrl, setImageUrl] = useState<string>()
+
+    const uploadButton = (
+        <button style={{ border: 0, background: 'none' }} type="button">
+            <PlusOutlined />
+            <div style={{ marginTop: 8 }}>Upload</div>
+        </button>
+    );
+
+    const handleChange: UploadProps['onChange'] = (info) => {
+        getBase64(info.fileList[0].originFileObj as Blob, (url) => {
+            setImageUrl(url);
+        });
+
+    }
+
 
     const normFile = (e: any) => {
         if (Array.isArray(e)) {
@@ -98,6 +122,23 @@ export const TvShowForm: React.FC<TvShowFormProps> = ({ form, onCreate, saving, 
                     placeholder="Enter rating (0.0 - 10.0)"
                 />
             </Form.Item>
+            <Form.Item name="bg_image" label="Background" rules={[{ required: true, message: 'Please input the background!' }]} getValueFromEvent={normFile}>
+                <Upload
+                    listType="picture-card"
+                    accept=".png, .jpg, .jpeg"
+                    showUploadList={false}
+                    onChange={handleChange}
+                    beforeUpload={() => {
+                        return false;
+                    }}
+                >
+                    {imageUrl ? (
+                        <img draggable={false} src={imageUrl} alt="avatar" style={{ width: '100%' }} />
+                    ) : (
+                        uploadButton
+                    )}
+                </Upload>
+            </Form.Item>
             <Form.List name="show_details">
                 {(fields, { add, remove }) => (
                     <Space direction="vertical" size="middle" style={{ display: 'flex', width: '100%' }}>
@@ -147,8 +188,8 @@ export const TvShowForm: React.FC<TvShowFormProps> = ({ form, onCreate, saving, 
                                         label="Intro Start Time"
                                         tooltip="Time when the intro starts in the movie"
                                     >
-                                        <TimePicker 
-                                            showNow={false} 
+                                        <TimePicker
+                                            showNow={false}
                                             format="HH:mm:ss"
                                             onChange={(time) => {
                                                 if (time) {
@@ -179,8 +220,8 @@ export const TvShowForm: React.FC<TvShowFormProps> = ({ form, onCreate, saving, 
                                             }),
                                         ]}
                                     >
-                                        <TimePicker 
-                                            showNow={false} 
+                                        <TimePicker
+                                            showNow={false}
                                             format="HH:mm:ss"
                                             onChange={(time) => {
                                                 if (time) {
@@ -198,8 +239,8 @@ export const TvShowForm: React.FC<TvShowFormProps> = ({ form, onCreate, saving, 
                                     name={[name, "next_episode_time"]}
                                     label="Next Episode"
                                 >
-                                    <TimePicker 
-                                        showNow={false} 
+                                    <TimePicker
+                                        showNow={false}
                                         format="HH:mm:ss"
                                         onChange={(time) => {
                                             if (time) {
@@ -271,7 +312,7 @@ export const TvShowForm: React.FC<TvShowFormProps> = ({ form, onCreate, saving, 
                 <Button type="primary" htmlType="submit" loading={saving}>
                     {saving ? 'Saving...' : 'Save'}
                 </Button>
-                <Link to={`${import.meta.env.VITE_STREAMAPI_PREFIX_ADMIN}/movies`} style={{ marginLeft: 8 }}>
+                <Link to={`${env.VITE_STREAMAPI_PREFIX_ADMIN}/movies`} style={{ marginLeft: 8 }}>
                     <Button>
                         Cancel
                     </Button>

@@ -1,11 +1,41 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { DeleteOutlined, EditOutlined, PlusSquareOutlined } from "@ant-design/icons";
 import { MainBlock, SearchTable } from "../../../components";
 import { Button, Space, Tooltip } from "antd";
 import { Link } from "react-router-dom";
+import { GenresController } from "../../../controllers";
+import { GenreForm } from "./create";
 
-export const CategoriesList: React.FC = () => {
-    const [dataSource, _setDataSource] = useState<any[]>([]);
+const genreCtrl = new GenresController();
+
+export const GenresList: React.FC = () => {
+    const [dataSource, setDataSource] = useState<any[]>([]);
+    const [refresh, setRefresh] = useState<boolean>(true);
+    const [open, setOpen] = useState<boolean>(false)
+
+    const fetchGenres = async () => {
+        try {
+            const genres = await genreCtrl.listGenres();
+
+            setDataSource(genres.data.map((item: any) => ({
+                ...item,
+                key: item.uuid
+            })));
+        } catch (error) {
+            console.error("Failed to fetch genres:", error);
+        } finally {
+            setRefresh(false);
+        }
+    };
+
+    const handleCreate = useCallback(() => {
+        setOpen(true);
+    }, [open]);
+
+    useEffect(() => {
+        fetchGenres()
+    }, [refresh]);
+
     const columns = [
         {
             title: 'ID',
@@ -13,9 +43,9 @@ export const CategoriesList: React.FC = () => {
             key: 'uuid',
         },
         {
-            title: 'Category',
-            dataIndex: 'category',
-            key: 'category',
+            title: 'Genre',
+            dataIndex: 'genre',
+            key: 'genre',
         },
         {
             title: 'Action',
@@ -53,12 +83,13 @@ export const CategoriesList: React.FC = () => {
         }
     ];
     return (
-        <MainBlock title="Categories" button={
+        <MainBlock title="Genres" button={
             <Space>
-                <Link to="/dashboard/categories/add"><Button type="primary" size="middle" icon={<PlusSquareOutlined />}>Add</Button></Link>
+                <Button type="primary" size="middle" onClick={handleCreate} icon={<PlusSquareOutlined />}>Add</Button>
             </Space>
         }>
             <SearchTable columns={columns} dataSource={dataSource} />
+            <GenreForm title="Add Genre" open={open} setOpen={setOpen} okText="Save" cancelText="Cancel" setRefresh={setRefresh} />
         </MainBlock>
     )
 }

@@ -1,11 +1,12 @@
 import axios, { AxiosInstance } from "axios";
+import { env } from "../env";
 
 export class CatalogController {
     api: AxiosInstance;
 
     constructor() {
         this.api = axios.create({
-            baseURL: `${import.meta.env.VITE_STREAMAPI_URL}${import.meta.env.VITE_STREAMAPI_PREFIX}`,
+            baseURL: `${env.VITE_STREAMAPI_URL}${env.VITE_STREAMAPI_PREFIX}`,
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('authToken')}`
             }
@@ -30,6 +31,10 @@ export class CatalogController {
 
     async createCatalog(data: any): Promise<any> {
         return await this.api.post(`/videos`, data);
+    }
+
+    async uploadBG(id: string, data: any): Promise<any> {
+        return await this.api.put(`/videos/${id}/bg`, data)
     }
 
     async uploadFile(data: any): Promise<any> {

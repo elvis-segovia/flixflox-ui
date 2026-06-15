@@ -2,6 +2,7 @@ import videojs from 'video.js';
 import 'video.js/dist/video-js.css';
 import 'videojs-playlist';
 import React, { useEffect, useRef } from "react";
+import { env } from "../../env";
 
 interface VideoPlayerProps {
     id: string;
@@ -34,7 +35,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ id = "0", video, title
             // Convert single source to array if needed
             const sources = Array.isArray(video) ? video : [{
                 id: 0,
-                src: `${import.meta.env.VITE_STREAMAPI_URL}${import.meta.env.VITE_STREAMAPI_PREFIX}/videos/stream/${video.file_path}`,
+                src: `${env.VITE_STREAMAPI_URL}${env.VITE_STREAMAPI_PREFIX}/videos/stream/${video.file_path}`,
                 ...video
             }];
             // Create playlist items
@@ -48,7 +49,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ id = "0", video, title
                 intro_start_time: source.intro_start_time,
                 intro_end_time: source.intro_end_time,
                 next_episode_time: source.next_episode_time,
-                poster: "https://peach.blender.org/wp-content/uploads/title_anouncement.jpg",
+                poster: source.poster || "https://peach.blender.org/wp-content/uploads/title_anouncement.jpg",
             }));
 
             //current video

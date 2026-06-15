@@ -11,6 +11,7 @@ interface CatalogValues {
     release_year: number;
     genre: string[];
     rating: number;
+    bg_image: any;
     description: string | "";
     cast: string[] | [];
     show_details: [],
@@ -66,7 +67,7 @@ export const CatalogCreate: React.FC = () => {
     const handleUpload = async (values: CatalogValues) => {
         const formData = new FormData();
         formData.append('type', activeTab || "movie");
-
+        formData.append('bg_image', values.bg_image);
         if (activeTab == 'tvshow') {
             if (values.show_details.length === 0) {
                 message.error('Please select at least one file before uploading.');

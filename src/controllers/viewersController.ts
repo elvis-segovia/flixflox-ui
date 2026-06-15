@@ -1,11 +1,12 @@
 import axios, { AxiosInstance } from "axios";
+import { env } from "../env";
 
 export class ViewersController {
     api: AxiosInstance;
 
     constructor() {
         this.api = axios.create({
-            baseURL: `${import.meta.env.VITE_STREAMAPI_URL}${import.meta.env.VITE_STREAMAPI_PREFIX}`,
+            baseURL: `${env.VITE_STREAMAPI_URL}${env.VITE_STREAMAPI_PREFIX}`,
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('authToken')}`
             }

@@ -2,6 +2,7 @@ import { Button, Form, Input, InputNumber, Select, Space, TimePicker, Upload } f
 import { UploadOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
+import { env } from "../../../../env";
 
 interface MovieFormProps {
     form: any;
@@ -178,7 +179,7 @@ export const MoviesForm: React.FC<MovieFormProps> = ({ form, onCreate, saving, d
                 <Button type="primary" htmlType="submit" loading={saving}>
                     {saving ? 'Saving...' : 'Save'}
                 </Button>
-                <Link to={`${import.meta.env.VITE_STREAMAPI_PREFIX_ADMIN}/movies`} style={{ marginLeft: 8 }}>
+                <Link to={`${env.VITE_STREAMAPI_PREFIX_ADMIN}/movies`} style={{ marginLeft: 8 }}>
                     <Button>
                         Cancel
                     </Button>

@@ -1,7 +1,7 @@
 import { TeamOutlined, HomeOutlined, PlayCircleOutlined, UserOutlined, VideoCameraOutlined } from '@ant-design/icons';
 import { Home } from './pages/admin/home';
 import { CatalogCreate, CatalogList } from './pages/admin/catalog';
-import { CategoriesList } from './pages/admin/categories';
+import { GenresList } from './pages/admin/genres';
 import { CastList } from './pages/admin/cast';
 import { UsersCreate, UsersList } from './pages/admin/users';
 
@@ -39,9 +39,9 @@ export const menuItems = [
     {
         key: '/dashboard/categories',
         icon: <VideoCameraOutlined />,
-        label: 'Categories',
-        to: '/dashboard/categories',
-        component: <CategoriesList />
+        label: 'Genres',
+        to: '/dashboard/genres',
+        component: <GenresList />,
     },
     {
         key: '/dashboard/cast',

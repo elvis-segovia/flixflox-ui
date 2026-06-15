@@ -1,12 +1,13 @@
 import React, { useRef } from "react"
 import { Link } from "react-router-dom";
 import { PlayCircleFilled, InfoCircleOutlined } from "@ant-design/icons";
+import { env } from "../../env";
 
 interface VideoCardProps {
     uuid: string;
     title: string;
     description?: string;
-    image?: string;
+    bg_image?: string;
     release_year?: number;
     type?: string;
 }
@@ -16,6 +17,10 @@ interface ListVideoCardProps {
     title?: string;
 }
 
+const getImageBg = (img: string): string => {
+    return img ? `${env.VITE_STREAMAPI_URL}${env.VITE_STREAMAPI_PREFIX}/videos/image/${img}` : "";
+}
+
 const SingleCard: React.FC<{ video: VideoCardProps }> = ({ video }) => {
     return (
         <Link to={`/web/play/${video.uuid}`} className="stream-card-link">
@@ -23,7 +28,7 @@ const SingleCard: React.FC<{ video: VideoCardProps }> = ({ video }) => {
                 <div className="stream-card-image">
                     <img
                         alt={video.title}
-                        src={video.image || "https://placehold.co/300x170/1a1a1a/666?text=No+Image"}
+                        src={`${getImageBg(video.bg_image || "")}` || "https://placehold.co/300x170/1a1a1a/666?text=No+Image"}
                         loading="lazy"
                     />
                     <div className="stream-card-overlay">
@@ -45,7 +50,7 @@ const SingleCard: React.FC<{ video: VideoCardProps }> = ({ video }) => {
 export const HeroCard: React.FC<{ video: VideoCardProps }> = ({ video }) => {
     return (
         <div className="stream-hero" style={{
-            backgroundImage: `url(${video.image || "https://placehold.co/1920x800/1a1a1a/666"})`,
+            backgroundImage: `url(${getImageBg(video.bg_image || "") || "https://placehold.co/1920x800/1a1a1a/666"})`,
         }}>
             <div className="stream-hero-gradient" />
             <div className="stream-hero-content">
