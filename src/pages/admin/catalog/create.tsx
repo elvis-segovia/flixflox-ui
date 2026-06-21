@@ -111,33 +111,37 @@ export const CatalogCreate: React.FC = () => {
                 intro_start_time: values.intro_start_time.format("HH:mm:ss"),
                 intro_end_time: values.intro_end_time.format("HH:mm:ss"),
             }))
-            console.log(formData.get('values'))
             formData.append(`file`, values.file_path as any)
         }
 
         try {
             setUploading(true);
-            const response = await catalogCtrl.uploadFile(formData);
+            if (uuid) {
+                const response = await catalogCtrl.addEpisode(uuid, formData);
 
-            if (response.status === 201) {
-                // const { file_path } = response.data;
-                // values.type = activeTab || 'movie';
-                // const catalogResponse = await catalogCtrl.createCatalog({ ...values, file_path });
-
-                // if (catalogResponse.status === 201) {
-                notification.success({
-                    message: "Upload successful.",
-                    description: "The content has been uploaded successfully."
-                });
-                //     form.resetFields();
-                //     setFileList([]);
-                // } else {
-                //     message.error('Failed to create catalog entry.');
-                // }
+                if (response.status === 200) {
+                    notification.success({
+                        message: "Upload successful.",
+                        description: "The content has been uploaded successfully."
+                    });
+                } else {
+                    const errorData = await response.json();
+                    console.error('Upload failed:', errorData);
+                    message.error('Upload failed. Please try again.');
+                }
             } else {
-                const errorData = await response.json();
-                console.error('Upload failed:', errorData);
-                message.error('Upload failed. Please try again.');
+                const response = await catalogCtrl.uploadFile(formData);
+
+                if (response.status === 201) {
+                    notification.success({
+                        message: "Upload successful.",
+                        description: "The content has been uploaded successfully."
+                    });
+                } else {
+                    const errorData = await response.json();
+                    console.error('Upload failed:', errorData);
+                    message.error('Upload failed. Please try again.');
+                }
             }
         } catch (error) {
             console.error('Error during upload:', error);

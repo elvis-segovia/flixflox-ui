@@ -41,4 +41,8 @@ export class CatalogController {
         return await this.api.post(`/videos/upload`, data);
     }
 
+    async addEpisode(id: string, data: any): Promise<any> {
+        return await this.api.put(`/videos/${id}/new-episode`, data);
+    }
+
 }

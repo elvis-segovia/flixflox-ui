@@ -14,7 +14,6 @@ export const Movies: React.FC = () => {
     useEffect(() => {
         setLoading(true);
         catalogCtrl.listVideosByType(type || 'movie').then((res) => {
-            console.log(res)
             if(res.data.data){
                 setVideos(res.data.data);
             }else{

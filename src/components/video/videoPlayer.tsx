@@ -24,7 +24,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ id = "0", video, title
     const playerRef = useRef<any>(null);  // Changed from videojs.Player
     const skipButtonRef = useRef<HTMLButtonElement | null>(null);
     const nextButtonRef = useRef<HTMLButtonElement | null>(null);
-
+    
     useEffect(() => {
         if (videoRef.current) {
             playerRef.current = videojs(videoRef.current, {
@@ -53,7 +53,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ id = "0", video, title
             }));
 
             //current video
-            const currentVideo = video.type === "movie" ? 0 : sources.findIndex(x => x.id === parseInt(id));
+            const currentVideo = !Array.isArray(video) && video.type === "movie" ? 0 : sources.findIndex(x => Number(x.id) === Number(id));
             let introStartTimeSeconds = timeToSeconds(sources[currentVideo]?.intro_start_time);
             let introEndTimeSeconds = timeToSeconds(sources[currentVideo]?.intro_end_time);
             let nextEpisodeOffset = timeToSeconds(sources[currentVideo]?.intro_end_time);

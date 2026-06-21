@@ -63,7 +63,7 @@ export const Player: React.FC = () => {
                     if (season) {
                         const res = await catalogCtrl.getEpisode(id, season)
                         setSources(res.data.map((episode: any) => ({
-                            "id": episode.episode,
+                            "id": episode.episode_number,
                             "src": `${env.VITE_STREAMAPI_URL}${env.VITE_STREAMAPI_PREFIX}/videos/stream/${episode.file_path}`,
                             "poster": `${env.VITE_STREAMAPI_URL}${env.VITE_STREAMAPI_PREFIX}/videos/stream/${episode.thumbail_path}`,
                             "intro_start_time": episode.intro_start_time || "",
