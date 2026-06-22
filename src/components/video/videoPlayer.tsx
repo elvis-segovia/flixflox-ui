@@ -1,7 +1,7 @@
 import videojs from 'video.js';
 import 'video.js/dist/video-js.css';
 import 'videojs-playlist';
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { env } from "../../env";
 
 interface VideoPlayerProps {
@@ -21,16 +21,21 @@ const timeToSeconds = (timeString: string) => {
 
 export const VideoPlayer: React.FC<VideoPlayerProps> = ({ id = "0", video, title }) => {
     const videoRef = useRef<HTMLVideoElement>(null);
-    const playerRef = useRef<any>(null);  // Changed from videojs.Player
+    const playerRef = useRef<any>(null);
     const skipButtonRef = useRef<HTMLButtonElement | null>(null);
     const nextButtonRef = useRef<HTMLButtonElement | null>(null);
-    
+    const [isFullscreen, setIsFullscreen] = useState(false);
+
     useEffect(() => {
         if (videoRef.current) {
             playerRef.current = videojs(videoRef.current, {
                 controls: true,
                 responsive: true,
                 fluid: true,
+            });
+
+            playerRef.current.on('fullscreenchange', function () {
+                setIsFullscreen(playerRef.current.isFullscreen());
             });
             // Convert single source to array if needed
             const sources = Array.isArray(video) ? video : [{
@@ -154,9 +159,12 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ id = "0", video, title
     }, [video]);
 
 
-
     return (
-        <div style={{ position: 'relative' }}>
+        <div style={{
+            position: 'relative',
+            maxWidth: isFullscreen ? '100%' : '1200px',
+            margin: isFullscreen ? '0' : '0 auto',
+        }}>
             <video
                 ref={videoRef}
                 className="video-js vjs-default-skin"

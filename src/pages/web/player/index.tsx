@@ -11,7 +11,7 @@ interface Video {
     src: string;
     type: string;
     title: string;
-    image?: string;
+    bg_image?: string;
     file_path: string;
     uuid?: string;
     release_year?: number;
@@ -30,23 +30,29 @@ interface Video {
 
 const catalogCtrl = new CatalogController();
 
-const EpisodeCard: React.FC<{ id: any; season: any; episode: any; video: Video; isActive?: boolean }> = ({ id, season, episode, video, isActive }) => (
-    <Link to={`/web/play/${id}/season/${season}/episode/${episode.episode_number}`}>
-        <div className={`stream-episode-card ${isActive ? 'stream-episode-card-active' : ''}`}>
-            <div className="stream-episode-thumb">
-                <img alt={episode.title} src={video.image || "https://placehold.co/320x180/1a1a1a/666"} />
-                <div className="stream-episode-play-overlay">
-                    <PlayCircleFilled />
+const getImageBg = (img: string): string => {
+    return img ? `${env.VITE_STREAMAPI_URL}${env.VITE_STREAMAPI_PREFIX}/videos/image/${img}` : "";
+}
+
+const EpisodeCard: React.FC<{ id: any; season: any; episode: any; isActive?: boolean }> = ({ id, season, episode, isActive }) => {
+    return (
+        <Link to={`/web/play/${id}/season/${season}/episode/${episode.episode_number}`}>
+            <div className={`stream-episode-card ${isActive ? 'stream-episode-card-active' : ''}`}>
+                <div className="stream-episode-thumb">
+                    <img alt={episode.title} src={`${getImageBg(episode.thumbail_path || "")}` || "https://placehold.co/300x170/1a1a1a/666?text=No+Image"} />
+                    <div className="stream-episode-play-overlay">
+                        <PlayCircleFilled />
+                    </div>
+                    <span className="stream-episode-number">E{episode.episode_number}</span>
                 </div>
-                <span className="stream-episode-number">E{episode.episode_number}</span>
+                <div className="stream-episode-info">
+                    <div className="stream-episode-title">Episode {episode.episode_number}</div>
+                    <div className="stream-episode-subtitle">{episode.title}</div>
+                </div>
             </div>
-            <div className="stream-episode-info">
-                <div className="stream-episode-title">Episode {episode.episode_number}</div>
-                <div className="stream-episode-subtitle">{episode.title}</div>
-            </div>
-        </div>
-    </Link>
-);
+        </Link>
+    )
+};
 
 export const Player: React.FC = () => {
     let { id, season, episode } = useParams();
@@ -65,7 +71,7 @@ export const Player: React.FC = () => {
                         setSources(res.data.map((episode: any) => ({
                             "id": episode.episode_number,
                             "src": `${env.VITE_STREAMAPI_URL}${env.VITE_STREAMAPI_PREFIX}/videos/stream/${episode.file_path}`,
-                            "poster": `${env.VITE_STREAMAPI_URL}${env.VITE_STREAMAPI_PREFIX}/videos/stream/${episode.thumbail_path}`,
+                            "poster": `${env.VITE_STREAMAPI_URL}${env.VITE_STREAMAPI_PREFIX}/videos/image/${episode.thumbail_path}`,
                             "intro_start_time": episode.intro_start_time || "",
                             "intro_end_time": episode.intro_end_time || "",
                             "next_episode_time": episode.next_episode_time || ""
@@ -108,7 +114,7 @@ export const Player: React.FC = () => {
                 <>
                     {/* TV Show Hero */}
                     <div className="stream-show-hero" style={{
-                        backgroundImage: `url(${video.image || ''})`,
+                        backgroundImage: `url(${getImageBg(video.bg_image || "") || "https://placehold.co/1920x800/1a1a1a/666"})`,
                     }}>
                         <div className="stream-hero-gradient" />
                         <div className="stream-show-hero-content">
@@ -137,7 +143,6 @@ export const Player: React.FC = () => {
                                     id={id}
                                     episode={ep}
                                     season={video.seasons![activeSeason].season_number}
-                                    video={video}
                                 />
                             ))}
                         </div>
@@ -171,7 +176,6 @@ export const Player: React.FC = () => {
                                         id={id}
                                         episode={ep}
                                         season={video.seasons![season ? video.seasons!.findIndex(s => s.season_number === parseInt(season)) : activeSeason].season_number}
-                                        video={video}
                                         isActive={episode ? ep.episode_number === parseInt(episode) : false}
                                     />
                                 ))}
