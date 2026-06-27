@@ -27,6 +27,14 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ id = "0", video, title
     const [isFullscreen, setIsFullscreen] = useState(false);
 
     useEffect(() => {
+        if (playerRef.current) {
+            const currentItem = playerRef.current.playlist().findIndex((x: { id: Number; }) => Number(x.id) === Number(id));
+            playerRef.current.playlist.currentItem(currentItem);
+            console.log(playerRef.current)
+        }
+    }, [id])
+
+    useEffect(() => {
         if (videoRef.current) {
             playerRef.current = videojs(videoRef.current, {
                 controls: true,
