@@ -55,7 +55,7 @@ export const MoviesForm: React.FC<MovieFormProps> = ({ form, onCreate, saving, d
                 label="Title"
                 rules={[{ required: true, message: 'Please input the title!' }]}
             >
-                <Input placeholder="Enter the movie title" autoComplete="off"/>
+                <Input placeholder="Enter the movie title" autoComplete="off" />
             </Form.Item>
             <Form.Item
                 name="type"
@@ -101,6 +101,12 @@ export const MoviesForm: React.FC<MovieFormProps> = ({ form, onCreate, saving, d
                     style={{ width: '100%' }}
                     placeholder="Enter rating (0.0 - 10.0)"
                 />
+            </Form.Item>
+            <Form.Item
+                name="skip_intro_display_message"
+                label="Skip Intro Display Message"
+            >
+                <Input placeholder="Skip Intro" autoComplete="off" />
             </Form.Item>
             <Space.Compact>
                 <Form.Item

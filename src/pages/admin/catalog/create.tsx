@@ -93,6 +93,7 @@ export const CatalogCreate: React.FC = () => {
                         season: value.season,
                         title: value.title,
                         episode: value.episode,
+                        skip_intro_display_message: value.skip_intro_display_message,
                         intro_start_time: value.intro_start_time.format("HH:mm:ss"),
                         intro_end_time: value.intro_end_time.format("HH:mm:ss"),
                         next_episode_time: value.next_episode_time.format("HH:mm:ss")

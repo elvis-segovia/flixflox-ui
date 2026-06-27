@@ -59,6 +59,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ id = "0", video, title
                     src: source.src,
                     type: 'application/x-mpegURL',
                 }],
+                skip_intro_display_message: source.skip_intro_display_message,
                 intro_start_time: source.intro_start_time,
                 intro_end_time: source.intro_end_time,
                 next_episode_time: source.next_episode_time,
@@ -69,15 +70,17 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ id = "0", video, title
             const currentVideo = !Array.isArray(video) && video.type === "movie" ? 0 : sources.findIndex(x => Number(x.id) === Number(id));
             let introStartTimeSeconds = timeToSeconds(sources[currentVideo]?.intro_start_time);
             let introEndTimeSeconds = timeToSeconds(sources[currentVideo]?.intro_end_time);
-            let nextEpisodeOffset = timeToSeconds(sources[currentVideo]?.intro_end_time);
+            let nextEpisodeOffset = timeToSeconds(sources[currentVideo]?.next_episode_time);
+            let skipIntroDisplayMessage = sources[currentVideo]?.skip_intro_display_message
             // Initialize playlist
             playerRef.current.playlist(playlist);
             playerRef.current.playlist.currentItem(currentVideo);
 
             playerRef.current.on('playlistitem', function (_event: any, playlistItem: any, _index: number) {
+                skipIntroDisplayMessage = playlistItem.skip_intro_display_message
                 introStartTimeSeconds = timeToSeconds(playlistItem.intro_start_time);
                 introEndTimeSeconds = timeToSeconds(playlistItem.intro_end_time);
-                nextEpisodeOffset = timeToSeconds(playlistItem.intro_end_time);
+                nextEpisodeOffset = timeToSeconds(playlistItem.next_episode_time);
             });
 
             const createButton = (text: string, onClick: () => void) => {
@@ -95,7 +98,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ id = "0", video, title
                 // Handle Skip Intro button
                 if (currentTime >= introStartTimeSeconds && currentTime <= introEndTimeSeconds) {
                     if (!skipButtonRef.current) {
-                        const skipButton = createButton('Skip Intro', () => {
+                        const skipButton = createButton(skipIntroDisplayMessage, () => {
                             playerRef.current.currentTime(introEndTimeSeconds);
                         });
                         setTimeout(() => {

@@ -64,6 +64,7 @@ export const TvShowForm: React.FC<TvShowFormProps> = ({ form, onCreate, saving, 
                 show_details: [{
                     season: 1,
                     episode: 1,
+                    skip_intro_display_message: "Skip Intro",
                     intro_start_time: dayjs('00:00:00', "HH:mm:ss"),
                     intro_end_time: dayjs('00:00:00', "HH:mm:ss"),
                     next_episode_time: dayjs('00:00:00', "HH:mm:ss"),
@@ -182,6 +183,12 @@ export const TvShowForm: React.FC<TvShowFormProps> = ({ form, onCreate, saving, 
                                         <InputNumber min={1} style={{ width: '100%' }} />
                                     </Form.Item>
                                 </Space>
+                                <Form.Item
+                                    name={[name, "skip_intro_display_message"]}
+                                    label="Skip Intro Display Message"
+                                >
+                                    <Input placeholder="Skip Intro" autoComplete="off" />
+                                </Form.Item>
                                 <Space.Compact>
                                     <Form.Item
                                         name={[name, "intro_start_time"]}

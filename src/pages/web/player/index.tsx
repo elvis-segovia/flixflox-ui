@@ -72,6 +72,7 @@ export const Player: React.FC = () => {
                             "id": episode.episode_number,
                             "src": `${env.VITE_STREAMAPI_URL}${env.VITE_STREAMAPI_PREFIX}/videos/stream/${episode.file_path}`,
                             "poster": `${env.VITE_STREAMAPI_URL}${env.VITE_STREAMAPI_PREFIX}/videos/image/${episode.thumbail_path}`,
+                            "skip_intro_display_message": episode.skip_intro_display_message || "Skip",
                             "intro_start_time": episode.intro_start_time || "",
                             "intro_end_time": episode.intro_end_time || "",
                             "next_episode_time": episode.next_episode_time || ""
