@@ -1,4 +1,4 @@
-import { Button, Form, Input, InputNumber, Select, Space, TimePicker, Upload } from "antd"
+import { Button, Form, Input, InputNumber, Progress, Select, Space, TimePicker, Upload } from "antd"
 import { UploadOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
@@ -10,6 +10,7 @@ interface MovieFormProps {
     saving: boolean;
     disabled: boolean;
     uploadProps: any;
+    uploadProgress?: number;
 }
 
 const currentYear = new Date().getFullYear() + 1;
@@ -26,7 +27,7 @@ const genreOptions = [
     'War', 'Western'
 ].map(genre => ({ label: genre, value: genre }));
 
-export const MoviesForm: React.FC<MovieFormProps> = ({ form, onCreate, saving, disabled }) => {
+export const MoviesForm: React.FC<MovieFormProps> = ({ form, onCreate, saving, disabled, uploadProgress = 0 }) => {
 
     const normFile = (e: any) => {
         if (Array.isArray(e)) {
@@ -181,6 +182,14 @@ export const MoviesForm: React.FC<MovieFormProps> = ({ form, onCreate, saving, d
                     </Button>
                 </Upload>
             </Form.Item>
+            {saving && (
+                <Form.Item label="Upload Progress">
+                    <Progress
+                        percent={uploadProgress}
+                        status={uploadProgress < 100 ? 'active' : 'success'}
+                    />
+                </Form.Item>
+            )}
             <Form.Item style={{ textAlign: 'center' }}>
                 <Button type="primary" htmlType="submit" loading={saving}>
                     {saving ? 'Saving...' : 'Save'}

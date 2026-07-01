@@ -22,19 +22,12 @@ const getMenuChildren = (item: any) => {
 				...item,
 				children: childrenItems
 			};
-
 		}
 	}
-
-	if (item.type) {
-		return item
-	}
-
 	return item.show === 'false' ? null : {
 		...item,
 		label: item.to ? <Link to={item.to}>{item.label}</Link> : item.label
 	};
-
 }
 
 const items: MenuItem[] = menuItems.map((item) => {

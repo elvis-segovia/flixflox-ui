@@ -14,30 +14,42 @@ export const menuItems = [
         component: <Home />
     },
     {
-        key: '/dashboard/movies',
+        key: '/dashboard/catalog',
         icon: <PlayCircleOutlined />,
         label: 'Catalog',
-        to: '/dashboard/movies',
-        component: <CatalogList />,
         children: [
+            {
+                key: '/dashboard/catalog/movies',
+                label: 'Movies',
+                to: '/dashboard/catalog/movies',
+                component: <CatalogList />,
+                show: 'true'
+            },
+            {
+                key: '/dashboard/catalog/tvshows',
+                label: 'TV Shows',
+                to: '/dashboard/catalog/tvshows',
+                component: <CatalogList />,
+                show: 'true'
+            },
             {
                 key: '/dashboard/movies/add',
                 label: 'Add',
                 to: '/dashboard/movies/add',
                 component: <CatalogCreate />,
-                show: false
+                show: 'false'
             },
             {
                 key: '/dashboard/movies/add/:uuid',
                 label: 'Add',
                 to: '/dashboard/movies/add/:uuid',
                 component: <CatalogCreate />,
-                show: false
+                show: 'false'
             }
         ]
     },
     {
-        key: '/dashboard/categories',
+        key: '/dashboard/genres',
         icon: <VideoCameraOutlined />,
         label: 'Genres',
         to: '/dashboard/genres',
@@ -62,7 +74,7 @@ export const menuItems = [
                 label: 'Add',
                 to: '/dashboard/users/add',
                 component: <UsersCreate />,
-                show: false
+                show: 'false'
             }
         ]
     }

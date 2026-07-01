@@ -33,13 +33,24 @@ export const MainMenu: React.FC<MainMenuProps> = ({ menuItems }) => {
     const [collapsed, setCollapsed] = useState(false);
     const location = useLocation();
     const [openKeys, setOpenKeys] = useState<string[]>([]);
-    const currentPath = location.pathname.split('/').slice(2, 3).filter(elm => elm).join('/')
-    const currentKey = useMemo(() => menuItems.find((item) => item?.key?.toString().includes(currentPath))?.key?.toString() || '', [currentPath, menuItems]);
+    const currentPath = `/${location.pathname.split('/').slice(1, 4).filter(elm => elm).join('/')}`;
     const auth = useAuth();
     const { mode, toggleTheme } = useTheme();
     const {
         token: { colorBgContainer, colorText, colorTextSecondary }
     } = theme.useToken()
+
+    const currentKey = useMemo(() => {
+        const currentOpenKey = openKeys.find((key) => currentPath.includes(key));
+
+        return (
+            currentOpenKey
+                ? (menuItems.find((item: any) => item.key?.toString().includes(currentOpenKey)) as any)
+                    ?.children?.find((child: any) => child.key?.toString().includes(currentPath))
+                    ?.key
+                : menuItems.find((item: any) => item.key?.toString().includes(currentPath))?.key
+        )?.toString() ?? "";
+    }, [currentPath, menuItems, openKeys]);
 
     const onSelect: MenuProps['onSelect'] = ({ key }) => {
         if (openKeys.includes(key as string)) return;

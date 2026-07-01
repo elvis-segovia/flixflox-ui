@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from "axios";
+import axios, { AxiosInstance, AxiosProgressEvent } from "axios";
 import { env } from "../env";
 
 export class CatalogController {
@@ -37,12 +37,12 @@ export class CatalogController {
         return await this.api.put(`/videos/${id}/bg`, data)
     }
 
-    async uploadFile(data: any): Promise<any> {
-        return await this.api.post(`/videos/upload`, data);
+    async uploadFile(data: any, onUploadProgress?: (event: AxiosProgressEvent) => void): Promise<any> {
+        return await this.api.post(`/videos/upload`, data, { onUploadProgress });
     }
 
-    async addEpisode(id: string, data: any): Promise<any> {
-        return await this.api.put(`/videos/${id}/new-episode`, data);
+    async addEpisode(id: string, data: any, onUploadProgress?: (event: AxiosProgressEvent) => void): Promise<any> {
+        return await this.api.put(`/videos/${id}/new-episode`, data, { onUploadProgress });
     }
 
 }

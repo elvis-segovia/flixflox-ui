@@ -32,7 +32,14 @@ export const CatalogCreate: React.FC = () => {
     const { uuid } = useParams();
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [uploading, setUploading] = useState<boolean>(false);
+    const [uploadProgress, setUploadProgress] = useState<number>(0);
     const [activeTab, setActiveTab] = useState<string | null>('movie');
+
+    const onUploadProgress = (event: { loaded: number; total?: number }) => {
+        if (event.total) {
+            setUploadProgress(Math.round((event.loaded * 100) / event.total));
+        }
+    };
 
     const fetchCatalog = async () => {
         try {
@@ -117,8 +124,9 @@ export const CatalogCreate: React.FC = () => {
 
         try {
             setUploading(true);
+            setUploadProgress(0);
             if (uuid) {
-                const response = await catalogCtrl.addEpisode(uuid, formData);
+                const response = await catalogCtrl.addEpisode(uuid, formData, onUploadProgress);
 
                 if (response.status === 200) {
                     notification.success({
@@ -131,7 +139,7 @@ export const CatalogCreate: React.FC = () => {
                     message.error('Upload failed. Please try again.');
                 }
             } else {
-                const response = await catalogCtrl.uploadFile(formData);
+                const response = await catalogCtrl.uploadFile(formData, onUploadProgress);
 
                 if (response.status === 201) {
                     notification.success({
@@ -173,6 +181,7 @@ export const CatalogCreate: React.FC = () => {
                                 onCreate={onCreate}
                                 uploadProps={props}
                                 saving={uploading}
+                                uploadProgress={uploadProgress}
                                 disabled={activeTab !== 'movie'}
                             />
                         }
