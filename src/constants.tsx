@@ -17,19 +17,21 @@ export const menuItems = [
         key: '/dashboard/catalog',
         icon: <PlayCircleOutlined />,
         label: 'Catalog',
+        to: '/dashboard/catalog/:vtype',
+        component: <CatalogList />,
         children: [
             {
                 key: '/dashboard/catalog/movies',
                 label: 'Movies',
                 to: '/dashboard/catalog/movies',
-                component: <CatalogList />,
+                ischild: 'true',
                 show: 'true'
             },
             {
                 key: '/dashboard/catalog/tvshows',
                 label: 'TV Shows',
                 to: '/dashboard/catalog/tvshows',
-                component: <CatalogList />,
+                ischild: 'true',
                 show: 'true'
             },
             {
@@ -37,6 +39,7 @@ export const menuItems = [
                 label: 'Add',
                 to: '/dashboard/movies/add',
                 component: <CatalogCreate />,
+                ischild: 'false',
                 show: 'false'
             },
             {
@@ -44,6 +47,7 @@ export const menuItems = [
                 label: 'Add',
                 to: '/dashboard/movies/add/:uuid',
                 component: <CatalogCreate />,
+                ischild: 'false',
                 show: 'false'
             }
         ]
@@ -74,6 +78,7 @@ export const menuItems = [
                 label: 'Add',
                 to: '/dashboard/users/add',
                 component: <UsersCreate />,
+                ischild: 'false',
                 show: 'false'
             }
         ]

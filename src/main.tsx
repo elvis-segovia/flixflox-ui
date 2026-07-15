@@ -12,6 +12,10 @@ import LoginForm from './pages/admin/login/index.tsx'
 import { ThemeProvider } from './components/theme/themeProvider.tsx'
 
 const getChildRoutes = (item: any) => {
+	if (item.ischild == 'true') {
+		return
+	}
+
 	if (item.children) {
 		return (<Route key={item.key}>
 			<Route path={item.to} element={item.component ? item.component : <BlankPage />} />
@@ -20,33 +24,34 @@ const getChildRoutes = (item: any) => {
 			))}
 		</Route>)
 	}
+
 	return <Route key={item.key} path={item.to} element={item.component ? item.component : <BlankPage />} />
 }
 
 const router = (
 	<ThemeProvider>
-	<Router>
-		<AuthProvider>
-			<Routes>
-				<Route path='/' element={<ProtectedRoutes />} >
-					<Route index element={<Users />} />
-					<Route path="web" element={<Web />} errorElement={<ErrorPage />}>
-						<Route path="catalog" element={<Movies />} />
-						<Route path=':type/videos' element={<Movies />} />
-						<Route path='play/:id/season/:season/episode/:episode' element={<Player />} />
-						<Route path='play/:id' element={<Player />} />
+		<Router>
+			<AuthProvider>
+				<Routes>
+					<Route path='/' element={<ProtectedRoutes />} >
+						<Route index element={<Users />} />
+						<Route path="web" element={<Web />} errorElement={<ErrorPage />}>
+							<Route path="catalog" element={<Movies />} />
+							<Route path=':type/videos' element={<Movies />} />
+							<Route path='play/:id/season/:season/episode/:episode' element={<Player />} />
+							<Route path='play/:id' element={<Player />} />
+						</Route>
+						<Route path="dashboard" element={<App />} errorElement={<ErrorPage />}>
+							{menuItems.map((item) => {
+								return getChildRoutes(item)
+							})}
+						</Route>
 					</Route>
-					<Route path="dashboard" element={<App />} errorElement={<ErrorPage />}>
-						{menuItems.map((item) => {
-							return getChildRoutes(item)
-						})}
-					</Route>
-				</Route>
-				<Route path='/login' element={<LoginForm />} />
-				<Route path='/logout' element={<ErrorPage />} />
-			</Routes>
-		</AuthProvider>
-	</Router>
+					<Route path='/login' element={<LoginForm />} />
+					<Route path='/logout' element={<ErrorPage />} />
+				</Routes>
+			</AuthProvider>
+		</Router>
 	</ThemeProvider>
 )
 

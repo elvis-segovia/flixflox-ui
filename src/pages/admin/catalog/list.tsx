@@ -1,23 +1,33 @@
 import React, { useEffect, useState } from "react";
 import { MainBlock, SearchTable } from "../../../components";
 import { DeleteOutlined, EditOutlined, PlusSquareOutlined, ReloadOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Button, Space, Tag, Tooltip } from "antd";
 import { CatalogController } from "../../../controllers";
 
 const catalogCtrl = new CatalogController();
 
+const vtypes: any = {
+    'tvshows': 'tvshow',
+    'movies': 'movie'
+}
+
 export const CatalogList: React.FC = () => {
     const [dataSource, setDataSource] = useState<any[]>([]);
     const [refresh, setRefresh] = useState<boolean>(true)
+    const { vtype } = useParams();
 
     const fetchCatalog = async () => {
         try {
-            const catalog = await catalogCtrl.listCatalog();
-            setDataSource(catalog.data.map((item: any) => ({
-                ...item,
-                key: item.uuid
-            })));
+            const catalog = await catalogCtrl.listVideosByType(vtypes[vtype || "movie"]);
+            if (catalog.data.data) {
+                setDataSource(catalog.data.data.map((item: any) => ({
+                    ...item,
+                    key: item.uuid
+                })));
+            } else {
+                setDataSource([]);
+            }
         } catch (error) {
             console.error("Failed to fetch catalog:", error);
         }
@@ -25,7 +35,7 @@ export const CatalogList: React.FC = () => {
 
     useEffect(() => {
         fetchCatalog();
-    }, [refresh]);
+    }, [refresh, vtype]);
 
     const columns = [
         {
