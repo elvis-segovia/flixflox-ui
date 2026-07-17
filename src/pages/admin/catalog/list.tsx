@@ -4,22 +4,19 @@ import { DeleteOutlined, EditOutlined, PlusSquareOutlined, ReloadOutlined } from
 import { Link, useParams } from "react-router-dom";
 import { Button, Space, Tag, Tooltip } from "antd";
 import { CatalogController } from "../../../controllers";
+import { resolveVType } from "./vtypes";
 
 const catalogCtrl = new CatalogController();
-
-const vtypes: any = {
-    'tvshows': 'tvshow',
-    'movies': 'movie'
-}
 
 export const CatalogList: React.FC = () => {
     const [dataSource, setDataSource] = useState<any[]>([]);
     const [refresh, setRefresh] = useState<boolean>(true)
     const { vtype } = useParams();
+    const { type, label } = resolveVType(vtype);
 
     const fetchCatalog = async () => {
         try {
-            const catalog = await catalogCtrl.listVideosByType(vtypes[vtype || "movie"]);
+            const catalog = await catalogCtrl.listVideosByType(type);
             if (catalog.data.data) {
                 setDataSource(catalog.data.data.map((item: any) => ({
                     ...item,
@@ -97,7 +94,7 @@ export const CatalogList: React.FC = () => {
         }
     ];
     return (
-        <MainBlock title="Movies" button={
+        <MainBlock title={label} button={
             <Space>
                 <Link to={`/dashboard/catalog/${vtype}/add`}><Button type="primary" size="middle" icon={<PlusSquareOutlined />}>Add</Button></Link>
                 <Button type="default" size="middle" icon={<ReloadOutlined />} onClick={() => setRefresh(!refresh)} />

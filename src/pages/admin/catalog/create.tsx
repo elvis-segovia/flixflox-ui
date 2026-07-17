@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { MainBlock } from "../../../components";
-import { Form, GetProp, message, notification, Tabs, UploadFile, UploadProps } from "antd";
+import { Form, GetProp, message, notification, UploadFile, UploadProps } from "antd";
 import { MoviesForm, TvShowForm } from "./forms";
 import { CatalogController } from "../../../controllers";
 import { useParams } from "react-router-dom";
+import { resolveVType } from "./vtypes";
 
 interface CatalogValues {
     title: string;
@@ -30,10 +31,10 @@ const catalogCtrl = new CatalogController();
 export const CatalogCreate: React.FC = () => {
     const [form] = Form.useForm();
     const { uuid, vtype } = useParams();
+    const { type, singular } = resolveVType(vtype);
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [uploading, setUploading] = useState<boolean>(false);
     const [uploadProgress, setUploadProgress] = useState<number>(0);
-    const [activeTab, setActiveTab] = useState<string | null>('movie');
 
     const onUploadProgress = (event: { loaded: number; total?: number }) => {
         if (event.total) {
@@ -43,7 +44,6 @@ export const CatalogCreate: React.FC = () => {
 
     const fetchCatalog = async () => {
         try {
-            setActiveTab('tvshow');
             if (uuid) {
                 const catalog = await catalogCtrl.getCatalog(uuid);
                 form.setFieldsValue(catalog.data);
@@ -67,15 +67,11 @@ export const CatalogCreate: React.FC = () => {
         }
     }
 
-    const onChangeTab = (key: string) => {
-        setActiveTab(key);
-    }
-
     const handleUpload = async (values: CatalogValues) => {
         const formData = new FormData();
-        formData.append('type', activeTab || "movie");
+        formData.append('type', type);
         formData.append('bg_image', values.bg_image);
-        if (activeTab == 'tvshow') {
+        if (type === 'tvshow') {
             if (values.show_details.length === 0) {
                 message.error('Please select at least one file before uploading.');
                 return;
@@ -91,7 +87,7 @@ export const CatalogCreate: React.FC = () => {
 
             formData.append('values', JSON.stringify({
                 title: values.title,
-                type: activeTab,
+                type: type,
                 release_year: values.release_year,
                 genre: values.genre,
                 rating: values.rating,
@@ -110,7 +106,7 @@ export const CatalogCreate: React.FC = () => {
         } else {
             formData.append('values', JSON.stringify({
                 title: values.title,
-                type: activeTab,
+                type: type,
                 release_year: values.release_year,
                 genre: values.genre,
                 rating: values.rating,
@@ -171,8 +167,8 @@ export const CatalogCreate: React.FC = () => {
     }, [uuid]);
 
     return (
-        <MainBlock title="Add Catalog" showBreadcrumb={true}>
-            {vtype === 'movies' &&
+        <MainBlock title={`Add ${singular}`} showBreadcrumb={true}>
+            {type === 'movie' &&
                 <MoviesForm
                     form={form}
                     onCreate={onCreate}
@@ -182,7 +178,7 @@ export const CatalogCreate: React.FC = () => {
                     disabled={false}
                 />
             }
-            {vtype === 'tvshows' &&
+            {type === 'tvshow' &&
                 <TvShowForm
                     form={form}
                     onCreate={onCreate}
