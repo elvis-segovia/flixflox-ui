@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <rect width="1280" height="720" fill="#1f1f1f"/>
+  <rect x="0" y="0" width="240" height="720" fill="#141414"/>
+  <rect x="24" y="24" width="140" height="24" rx="4" fill="#333"/>
+  <rect x="24" y="80" width="192" height="16" rx="4" fill="#2a2a2a"/>
+  <rect x="24" y="112" width="192" height="16" rx="4" fill="#2a2a2a"/>
+  <rect x="24" y="144" width="192" height="16" rx="4" fill="#2a2a2a"/>
+  <rect x="24" y="176" width="192" height="16" rx="4" fill="#2a2a2a"/>
+  <rect x="272" y="32" width="976" height="64" rx="8" fill="#262626"/>
+  <rect x="272" y="128" width="304" height="160" rx="8" fill="#262626"/>
+  <rect x="608" y="128" width="304" height="160" rx="8" fill="#262626"/>
+  <rect x="944" y="128" width="304" height="160" rx="8" fill="#262626"/>
+  <rect x="272" y="320" width="976" height="368" rx="8" fill="#262626"/>
+  <text x="640" y="360" font-family="sans-serif" font-size="36" fill="#8c8c8c" text-anchor="middle">Admin dashboard screenshot</text>
+  <text x="640" y="400" font-family="sans-serif" font-size="20" fill="#595959" text-anchor="middle">(placeholder — replace with a real screenshot)</text>
+</svg>

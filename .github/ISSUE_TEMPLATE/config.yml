@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question / help with setup
+    url: https://github.com/elvis-segovia/flixflox-ui/discussions
+    about: Ask questions and get help from the community in GitHub Discussions.
+  - name: FlixFlox API (backend) issues
+    url: https://github.com/elvis-segovia/flixflox/issues
+    about: Report problems with the API, streaming, conversion worker or database here.

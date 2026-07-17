@@ -1,0 +1,81 @@
+name: Bug report
+description: Something in the dashboard or web client is broken
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug! If the problem is in the API (auth, streaming, conversion), please report it in the [FlixFlox backend repo](https://github.com/elvis-segovia/flixflox/issues) instead.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: A clear description of the bug.
+      placeholder: The catalog page shows an empty list even though the API returns movies...
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: How can we reproduce the problem?
+      placeholder: |
+        1. Log in to the dashboard
+        2. Go to Catalog → Movies
+        3. Click '...'
+        4. See error
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      placeholder: The list of movies should be displayed.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected area
+      options:
+        - Admin dashboard
+        - Web client / player
+        - Login / authentication
+        - Docker / deployment
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: install-method
+    attributes:
+      label: How are you running the UI?
+      options:
+        - Docker / docker compose
+        - npm run dev (local development)
+        - Built bundle behind my own web server
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version / commit
+      description: Release tag, image tag, or `git rev-parse --short HEAD`.
+      placeholder: v1.0.0 / d8d974c
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and OS
+      placeholder: Chrome 138 on Windows 11
+  - type: textarea
+    id: logs
+    attributes:
+      label: Console errors / logs
+      description: Open the browser dev tools (F12) → Console, and paste any errors. This is automatically formatted as code.
+      render: shell
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: Drag and drop images here if they help explain the problem.

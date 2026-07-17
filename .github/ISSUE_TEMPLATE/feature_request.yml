@@ -1,0 +1,47 @@
+name: Feature request
+description: Suggest an idea or improvement for the dashboard or web client
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the suggestion! If the feature needs API changes (new endpoints, data model), consider also opening an issue in the [FlixFlox backend repo](https://github.com/elvis-segovia/flixflox/issues).
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Describe the situation or frustration that motivates the feature.
+      placeholder: As an admin, I have to edit movies one by one, which is slow when managing a large catalog...
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: What would you like to happen? Mockups or examples from other apps are welcome.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected area
+      options:
+        - Admin dashboard
+        - Web client / player
+        - Login / authentication
+        - Docker / deployment
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Any workarounds you use today, or other ways this could be done.
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      options:
+        - label: I'm willing to open a pull request for this feature
