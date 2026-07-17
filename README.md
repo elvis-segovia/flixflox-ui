@@ -23,11 +23,11 @@ Manage your catalog of movies and TV shows, and give your users a clean, Netflix
 
 | Web client | Video player |
 | :---: | :---: |
-| ![Web client home](docs/screenshots/web-home.svg) | ![Video player with HLS playback](docs/screenshots/player.svg) |
+| ![Web client home](docs/screenshots/web-home.png) | ![Video player with HLS playback](docs/screenshots/player.png) |
 
 | Admin dashboard | Catalog management |
 | :---: | :---: |
-| ![Admin dashboard](docs/screenshots/dashboard.svg) | ![Catalog management](docs/screenshots/catalog.svg) |
+| ![Admin dashboard](docs/screenshots/dashboard.svg) | ![Catalog management](docs/screenshots/catalog.png) |
 
 ## Features
 
