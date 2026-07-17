@@ -68,7 +68,7 @@ export const CatalogList: React.FC = () => {
                 <Space>
                     {record.type === "tvshow" && (
                         <Tooltip title="Add">
-                            <Link to={`/dashboard/movies/add/${record.uuid}`}>
+                            <Link to={`/dashboard/catalog/${vtype}/add/${record.uuid}`}>
                                 <Button
                                     type="default"
                                     icon={<PlusSquareOutlined />}
@@ -99,7 +99,7 @@ export const CatalogList: React.FC = () => {
     return (
         <MainBlock title="Movies" button={
             <Space>
-                <Link to="/dashboard/movies/add"><Button type="primary" size="middle" icon={<PlusSquareOutlined />}>Add</Button></Link>
+                <Link to={`/dashboard/catalog/${vtype}/add`}><Button type="primary" size="middle" icon={<PlusSquareOutlined />}>Add</Button></Link>
                 <Button type="default" size="middle" icon={<ReloadOutlined />} onClick={() => setRefresh(!refresh)} />
             </Space>
         }>

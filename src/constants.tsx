@@ -35,17 +35,17 @@ export const menuItems = [
                 show: 'true'
             },
             {
-                key: '/dashboard/movies/add',
+                key: '/dashboard/catalog/:vtype/add',
                 label: 'Add',
-                to: '/dashboard/movies/add',
+                to: '/dashboard/catalog/:vtype/add',
                 component: <CatalogCreate />,
                 ischild: 'false',
                 show: 'false'
             },
             {
-                key: '/dashboard/movies/add/:uuid',
+                key: '/dashboard/catalog/:vtype/add/:uuid',
                 label: 'Add',
-                to: '/dashboard/movies/add/:uuid',
+                to: '/dashboard/catalog/:vtype/add/:uuid',
                 component: <CatalogCreate />,
                 ischild: 'false',
                 show: 'false'

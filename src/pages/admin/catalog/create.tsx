@@ -29,7 +29,7 @@ const catalogCtrl = new CatalogController();
 
 export const CatalogCreate: React.FC = () => {
     const [form] = Form.useForm();
-    const { uuid } = useParams();
+    const { uuid, vtype } = useParams();
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [uploading, setUploading] = useState<boolean>(false);
     const [uploadProgress, setUploadProgress] = useState<number>(0);
@@ -172,33 +172,25 @@ export const CatalogCreate: React.FC = () => {
 
     return (
         <MainBlock title="Add Catalog" showBreadcrumb={true}>
-            <Tabs onChange={onChangeTab} activeKey={activeTab || 'movie'}>
-                {!uuid &&
-                    <Tabs.TabPane tab="Movie" key="movie">
-                        {activeTab === 'movie' &&
-                            <MoviesForm
-                                form={form}
-                                onCreate={onCreate}
-                                uploadProps={props}
-                                saving={uploading}
-                                uploadProgress={uploadProgress}
-                                disabled={activeTab !== 'movie'}
-                            />
-                        }
-                    </Tabs.TabPane>
-                }
-                <Tabs.TabPane tab="Tv Show" key="tvshow">
-                    {activeTab === 'tvshow' &&
-                        <TvShowForm
-                            form={form}
-                            onCreate={onCreate}
-                            uploadProps={props}
-                            saving={uploading}
-                            disabled={activeTab !== 'tvshow'}
-                        />
-                    }
-                </Tabs.TabPane>
-            </Tabs>
+            {vtype === 'movies' &&
+                <MoviesForm
+                    form={form}
+                    onCreate={onCreate}
+                    uploadProps={props}
+                    saving={uploading}
+                    uploadProgress={uploadProgress}
+                    disabled={false}
+                />
+            }
+            {vtype === 'tvshows' &&
+                <TvShowForm
+                    form={form}
+                    onCreate={onCreate}
+                    uploadProps={props}
+                    saving={uploading}
+                    disabled={false}
+                />
+            }
         </MainBlock>
     )
 }
