@@ -79,6 +79,18 @@ export const TvShowForm: React.FC<TvShowFormProps> = ({ form, onCreate, saving, 
             >
                 <Input placeholder="Enter TV show title" />
             </Form.Item>
+            <Form.Item
+                name="description"
+                label="Description"
+                rules={[{ max: 500, message: 'Description cannot exceed 500 characters' }]}
+            >
+                <Input.TextArea
+                    rows={4}
+                    placeholder="Enter the movie description"
+                    showCount
+                    maxLength={500}
+                />
+            </Form.Item>
             <Form.Item name="type" label="Type" hidden>
                 <Input />
             </Form.Item>

@@ -1,6 +1,6 @@
 import { TeamOutlined, HomeOutlined, PlayCircleOutlined, UserOutlined, VideoCameraOutlined } from '@ant-design/icons';
 import { Home } from './pages/admin/home';
-import { CatalogCreate, CatalogList } from './pages/admin/catalog';
+import { CatalogCreate, CatalogList, CatalogView } from './pages/admin/catalog';
 import { GenresList } from './pages/admin/genres';
 import { CastList } from './pages/admin/cast';
 import { UsersCreate, UsersList } from './pages/admin/users';
@@ -33,6 +33,14 @@ export const menuItems = [
                 to: '/dashboard/catalog/tvshows',
                 ischild: 'true',
                 show: 'true'
+            },
+            {
+                key: '/dashboard/catalog/:vtype/view/:uuid',
+                label: 'TV Shows',
+                to: '/dashboard/catalog/:vtype/view/:uuid',
+                component: <CatalogView />,
+                ischild: 'false',
+                show: 'false'
             },
             {
                 key: '/dashboard/catalog/:vtype/add',

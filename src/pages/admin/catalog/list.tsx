@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { MainBlock, SearchTable } from "../../../components";
-import { DeleteOutlined, EditOutlined, PlusSquareOutlined, ReloadOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, EyeOutlined, PlusSquareOutlined, ReloadOutlined } from "@ant-design/icons";
 import { Link, useParams } from "react-router-dom";
 import { Button, Space, Tag, Tooltip } from "antd";
 import { CatalogController } from "../../../controllers";
@@ -13,6 +13,14 @@ export const CatalogList: React.FC = () => {
     const [refresh, setRefresh] = useState<boolean>(true)
     const { vtype } = useParams();
     const { type, label } = resolveVType(vtype);
+
+    const getRatingColor = (rating: number) => {
+        if (rating >= 8) return "green";
+        if (rating >= 6) return "gold";
+        if (rating >= 4) return "orange";
+        return "red";
+    };
+
 
     const fetchCatalog = async () => {
         try {
@@ -51,6 +59,28 @@ export const CatalogList: React.FC = () => {
             key: 'type',
         },
         {
+            title: 'Genre',
+            dataIndex: 'genre',
+            key: 'genre',
+            render: (genre: string[]) => (
+                <>
+                    {genre.map((name, index) => (
+                        <Tag key={index} color="purple">{name}</Tag>
+                    ))}
+                </>
+            )
+        },
+        {
+            title: 'Rating',
+            dataIndex: 'rating',
+            key: 'rating',
+            render: (rating: number) => (
+                <Tag color={getRatingColor(rating)}>
+                    {rating.toFixed(1)}
+                </Tag>
+            )
+        },
+        {
             title: 'Status',
             dataIndex: 'status',
             key: 'status',
@@ -64,23 +94,36 @@ export const CatalogList: React.FC = () => {
             render: (_: any, record: any) => (
                 <Space>
                     {record.type === "tvshow" && (
-                        <Tooltip title="Add">
-                            <Link to={`/dashboard/catalog/${vtype}/add/${record.uuid}`}>
-                                <Button
-                                    type="default"
-                                    icon={<PlusSquareOutlined />}
-                                    size="small"
-                                />
-                            </Link>
+                        <>
+                            <Tooltip title="View">
+                                <Link to={`/dashboard/catalog/${vtype}/view/${record.uuid}`}>
+                                    <Button
+                                        type="default"
+                                        icon={<EyeOutlined />}
+                                        size="small"
+                                    />
+                                </Link>
+                            </Tooltip>
+                            <Tooltip title="Add">
+                                <Link to={`/dashboard/catalog/${vtype}/add/${record.uuid}`}>
+                                    <Button
+                                        type="default"
+                                        icon={<PlusSquareOutlined />}
+                                        size="small"
+                                    />
+                                </Link>
+                            </Tooltip>
+                        </>
+                    )}
+                    {record.type !== "tvshow" && (
+                        <Tooltip title="Edit">
+                            <Button
+                                type="default"
+                                size="small"
+                                icon={<EditOutlined />}
+                            />
                         </Tooltip>
                     )}
-                    <Tooltip title="Edit">
-                        <Button
-                            type="default"
-                            size="small"
-                            icon={<EditOutlined />}
-                        />
-                    </Tooltip>
                     <Tooltip title="Delete">
                         <Button
                             type="default"

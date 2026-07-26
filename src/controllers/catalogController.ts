@@ -45,4 +45,8 @@ export class CatalogController {
         return await this.api.put(`/videos/${id}/new-episode`, data, { onUploadProgress });
     }
 
+    async updateEpisode(id: string, season: string, episode: string, data: any): Promise<any> {
+        return await this.api.put(`/videos/${id}/season/${season}/episode/${episode}`, data);
+    }
+
 }
