@@ -1,11 +1,41 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { PlusSquareOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { MainBlock, SearchTable } from "../../../components";
 import { Button, Space, Tooltip } from "antd";
-import { Link } from "react-router-dom";
+import { CastController } from "../../../controllers";
+import { CastForm } from "./create";
+
+const castCtrl = new CastController();
 
 export const CastList: React.FC = () => {
-    const [dataSource, _setDataSource] = useState<any[]>([]);
+    const [dataSource, setDataSource] = useState<any[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [open, setOpen] = useState<boolean>(false);
+
+    const fetchCast = async () => {
+        setLoading(true);
+        try {
+            const cast = await castCtrl.listCast();
+
+            setDataSource(cast.data.map((item: any) => ({
+                ...item,
+                key: item.uuid
+            })));
+        } catch (error) {
+            console.error("Failed to fetch cast:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleCreate = useCallback(() => {
+        setOpen(true);
+    }, []);
+
+    useEffect(() => {
+        fetchCast()
+    }, []);
+
     const columns = [
         {
             title: 'ID',
@@ -18,19 +48,19 @@ export const CastList: React.FC = () => {
             key: 'name',
         },
         {
-            title: 'Role',
-            dataIndex: 'role',
-            key: 'role',
+            title: 'Birth Date',
+            dataIndex: 'birth_date',
+            key: 'birth_date',
         },
         {
-            title: 'Character',
-            dataIndex: 'character',
-            key: 'character',
+            title: 'Nationality',
+            dataIndex: 'nationality',
+            key: 'nationality',
         },
         {
-            title: 'Movie',
-            dataIndex: 'movie',
-            key: 'movie',
+            title: 'Gender',
+            dataIndex: 'gender',
+            key: 'gender',
         },
         {
             title: 'Action',
@@ -57,12 +87,22 @@ export const CastList: React.FC = () => {
         }
     ];
     return (
-        <MainBlock title="Cast" button={
-            <Space>
-                <Link to="/dashboard/cast/add"><Button type="primary" size="middle" icon={<PlusSquareOutlined />}>Add</Button></Link>
-            </Space>
-        }>
-            <SearchTable columns={columns} dataSource={dataSource} />
-        </MainBlock>
+        <>
+            <MainBlock title="Cast" loading={loading} button={
+                <Space>
+                    <Button type="primary" size="middle" onClick={handleCreate} icon={<PlusSquareOutlined />}>Add</Button>
+                </Space>
+            }>
+                <SearchTable columns={columns} dataSource={dataSource} />
+            </MainBlock>
+            <CastForm
+                title="Add Cast Member"
+                open={open}
+                setOpen={setOpen}
+                okText="Save"
+                cancelText="Cancel"
+                onCreated={fetchCast}
+            />
+        </>
     )
 }

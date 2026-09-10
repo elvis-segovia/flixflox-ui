@@ -5,12 +5,12 @@ import { APP_NAME } from "../../strings";
 
 const { Content } = Layout;
 
-export const MainBlock: React.FC<MainBlockProps> = ({ children, showBreadcrumb, title, button }) => {
+export const MainBlock: React.FC<MainBlockProps> = ({ children, showBreadcrumb, title, button, loading }) => {
     return (
         <Layout>
             <Content style={showBreadcrumb ? { margin: '0 16px' } : { margin: '20px 16px' }}>
                 {showBreadcrumb ? <MainBreadcrumb /> : null}
-                <Card title={title} extra={button}>
+                <Card title={title} extra={button} loading={loading}>
                     {children}
                 </Card>
             </Content>

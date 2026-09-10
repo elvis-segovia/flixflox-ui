@@ -1,5 +1,5 @@
-import { Form, Input, Modal, notification } from "antd";
-import React, { useCallback } from "react";
+import { Form, Input, InputRef, Modal, notification } from "antd";
+import React, { useRef } from "react";
 import { GenresController } from "../../../controllers";
 
 interface ModalFormProps {
@@ -8,7 +8,7 @@ interface ModalFormProps {
     okText: string;
     cancelText: string;
     setOpen: (open: boolean) => void;
-    setRefresh: (refresh: boolean) => void;
+    onCreated?: () => void;
 }
 
 interface Genre {
@@ -17,13 +17,15 @@ interface Genre {
 
 const genreCtrl = new GenresController();
 
-export const GenreForm: React.FC<ModalFormProps> = ({ title, open, setOpen, okText, cancelText, setRefresh }) => {
+export const GenreForm: React.FC<ModalFormProps> = ({ title, open, setOpen, okText, cancelText, onCreated }) => {
     const [form] = Form.useForm();
+    const inputRef = useRef<InputRef>(null);
     const [submit, setSubmit] = React.useState(false);
+    const genre = Form.useWatch('genre', form);
+    const disable = (genre?.trim().length ?? 0) <= 3;
 
-    const onCreate = useCallback(async (values: Genre) => {
+    const onCreate = async (values: Genre) => {
         setSubmit(true);
-        setRefresh(true);
         const response: any = await genreCtrl.createGenre(values)
 
         if (response.status === 201) {
@@ -34,16 +36,20 @@ export const GenreForm: React.FC<ModalFormProps> = ({ title, open, setOpen, okTe
             setSubmit(false);
             notification.error({ message: response.message });
         }
-    }, [setRefresh])
+        setOpen(false)
+        onCreated && onCreated();
+    };
+
     return (
         <Modal
             title={title}
             open={open}
             onCancel={() => setOpen(false)}
+            afterOpenChange={(opened) => opened && inputRef.current?.focus({ cursor: 'end' })}
             width={600}
             okText={okText}
             cancelText={cancelText}
-            okButtonProps={{ autoFocus: true, htmlType: 'submit', loading: submit }} modalRender={(dom) => (
+            okButtonProps={{ htmlType: 'submit', loading: submit, disabled: disable }} modalRender={(dom) => (
                 <Form
                     form={form}
                     layout="horizontal"
@@ -64,7 +70,11 @@ export const GenreForm: React.FC<ModalFormProps> = ({ title, open, setOpen, okTe
                     { required: true, message: 'Please input the genre!' },
                 ]}
             >
-                <Input placeholder="Genre" />
+                <Input
+                    placeholder="Genre"
+                    onInput={(value) => console.log(value)}
+                    ref={inputRef}
+                />
             </Form.Item>
         </Modal>
     );

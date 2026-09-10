@@ -28,92 +28,49 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
 
-    const checkAuthentication = useCallback(async () => {
-        try {
-            const res = await loginCtrl.checkAuth();
-            if (res.status === 200) {
-                setIsAuthenticated(true);
-                setUsername(res.data.username);
-                setUserRole(res.data.role || 'viewer');
-                setError(null);
-            } else {
-                // Try to refresh token if check fails
-                const refreshRes = await loginCtrl.refreshToken();
-                if (refreshRes.status === 200) {
-                    setIsAuthenticated(true);
-                    setUsername(refreshRes.data.username);
-                    setUserRole(refreshRes.data.role || 'viewer');
-                    setError(null);
-                } else {
-                    setIsAuthenticated(false);
-                    setUsername('None');
-                    setUserRole('viewer');
-                    setError('Authentication check failed');
-                }
-            }
-        } catch (err) {
-            // Try to refresh token on error
-            try {
-                const refreshRes = await loginCtrl.refreshToken();
-                if (refreshRes.status === 200) {
-                    setIsAuthenticated(true);
-                    setUsername(refreshRes.data.username);
-                    setUserRole(refreshRes.data.role || 'viewer');
-                    setError(null);
-                } else {
-                    setIsAuthenticated(false);
-                    setUsername('None');
-                    setUserRole('viewer');
-                    setError('Authentication check failed');
-                }
-            } catch (refreshErr) {
-                setIsAuthenticated(false);
-                setUsername('None');
-                setUserRole('viewer');
-                setError('Authentication check failed');
-            }
-        }
-    }, [navigate]);
-
-    useEffect(() => {
-        const checkAuth = async () => {
-            try {
-                setIsLoading(true);
-                setError(null);
-                const res = await loginCtrl.checkAuth();
-                if (res.status === 200) {
-                    setIsAuthenticated(true);
-                    setUsername(res.data.username);
-                    setUserRole(res.data.role || 'viewer');
-                }
-            } catch (err) {
-                console.error('Auth check failed:', err);
-                // Try to refresh token
-                try {
-                    const refreshRes = await loginCtrl.refreshToken();
-                    if (refreshRes.status === 200) {
-                        setIsAuthenticated(true);
-                        setUsername(refreshRes.data.username);
-                        setUserRole(refreshRes.data.role || 'viewer');
-                    } else {
-                        setIsAuthenticated(false);
-                        setUsername('None');
-                        setUserRole('viewer');
-                        setError('Authentication check failed');
-                    }
-                } catch (refreshErr) {
-                    setIsAuthenticated(false);
-                    setUsername('None');
-                    setUserRole('viewer');
-                    setError('Authentication check failed');
-                }
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        checkAuth();
+    const applySession = useCallback((data: { username?: string; role?: string }) => {
+        setIsAuthenticated(true);
+        setUsername(data?.username || 'None');
+        setUserRole(data?.role || 'viewer');
+        setError(null);
     }, []);
+
+    const clearSession = useCallback((message: string | null = null) => {
+        setIsAuthenticated(false);
+        setUsername('None');
+        setUserRole('viewer');
+        setError(message);
+    }, []);
+
+    const checkAuthentication = useCallback(async () => {
+        setIsLoading(true);
+        setError(null);
+        try {
+            const res = await loginCtrl.checkAuth().catch((err: unknown) => {
+                console.error('Auth check failed:', err);
+                return null;
+            });
+
+            if (res?.status === 200) {
+                applySession(res.data);
+                return;
+            }
+
+            // The check failed: exactly one refresh attempt, then give up.
+            const refreshRes = await loginCtrl.refreshToken().catch((err: unknown) => {
+                console.error('Token refresh failed:', err);
+                return null;
+            });
+
+            if (refreshRes?.status === 200) {
+                applySession(refreshRes.data);
+            } else {
+                clearSession('Authentication check failed');
+            }
+        } finally {
+            setIsLoading(false);
+        }
+    }, [applySession, clearSession]);
 
     useEffect(() => {
         checkAuthentication();
@@ -125,9 +82,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             setError(null);
             const res = await loginCtrl.login(username, password, role);
             if (res.status === 200) {
-                setIsAuthenticated(true);
-                setUsername(res.data.username);
-                setUserRole(role);
+                applySession({ username: res.data.username, role });
                 // Navigate based on role
                 if (role === 'admin') {
                     navigate("/dashboard/home");
@@ -150,9 +105,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             setError(null);
             const res = await loginCtrl.logout();
             if (res.status === 200) {
-                setIsAuthenticated(false);
-                setUsername('None');
-                setUserRole('viewer');
+                clearSession();
                 navigate("/");
             }
         } catch (err) {

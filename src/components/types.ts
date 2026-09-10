@@ -6,9 +6,10 @@ type BreadcrumbItem = {
 type MainBlockProps = {
     children: React.ReactNode,
     showBreadcrumb?: boolean;
-    title?: string
-    button?: React.ReactNode
-    props?: any
+    title?: string;
+    button?: React.ReactNode;
+    loading?: boolean;
+    props?: any;
 }
 
 type NotifyProps = {

@@ -10,10 +10,11 @@ const genreCtrl = new GenresController();
 
 export const GenresList: React.FC = () => {
     const [dataSource, setDataSource] = useState<any[]>([]);
-    const [refresh, setRefresh] = useState<boolean>(true);
+    const [loading, setLoading] = useState<boolean>(false);
     const [open, setOpen] = useState<boolean>(false)
 
     const fetchGenres = async () => {
+        setLoading(true);
         try {
             const genres = await genreCtrl.listGenres();
 
@@ -24,7 +25,7 @@ export const GenresList: React.FC = () => {
         } catch (error) {
             console.error("Failed to fetch genres:", error);
         } finally {
-            setRefresh(false);
+            setLoading(false);
         }
     };
 
@@ -34,7 +35,7 @@ export const GenresList: React.FC = () => {
 
     useEffect(() => {
         fetchGenres()
-    }, [refresh]);
+    }, []);
 
     const columns = [
         {
@@ -83,13 +84,22 @@ export const GenresList: React.FC = () => {
         }
     ];
     return (
-        <MainBlock title="Genres" button={
-            <Space>
-                <Button type="primary" size="middle" onClick={handleCreate} icon={<PlusSquareOutlined />}>Add</Button>
-            </Space>
-        }>
-            <SearchTable columns={columns} dataSource={dataSource} />
-            <GenreForm title="Add Genre" open={open} setOpen={setOpen} okText="Save" cancelText="Cancel" setRefresh={setRefresh} />
-        </MainBlock>
+        <>
+            <MainBlock title="Genres" loading={loading} button={
+                <Space>
+                    <Button type="primary" size="middle" onClick={handleCreate} icon={<PlusSquareOutlined />}>Add</Button>
+                </Space>
+            }>
+                <SearchTable columns={columns} dataSource={dataSource} />
+            </MainBlock>
+            <GenreForm
+                title="Add Genre"
+                open={open}
+                setOpen={setOpen}
+                okText="Save"
+                cancelText="Cancel"
+                onCreated={fetchGenres}
+            />
+        </>
     )
 }
