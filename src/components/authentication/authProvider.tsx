@@ -33,7 +33,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setUsername(data?.username || 'None');
         setUserRole(data?.role || 'viewer');
         setError(null);
-        console.log(username, data)
     }, []);
 
     const clearSession = useCallback((message: string | null = null) => {

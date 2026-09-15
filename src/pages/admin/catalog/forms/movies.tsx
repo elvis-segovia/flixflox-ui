@@ -1,8 +1,14 @@
-import { Button, Form, Input, InputNumber, Progress, Select, Space, TimePicker, Upload } from "antd"
-import { UploadOutlined } from "@ant-design/icons";
+import { Button, Form, Input, InputNumber, Progress, Select, Space, TimePicker, Upload, UploadProps } from "antd"
+import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import { env } from "../../../../env";
+import { useState } from "react";
+
+interface Options {
+    label: string;
+    value: string
+}
 
 interface MovieFormProps {
     form: any;
@@ -11,7 +17,15 @@ interface MovieFormProps {
     disabled: boolean;
     uploadProps: any;
     uploadProgress?: number;
+    genres: Options[];
+    cast: Options[];
 }
+
+const getBase64 = (img: Blob, callback: (url: string) => void) => {
+    const reader = new FileReader();
+    reader.addEventListener('load', () => callback(reader.result as string));
+    reader.readAsDataURL(img);
+};
 
 const currentYear = new Date().getFullYear() + 1;
 const yearOptions = Array.from({ length: currentYear - 1980 }, (_v, k) => ({
@@ -19,15 +33,21 @@ const yearOptions = Array.from({ length: currentYear - 1980 }, (_v, k) => ({
     value: k + 1980
 }));
 
-const genreOptions = [
-    'Action', 'Adventure', 'Animation', 'Biography', 'Comedy',
-    'Crime', 'Documentary', 'Drama', 'Family', 'Fantasy',
-    'Film-Noir', 'History', 'Horror', 'Music', 'Musical',
-    'Mystery', 'Romance', 'Sci-Fi', 'Sport', 'Thriller',
-    'War', 'Western'
-].map(genre => ({ label: genre, value: genre }));
+export const MoviesForm: React.FC<MovieFormProps> = ({ form, onCreate, saving, disabled, uploadProgress = 0, genres, cast }) => {
+    const [imageUrl, setImageUrl] = useState<string>()
 
-export const MoviesForm: React.FC<MovieFormProps> = ({ form, onCreate, saving, disabled, uploadProgress = 0 }) => {
+    const uploadButton = (
+        <button style={{ border: 0, background: 'none' }} type="button">
+            <PlusOutlined />
+            <div style={{ marginTop: 8 }}>Upload</div>
+        </button>
+    );
+
+    const handleBgChange: UploadProps['onChange'] = (info) => {
+        getBase64(info.file as unknown as Blob, (url) => {
+            setImageUrl(url);
+        });
+    }
 
     const normFile = (e: any) => {
         if (Array.isArray(e)) {
@@ -46,6 +66,7 @@ export const MoviesForm: React.FC<MovieFormProps> = ({ form, onCreate, saving, d
                 type: 'movie',
                 rating: 5,
                 release_year: new Date().getFullYear(),
+                skip_intro_display_message: "Skip Intro",
                 intro_start_time: dayjs('00:00:00', "HH:mm:ss"),
                 intro_end_time: dayjs('00:00:00', "HH:mm:ss"),
             }}
@@ -86,7 +107,7 @@ export const MoviesForm: React.FC<MovieFormProps> = ({ form, onCreate, saving, d
                 <Select
                     mode="multiple"
                     placeholder="Select genre"
-                    options={genreOptions}
+                    options={genres}
                     allowClear
                 />
             </Form.Item>
@@ -148,6 +169,7 @@ export const MoviesForm: React.FC<MovieFormProps> = ({ form, onCreate, saving, d
                 <Select
                     mode="tags"
                     placeholder="Select cast"
+                    options={cast}
                     allowClear
                 />
             </Form.Item>
@@ -162,6 +184,29 @@ export const MoviesForm: React.FC<MovieFormProps> = ({ form, onCreate, saving, d
                     showCount
                     maxLength={500}
                 />
+            </Form.Item>
+            <Form.Item
+                name="bg_image"
+                label="Background"
+                valuePropName="file"
+                getValueFromEvent={normFile}
+            >
+                <Upload
+                    listType="picture-card"
+                    accept=".png, .jpg, .jpeg"
+                    showUploadList={false}
+                    maxCount={1}
+                    onChange={handleBgChange}
+                    beforeUpload={() => {
+                        return false;
+                    }}
+                >
+                    {imageUrl ? (
+                        <img draggable={false} src={imageUrl} alt="background" style={{ width: '100%' }} />
+                    ) : (
+                        uploadButton
+                    )}
+                </Upload>
             </Form.Item>
             <Form.Item
                 name="file_path"

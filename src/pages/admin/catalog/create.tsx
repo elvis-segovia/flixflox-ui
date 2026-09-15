@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { MainBlock } from "../../../components";
 import { Form, GetProp, message, notification, UploadFile, UploadProps } from "antd";
 import { MoviesForm, TvShowForm } from "./forms";
-import { CatalogController } from "../../../controllers";
+import { CastController, CatalogController, GenresController } from "../../../controllers";
 import { useParams } from "react-router-dom";
 import { resolveVType } from "./vtypes";
 
@@ -24,9 +24,16 @@ interface CatalogValues {
     file_path: string;
 }
 
+interface Options {
+    label: string;
+    value: string
+}
+
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
 const catalogCtrl = new CatalogController();
+const genreCtrl = new GenresController();
+const castCtrl = new CastController();
 
 export const CatalogCreate: React.FC = () => {
     const [form] = Form.useForm();
@@ -35,6 +42,8 @@ export const CatalogCreate: React.FC = () => {
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [uploading, setUploading] = useState<boolean>(false);
     const [uploadProgress, setUploadProgress] = useState<number>(0);
+    const [genres, setGenres] = useState<Options[]>([]);
+    const [cast, setCast] = useState<Options[]>([]);
 
     const onUploadProgress = (event: { loaded: number; total?: number }) => {
         if (event.total) {
@@ -53,6 +62,30 @@ export const CatalogCreate: React.FC = () => {
         }
     }
 
+    const fetchGenres = async () => {
+        try {
+            const { data } = await genreCtrl.listGenres();
+            setGenres(data.map((item: any) => ({
+                label: item.genre,
+                value: item.genre
+            })));
+        } catch (error) {
+            console.error("Failed to fetch genres:", error);
+        }
+    }
+
+    const fetchCast = async () => {
+        try {
+            const { data } = await castCtrl.listCast();
+            setCast(data.map((item: any) => ({
+                value: item.name,
+                label: item.name
+            })));
+        } catch (error) {
+            console.error("Failed to fetch cast:", error);
+        }
+    };
+
     const props: UploadProps = {
         name: 'file',
         multiple: true,
@@ -70,7 +103,9 @@ export const CatalogCreate: React.FC = () => {
     const handleUpload = async (values: CatalogValues) => {
         const formData = new FormData();
         formData.append('type', type);
-        formData.append('bg_image', values.bg_image);
+        if (values.bg_image) {
+            formData.append('bg_image', values.bg_image);
+        }
         if (type === 'tvshow') {
             if (values.show_details.length === 0) {
                 message.error('Please select at least one file before uploading.');
@@ -166,6 +201,11 @@ export const CatalogCreate: React.FC = () => {
         }
     }, [uuid]);
 
+    useEffect(() => {
+        fetchGenres();
+        fetchCast();
+    }, [vtype])
+
     return (
         <MainBlock title={`Add ${singular}`} showBreadcrumb={true}>
             {type === 'movie' &&
@@ -176,6 +216,8 @@ export const CatalogCreate: React.FC = () => {
                     saving={uploading}
                     uploadProgress={uploadProgress}
                     disabled={false}
+                    genres={genres}
+                    cast={cast}
                 />
             }
             {type === 'tvshow' &&
@@ -185,6 +227,8 @@ export const CatalogCreate: React.FC = () => {
                     uploadProps={props}
                     saving={uploading}
                     disabled={false}
+                    genres={genres}
+                    cast={cast}
                 />
             }
         </MainBlock>

@@ -5,12 +5,19 @@ import dayjs from 'dayjs';
 import { env } from "../../../../env";
 import { useState } from "react";
 
+interface Options {
+    label: string;
+    value: string
+}
+
 interface TvShowFormProps {
     form: any;
     onCreate: (values: any) => void;
     saving: boolean;
     disabled: boolean;
     uploadProps: any;
+    genres: Options[];
+    cast: Options[];
 }
 
 const getBase64 = (img: Blob, callback: (url: string) => void) => {
@@ -19,14 +26,7 @@ const getBase64 = (img: Blob, callback: (url: string) => void) => {
     reader.readAsDataURL(img);
 };
 
-
-export const TvShowForm: React.FC<TvShowFormProps> = ({ form, onCreate, saving, disabled }) => {
-    const genres = [
-        'Action', 'Adventure', 'Animation', 'Biography', 'Comedy', 'Crime',
-        'Documentary', 'Drama', 'Family', 'Fantasy', 'Film-Noir', 'History',
-        'Horror', 'Music', 'Musical', 'Mystery', 'Romance', 'Sci-Fi',
-        'Sport', 'Thriller', 'War', 'Western'
-    ];
+export const TvShowForm: React.FC<TvShowFormProps> = ({ form, onCreate, saving, disabled, genres, cast }) => {
     const [imageUrl, setImageUrl] = useState<string>()
 
     const uploadButton = (
@@ -42,7 +42,6 @@ export const TvShowForm: React.FC<TvShowFormProps> = ({ form, onCreate, saving, 
         });
 
     }
-
 
     const normFile = (e: any) => {
         if (Array.isArray(e)) {
@@ -115,7 +114,7 @@ export const TvShowForm: React.FC<TvShowFormProps> = ({ form, onCreate, saving, 
                 <Select
                     mode="multiple"
                     placeholder="Select genre"
-                    options={genres.map((genre) => ({ label: genre, value: genre }))}
+                    options={genres}
                     allowClear
                 />
             </Form.Item>
@@ -135,7 +134,7 @@ export const TvShowForm: React.FC<TvShowFormProps> = ({ form, onCreate, saving, 
                     placeholder="Enter rating (0.0 - 10.0)"
                 />
             </Form.Item>
-            <Form.Item name="bg_image" label="Background" rules={[{ required: true, message: 'Please input the background!' }]} getValueFromEvent={normFile}>
+            <Form.Item name="bg_image" label="Background" valuePropName="file" rules={[{ required: true, message: 'Please input the background!' }]} getValueFromEvent={normFile}>
                 <Upload
                     listType="picture-card"
                     accept=".png, .jpg, .jpeg"
@@ -276,6 +275,7 @@ export const TvShowForm: React.FC<TvShowFormProps> = ({ form, onCreate, saving, 
                                     <Select
                                         mode="tags"
                                         placeholder="Select cast"
+                                        options={cast}
                                         allowClear
                                     />
                                 </Form.Item>

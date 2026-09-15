@@ -1,16 +1,11 @@
-import axios, { AxiosInstance } from "axios";
-import { env } from "../env";
+import { AxiosInstance } from "axios";
+import { createApiClient } from "./apiClient";
 
 export class CastController {
     api: AxiosInstance;
 
     constructor() {
-        this.api = axios.create({
-            baseURL: `${env.VITE_STREAMAPI_URL}${env.VITE_STREAMAPI_PREFIX}`,
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-            }
-        });
+        this.api = createApiClient();
     }
 
     async listCast(): Promise<any> {

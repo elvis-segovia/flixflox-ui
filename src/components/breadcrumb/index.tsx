@@ -32,17 +32,17 @@ export const MainBreadcrumb: React.FC = () => {
         });
     }, [breadcrumbs, currentSegment]);
 
+    const items = useMemo(() => {
+        return filteredBreadcrumbs.map((item: any, index: number) => {
+            const isLast = index === filteredBreadcrumbs.length - 1;
+            return {
+                key: index,
+                title: isLast ? item.title : <Link to={item.path || '/'}>{item.title}</Link>
+            };
+        });
+    }, [filteredBreadcrumbs]);
+
     return (
-        <Breadcrumb style={{ margin: '16px 0' }}>
-            {filteredBreadcrumbs.map((item: any, index: any) => {
-                const isLast = item.path === filteredBreadcrumbs[filteredBreadcrumbs.length - 1].path;
-                return (
-                    isLast ? <Breadcrumb.Item key={index}>{item.title}</Breadcrumb.Item> :
-                        <Breadcrumb.Item key={index}>
-                            <Link to={item.path || '/'}>{item.title}</Link>
-                        </Breadcrumb.Item>
-                );
-            })}
-        </Breadcrumb>
+        <Breadcrumb style={{ margin: '16px 0' }} items={items} />
     );
 };

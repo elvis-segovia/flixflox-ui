@@ -131,7 +131,7 @@ const LoginContent: React.FC<any> = ({ screens, form, mode, toggleTheme, handleA
                             name="username"
                             rules={[{ required: true, message: 'Please input your username!' }]}
                         >
-                            <Input size="large" />
+                            <Input size="large" autoFocus />
                         </Form.Item>
 
                         <Form.Item

@@ -30,7 +30,6 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ id = "0", video, title
         if (playerRef.current) {
             const currentItem = playerRef.current.playlist().findIndex((x: { id: Number; }) => Number(x.id) === Number(id));
             playerRef.current.playlist.currentItem(currentItem);
-            console.log(playerRef.current)
         }
     }, [id])
 

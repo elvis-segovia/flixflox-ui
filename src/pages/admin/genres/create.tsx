@@ -72,7 +72,6 @@ export const GenreForm: React.FC<ModalFormProps> = ({ title, open, setOpen, okTe
             >
                 <Input
                     placeholder="Genre"
-                    onInput={(value) => console.log(value)}
                     ref={inputRef}
                 />
             </Form.Item>
