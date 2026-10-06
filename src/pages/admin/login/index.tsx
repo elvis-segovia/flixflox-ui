@@ -1,5 +1,6 @@
 import React from 'react';
 import { Form, Input, Button, Layout, Grid, theme, Typography, Card, Space, notification, ConfigProvider } from 'antd';
+import { Link } from 'react-router-dom';
 import FlixFlox from '../../../assets/flixflox.png';
 import { Content } from 'antd/es/layout/layout';
 import { useAuth } from '../../../components/authentication/authProvider';
@@ -163,6 +164,10 @@ const LoginContent: React.FC<any> = ({ screens, form, mode, toggleTheme, handleA
                                 </Button>
                             </Space>
                         </Form.Item>
+                        <div style={{ textAlign: "center" }}>
+                            <Text type="secondary">Don't have an account? </Text>
+                            <Link to="/register">Sign up</Link>
+                        </div>
                     </Form>
                 </Card>
             </Content>

@@ -25,6 +25,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ id = "0", video, title
     const skipButtonRef = useRef<HTMLButtonElement | null>(null);
     const nextButtonRef = useRef<HTMLButtonElement | null>(null);
     const [isFullscreen, setIsFullscreen] = useState(false);
+    let lastTap = 0;
 
     useEffect(() => {
         if (playerRef.current) {
@@ -40,6 +41,31 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ id = "0", video, title
                 responsive: true,
                 fluid: true,
             });
+
+            playerRef.current.on('touchend', function (event: Event) {
+                const TargeElement = event.target as HTMLElement;
+                if (TargeElement.closest('.vjs-control-bar')) {
+                    return;
+                }
+
+                const currentTime = new Date().getTime();
+                const tapLength = currentTime - lastTap;
+
+                // Check if the delay between taps matches a double tap (under 300ms)
+                if (tapLength < 300 && tapLength > 0) {
+                    event.preventDefault(); // Prevent default mobile zooming behavior
+
+                    // Toggle fullscreen
+                    if (!playerRef.current.isFullscreen()) {
+                        playerRef.current.requestFullscreen();
+                    } else {
+                        playerRef.current.exitFullscreen();
+                    }
+                }
+
+                lastTap = currentTime;
+
+            })
 
             playerRef.current.on('fullscreenchange', function () {
                 setIsFullscreen(playerRef.current.isFullscreen());

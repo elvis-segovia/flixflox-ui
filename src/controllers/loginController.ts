@@ -42,6 +42,19 @@ export class LoginController {
         return response;
     }
 
+    async register(username: string, password: string, email: string, role: string = 'viewer'): Promise<any> {
+        return await axios.post(`${this.api_url}/auth/register`, {
+            username,
+            password,
+            role,
+            email
+        }, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+    }
+
     async checkAuth(): Promise<any> {
         const token = this.getToken();
         const headers: any = {

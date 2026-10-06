@@ -9,6 +9,7 @@ import { AuthProvider } from './components/authentication/authProvider.tsx'
 import { ProtectedRoutes } from './components/authentication/protectedRoutes.tsx'
 import { Movies, Player, Users, Web } from './pages/web'
 import LoginForm from './pages/admin/login/index.tsx'
+import RegisterForm from './pages/admin/register/index.tsx'
 import { ThemeProvider } from './components/theme/themeProvider.tsx'
 
 const getChildRoutes = (item: any) => {
@@ -48,6 +49,7 @@ const router = (
 						</Route>
 					</Route>
 					<Route path='/login' element={<LoginForm />} />
+					<Route path='/register' element={<RegisterForm />} />
 					<Route path='/logout' element={<ErrorPage />} />
 				</Routes>
 			</AuthProvider>

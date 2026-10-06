@@ -81,8 +81,20 @@ export const UsersCreate: React.FC = () => {
                                     name="username"
                                     label="Username"
                                     rules={[
-                                        { required: true, message: 'Please input username!' },
-                                        { min: 3, message: 'Username must be at least 3 characters!' }
+                                        { 
+                                            required: true, 
+                                            message: 'Please input username!' },
+                                        { 
+                                            min: 3, 
+                                            message: 'Username must be at least 3 characters!' },
+                                        {
+                                            max: 20,
+                                            message: 'Username cannot exceed 20 characters.'
+                                        },
+                                        {
+                                            pattern: /^[a-zA-Z0-9_]+$/,
+                                            message: 'Username can only contain letters, numbers, and underscores.'
+                                        }
                                     ]}
                                 >
                                     <Input prefix={<UserOutlined />} placeholder="Enter username" />
